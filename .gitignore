@@ -1,1 +1,5 @@
-assets/
+workspace/
+node_modules/
+vendor/
+
+config/storylog.json
