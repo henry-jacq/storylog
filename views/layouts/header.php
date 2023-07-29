@@ -13,7 +13,7 @@
             <div class="d-flex ms-auto my-2">
                 <ul class="nav flex-nowrap align-items-center list-unstyled">
                     <li class="nav-item">
-                        <a href="/blog/create" class="btn btn-sm border border-secondary rounded-pill"><i class="bi bi-pencil-square me-2"></i>Create</a>
+                        <a href="/blog/create" class="btn btn-sm border border-secondary rounded-pill"><i class="bi bi-pencil-square me-1"></i>Create</a>
                     </li>
                     <li class="nav-item ms-2">
                         <a class="btn btn-sm border border-secondary rounded-circle position-relative" role="button">
@@ -34,7 +34,7 @@
                             <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="https://github.com/mdo.png" alt="mdo" width="31" height="31" class="border  border-secondary rounded-circle">
                             </a>
-                            <ul class="dropdown-menu mt-2 dropdown-menu-end text-small">
+                            <ul class="dropdown-menu dropdown-menu-end mt-2 shadow">
                                 <!-- <li>
                                     <a class="dropdown-item" href="#"><i class="bi bi-pencil-square me-2"></i>New blog</a>
                                 </li> -->
@@ -42,7 +42,10 @@
                                     <a class="dropdown-item" href="/profile/henry"><i class="bi bi-person-circle me-2"></i>My Profile</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="/preferences"><i class="bi bi-gear me-2"></i>Preferences</a>
+                                    <a class="dropdown-item" href="/profile/edit"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/settings"><i class="bi bi-gear me-2"></i>Settings</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
