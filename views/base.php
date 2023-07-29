@@ -10,7 +10,7 @@
         {{contents}}
     </div>
 
-    <?php echo ($this->renderLayout('footer')); ?>
+    <?php // echo ($this->renderLayout('footer')); ?>
     <?php echo ($this->renderLayout('elements')); ?>
     <?php echo ($this->renderLayout('script')); ?>
 </body>

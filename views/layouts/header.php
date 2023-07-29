@@ -13,7 +13,7 @@
             <div class="d-flex ms-auto my-2">
                 <ul class="nav flex-nowrap align-items-center list-unstyled">
                     <li class="nav-item">
-                        <a class="btn btn-sm border border-secondary rounded-pill" onclick="dialog('Hello world!', 'Checking dialog JS')"><i class="bi bi-pencil-square me-2"></i>Write</a>
+                        <a href="/blog/create" class="btn btn-sm border border-secondary rounded-pill"><i class="bi bi-pencil-square me-2"></i>Create</a>
                     </li>
                     <li class="nav-item ms-2">
                         <a class="btn btn-sm border border-secondary rounded-circle position-relative" role="button">
