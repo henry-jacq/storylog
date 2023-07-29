@@ -11,7 +11,7 @@
                 <label for="pass" class="form-label">Password</label>
                 <div class="input-group mb-3">
                     <input type="password" id="pass" name="pass" class="form-control bg-transparent" required="">
-                    <span class="input-group-text bg-transparent" id="icon-click" role="button">
+                    <span class="input-group-text bg-transparent focus-ring focus-ring-prime" id="icon-click" role="button" tabindex="0">
                         <i class="bi-eye-slash" id="icon"></i>
                     </span>
                 </div>
