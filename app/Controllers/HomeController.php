@@ -26,4 +26,13 @@ class HomeController extends Controller
         return $this->render($request, $response, 'home/profile', $args);
 
     }
+
+    public function edit_profile(Request $request, Response $response)
+    {
+        $args = [
+            'title' => 'Edit Profile',
+            'username' => $request->getAttribute('username'),
+        ];
+        return $this->render($request, $response, 'home/edit-profile', $args);
+    }
 }

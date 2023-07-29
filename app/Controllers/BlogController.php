@@ -26,4 +26,14 @@ class BlogController extends Controller
         ];
         return $this->render($request, $response, 'blog/create', $args);
     }
+
+    public function edit(Request $request, Response $response)
+    {
+        $args = [
+            'title' => 'Edit Blog',
+            'app_host' => $request->getHeader('host')[0],
+            'request_proto' => $request->getServerParams()['HTTP_X_FORWARDED_PROTO']
+        ];
+        return $this->render($request, $response, 'blog/edit', $args);
+    }
 }

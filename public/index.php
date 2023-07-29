@@ -15,9 +15,13 @@ AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 $app->get('/', [HomeController::class, 'index']);
-$app->get('/blog/create', [BlogController::class, 'create']);
-$app->get('/blog/{blogname}', [BlogController::class, 'index']);
+$app->get('/profile/edit', [HomeController::class, 'edit_profile']);
 $app->get('/profile/{username}', [HomeController::class, 'profile']);
+
+$app->get('/blog/create', [BlogController::class, 'create']);
+$app->get('/blog/edit', [BlogController::class, 'edit']);
+$app->get('/blog/{blogname}', [BlogController::class, 'index']);
+
 $app->get('/category/{category}', [CategoryController::class, 'category']);
 
 $app->get('/login', [AuthController::class, 'login']);
