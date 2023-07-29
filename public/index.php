@@ -1,22 +1,28 @@
 <?php
 
+use Slim\Factory\AppFactory;
 use Storylog\Controllers\AuthController;
-use Storylog\Controllers\CategoryController;
+use Storylog\Controllers\BlogController;
 use Storylog\Controllers\HomeController;
-use Storylog\Core\Application;
+use Storylog\Controllers\CategoryController;
 
 include __DIR__ . '/../bootstrap.php';
 
+$container = require CONFIG_PATH . '/container/container.php';
 
-$app = new Application(APP_PATH, $config);
+AppFactory::setContainer($container);
 
-$app->router->get('/login', [AuthController::class, 'login']);
-$app->router->get('/register', [AuthController::class, 'register']);
-$app->router->get('/logout', [AuthController::class, 'logout']);
-$app->router->get('/forgot-password', [AuthController::class, 'forgotPassword']);
-$app->router->get('/', [HomeController::class, 'home']);
-$app->router->get('/profile/{username}', [HomeController::class, 'profile']);
-$app->router->get('/blog/{blogname}', [HomeController::class, 'blog']);
-$app->router->get('/category/{categoryname}', [CategoryController::class, 'category']);
+$app = AppFactory::create();
+
+$app->get('/', [HomeController::class, 'index']);
+$app->get('/blog/create', [BlogController::class, 'create']);
+$app->get('/blog/{blogname}', [BlogController::class, 'index']);
+$app->get('/profile/{username}', [HomeController::class, 'profile']);
+$app->get('/category/{category}', [CategoryController::class, 'category']);
+
+$app->get('/login', [AuthController::class, 'login']);
+$app->get('/register', [AuthController::class, 'register']);
+$app->get('/logout', [AuthController::class, 'logout']);
+$app->get('/forgot-password', [AuthController::class, 'forgotPassword']);
 
 $app->run();

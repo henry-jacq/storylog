@@ -3,38 +3,44 @@
 namespace Storylog\Controllers;
 
 use Storylog\Core\Controller;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AuthController extends Controller
 {
-    public function login()
+    public function login(Request $request, Response $response): Response
     {
-        return $this->render('auth/login', [
+        $args = [
             'title' => 'Login page',
             'name' => 'Henry'
-        ]);
+        ];
+        return $this->render($request, $response, 'auth/login', $args);
     }
 
-    public function register()
+    public function register(Request $request, Response $response): Response
     {
-        return $this->render('auth/register', [
+        $args = [
             'title' => 'Register page',
             'name' => 'Henry'
-        ]);
+        ];
+        return $this->render($request, $response, 'auth/register', $args);
     }
 
-    public function forgotPassword()
+    public function forgotPassword(Request $request, Response $response): Response
     {
-        return $this->render('auth/forgot-password', [
+        $args = [
             'title' => 'Forgot password',
             'name' => 'Henry'
-        ]);
+        ];
+        return $this->render($request, $response, 'auth/forgot-password', $args);
     }
 
-    public function logout()
+    public function logout(Request $request, Response $response): Response
     {
-        return $this->render('auth/forgot-password', [
+        $args = [
             'title' => 'Forgot password',
             'name' => 'Henry'
-        ]);
+        ];
+        return $this->render($request, $response, 'auth/forgot-password', $args);
     }
 }

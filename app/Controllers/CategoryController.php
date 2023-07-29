@@ -3,17 +3,18 @@
 namespace Storylog\Controllers;
 
 use Storylog\Core\Controller;
-use Storylog\Core\Application;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 
 class CategoryController extends Controller
 {
-    public function category()
+    public function category(Request $request, Response $response)
     {
-        $categoryName = Application::$app->request->getRouteParam('categoryname');
-        return $this->render('home/category', [
+        $args = [
             'title' => 'Category page',
-            'categoryname' => $categoryName
-        ]);
+            'categoryname' => $request->getAttribute('category'),
+        ];
+        return $this->render($request, $response, 'home/category', $args);
     }
 }

@@ -2,37 +2,28 @@
 
 namespace Storylog\Controllers;
 
-use Storylog\Core\Application;
-use Storylog\Core\View;
 use Storylog\Core\Controller;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class HomeController extends Controller
 {
-    // public function __construct(){}
-
-    public function home()
+    public function index(Request $request, Response $response): Response
     {
-        return $this->render('home/home', [
+        $args = [
             'title' => 'Home',
             'name' => 'Henry'
-        ]);
+        ];
+        return $this->render($request, $response, 'home/home', $args);
     }
 
-    public function blog()
+    public function profile(Request $request, Response $response)
     {
-        $blogName = Application::$app->request->getRouteParam('blogname');
-        return $this->render('home/blog', [
-            'title' => 'Blog page',
-            'blogname' => $blogName
-        ]);
-    }
+        $args = [
+            'title' => 'Profile page',
+            'username' => $request->getAttribute('username'),
+        ];
+        return $this->render($request, $response, 'home/profile', $args);
 
-    public function profile()
-    {
-        $username = Application::$app->request->getRouteParam('username');
-        return $this->render('home/profile', [
-            'title' => "Profile",
-            'username' => $username
-        ]);
     }
 }

@@ -12,6 +12,9 @@
         }
     ],
     "require": {
-        "vlucas/phpdotenv": "^5.5"
+        "vlucas/phpdotenv": "^5.5",
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.6",
+        "php-di/php-di": "^7.0"
     }
 }

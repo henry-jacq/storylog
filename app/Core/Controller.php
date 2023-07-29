@@ -2,26 +2,21 @@
 
 namespace Storylog\Core;
 
-use Storylog\Core\Application;
-
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class Controller
 {
-
-    protected array $middlewares = [];
-
-    public function render($view, $params = []): string
+    public function __construct(private readonly View $view)
     {
-        return Application::$app->view->createPage($view, $params);
+    }
+    
+    public function render(Request $request, Response $response, string $viewPath, array $args)
+    {
+        $response->getBody()->write(
+            (string) $this->view->createPage($viewPath, $args)
+        );
+        return $response;
     }
 
-    // public function registerMiddleware(BaseMiddleware $middleware)
-    // {
-    //     $this->middlewares[] = $middleware;
-    // }
-
-    // public function getMiddlewares(): array
-    // {
-    //     return $this->middlewares;
-    // }
 }

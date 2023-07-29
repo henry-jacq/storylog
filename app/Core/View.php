@@ -84,6 +84,6 @@ class View implements ViewInterface
     {
         $mainView = $this->renderBaseView($params);
         $templateView = $this->renderTemplate($view, $params);
-        return str_replace('{{contents}}', $templateView, $mainView);
+        echo(str_replace('{{contents}}', $templateView, $mainView));
     }
 }
