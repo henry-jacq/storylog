@@ -1,6 +1,7 @@
 <?php
 
 use Storylog\Controllers\AuthController;
+use Storylog\Controllers\CategoryController;
 use Storylog\Controllers\HomeController;
 use Storylog\Core\Application;
 
@@ -16,5 +17,6 @@ $app->router->get('/forgot-password', [AuthController::class, 'forgotPassword'])
 $app->router->get('/', [HomeController::class, 'home']);
 $app->router->get('/profile/{username}', [HomeController::class, 'profile']);
 $app->router->get('/blog/{blogname}', [HomeController::class, 'blog']);
+$app->router->get('/category/{categoryname}', [CategoryController::class, 'category']);
 
 $app->run();

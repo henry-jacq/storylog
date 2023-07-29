@@ -1,8 +1,21 @@
-<main class="container px-0 py-5 mt-5">
+<main class="container px-0 py-5 mt-3">
+    <div class="nav-scroller py-1 mb-4 border-bottom">
+        <nav class="nav nav-underline justify-content-between px-5">
+            <a class="fw-normal text-uppercase nav-link nav-item">categories</a>
+            <a class="nav-item nav-link link-body-emphasis" href="/category/world">World</a>
+            <a class="nav-item nav-link link-body-emphasis" href="/category/food">Food</a>
+            <a class="nav-item nav-link link-body-emphasis" href="/category/technology">Technology</a>
+            <a class="nav-item nav-link link-body-emphasis" href="/category/design">Design</a>
+            <a class="nav-item nav-link link-body-emphasis" href="/category/science">Science</a>
+            <a class="nav-item nav-link link-body-emphasis" href="/category/health">Health</a>
+            <a class="nav-item nav-link link-body-emphasis" href="/category/style">Style</a>
+            <a class="nav-item nav-link link-body-emphasis" href="/category/travel">Travel</a>
+        </nav>
+    </div>
     <div class="p-4 p-md-5 rounded text-body-emphasis bg-body-secondary">
         <div class="col-lg-6 px-0">
             <h1 class="display-5 fst-italic">Title of a longer featured blog post</h1>
-            <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
+            <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what's most interesting in this post's contents.</p>
             <p class="lead mb-0"><a href="#" class="text-body-emphasis fw-semibold">Continue reading<i class="bi bi-chevron-right ms-1 small"></i></a></p>
         </div>
     </div>
