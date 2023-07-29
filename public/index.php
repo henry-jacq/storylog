@@ -1,14 +1,20 @@
 <?php
 
-require '../bootstrap.php';
+use Storylog\Controllers\AuthController;
+use Storylog\Controllers\HomeController;
+use Storylog\Core\Application;
 
-use App\Core\View;
-use App\Core\Session;
+include __DIR__ . '/../bootstrap.php';
 
-if (isset($_GET['logout'])) {
-    Session::logout(Session::get('session_token'));
-    header("Location: /");
-    die();
-} else {
-    View::renderPage();
-}
+
+$app = new Application(APP_PATH, $config);
+
+$app->router->get('/login', [AuthController::class, 'login']);
+$app->router->get('/register', [AuthController::class, 'register']);
+$app->router->get('/logout', [AuthController::class, 'logout']);
+$app->router->get('/forgot-password', [AuthController::class, 'forgotPassword']);
+$app->router->get('/', [HomeController::class, 'home']);
+$app->router->get('/profile/{username}', [HomeController::class, 'profile']);
+$app->router->get('/blog/{blogname}', [HomeController::class, 'blog']);
+
+$app->run();

@@ -1,11 +1,17 @@
 {
-    "require": {
-        "nesbot/carbon": "^2.65",
-        "phpmailer/phpmailer": "^6.8"
-    },
+    "name": "henry/storylog",
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "Storylog\\": "app/"
         }
+    },
+    "authors": [
+        {
+            "name": "henry-jacq",
+            "email": "henryeditz267@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
     }
 }

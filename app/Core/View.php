@@ -1,52 +1,89 @@
 <?php
 
-namespace App\Core;
+namespace Storylog\Core;
 
-/**
- * Render a view file
- */
-class View
+use Storylog\Interfaces\ViewInterface;
+
+class View implements ViewInterface
 {
-    /**
-     * Load the layout view
-     */
-    public static function renderLayout(string $layout)
-    {
-        $layout = APP_ROOT . "/views/layouts/$layout.php";
-        if (is_file($layout)) {
-            include_once $layout;
+    public $base_view = 'base.php';
+    public string $title = 'Storylog';
+    
+    // Insert layouts in page
+    public function renderLayout($layout_name) {
+        
+        if (!str_contains($layout_name, '.php')) {
+            $layout = $layout_name . '.php';
+        }
+
+        $path = VIEW_PATH . '/layouts/' . $layout;
+
+        if (file_exists($path)) {
+            ob_start();
+            include $path;
+            $contents = ob_get_clean();
+            return $contents;
         } else {
-            self::loadErrorPage();
+            return false;
         }
     }
 
-    /**
-     * Load the template view
-     */
-    public static function renderTemplate(string $template)
+    private function renderTemplate($template, $params = array())
     {
-        $template = APP_ROOT . "/views/$template.php";
-        if (is_file($template)) {
-            include_once $template;
+        foreach ($params as $key => $value) {
+            $$key = $value;
+        }
+
+        if (!str_contains($template, '.php')) {
+            $template = $template . '.php';
+        }
+
+        $path = VIEW_PATH . '/templates/' . $template;
+
+        if (file_exists($path)) {
+            ob_start();
+            include $path;
+            $contents = ob_get_clean();
+            if (ob_get_length() > 0) {
+                ob_end_clean();
+            }
+            return $contents;
         } else {
-            self::loadErrorPage();
+            return false;
+        }
+    }
+
+    // Generates the base view
+    private function renderBaseView($params = array())
+    {
+        foreach ($params as $key => $value) {
+            $$key = $value;
+        }
+
+        if (isset($title)) {
+            $this->title = $title;
+        }
+
+        $baseView = VIEW_PATH . DIRECTORY_SEPARATOR . $this->base_view;
+
+        if (file_exists($baseView)) {
+            ob_start();
+            include $baseView;
+            $contents = ob_get_clean();
+            if (ob_get_length() > 0) {
+                ob_end_clean();
+            }
+            return $contents;
+        } else {
+            return false;
         }
     }
     
-    /**
-     * Loads the 404 error page
-     */
-    public static function loadErrorPage()
+    // Generates a page with the given template name
+    public function createPage($view, $params = array())
     {
-        http_response_code(404);
-        self::renderLayout('error');
-    }
-
-    /**
-     * Loads the master template
-     */
-    public static function renderPage()
-    {
-        self::renderLayout('master');
+        $mainView = $this->renderBaseView($params);
+        $templateView = $this->renderTemplate($view, $params);
+        return str_replace('{{contents}}', $templateView, $mainView);
     }
 }

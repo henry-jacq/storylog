@@ -1,9 +1,18 @@
 <?php
 
-require 'vendor/autoload.php';
+use Dotenv\Dotenv;
 
-use App\Core\WebAPI;
+include 'vendor/autoload.php';
+include 'config/constants.php';
+include 'config/functions.php';
 
-$wp = new WebAPI();
+$dotenv = Dotenv::createImmutable(APP_PATH);
+$dotenv->load();
 
-$wp->initiateSession();
+$config = [
+    'db' => [
+        'dsn' => $_ENV['DB_DSN'],
+        'user' => $_ENV['DB_USER'],
+        'password' => $_ENV['DB_PASS'],
+    ]
+];
