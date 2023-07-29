@@ -1,9 +1,7 @@
 <?php
 
-namespace Storylog\Core;
+namespace Storylog\Http;
 
-use Storylog\Core\Request;
-use Storylog\Core\Response;
 use Storylog\Core\Application;
 use Storylog\Exception\NotFoundException;
 

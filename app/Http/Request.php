@@ -1,6 +1,6 @@
 <?php
 
-namespace Storylog\Core;
+namespace Storylog\Http;
 
 
 class Request

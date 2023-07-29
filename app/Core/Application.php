@@ -3,6 +3,10 @@
 
 namespace Storylog\Core;
 
+use Storylog\Http\Request;
+use Storylog\Http\Response;
+use Storylog\Http\Router;
+
 class Application
 {
     const EVENT_BEFORE_REQUEST = 'beforeRequest';
