@@ -16,7 +16,7 @@
                         <a href="/blog/create" class="btn btn-sm border border-secondary rounded-pill"><i class="bi bi-pencil-square me-1"></i>Create</a>
                     </li>
                     <li class="nav-item ms-2">
-                        <a class="btn btn-sm border border-secondary rounded-circle position-relative" role="button">
+                        <a id="themeSwitcher" class="btn btn-sm border border-secondary rounded-circle position-relative" role="button">
                             <i class="bi bi-moon-stars"></i>
                         </a>
                     </li>
