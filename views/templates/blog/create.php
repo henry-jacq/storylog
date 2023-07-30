@@ -1,9 +1,14 @@
-<div class="container pt-5 mt-4">
+<div class="container py-5 my-5">
     <div class="d-flex align-items-center justify-content-center">
-        <div class="col-md-10 bg-body-tertiary rounded">
+        <div class="col-md-10 bg-body-tertiary rounded border">
             <p class="fs-5 my-3 ms-3"><i class="bi bi-pencil me-2"></i>Create a blog</p>
             <hr class="m-0">
-            <div class="p-3">
+            <form class="bg-body p-3">
+                <div class="mb-3">
+                    <label for="blogFeaturedImage" class="form-label">Add Featured Image</label>
+                    <input class="form-control" type="file" id="blogFeaturedImage">
+                    <div class="form-text">This image will shown in the start of the blog.</div>
+                </div>
                 <div class="mb-3">
                     <label for="blogTitle" class="form-label">Title</label>
                     <input type="text" class="form-control" id="blogTitle">
@@ -11,7 +16,7 @@
                 <div class="mb-3">
                     <label for="blogSlug" class="form-label">Slug</label>
                     <div class="input-group">
-                        <span class="input-group-text" id="blogUrl"><?= $request_proto . '://'.$app_host . '/blog/'?></span>
+                        <span class="input-group-text" id="blogUrl"><?= $request_proto . '://' . $app_host . '/blog/' ?></span>
                         <input type="text" class="form-control" id="blogSlug" aria-describedby="blogUrl">
                     </div>
                     <div class="form-text">Field must contain an unique value</div>
@@ -36,7 +41,7 @@
                     <div class="form-text">A short extract from writing.</div>
                 </div>
                 <button class="btn btn-prime">Publish</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
