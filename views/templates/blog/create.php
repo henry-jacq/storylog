@@ -1,13 +1,18 @@
 <div class="container py-5 my-5">
     <div class="d-flex align-items-center justify-content-center">
-        <div class="col-md-10 bg-body-tertiary rounded border">
-            <p class="fs-5 my-3 ms-3"><i class="bi bi-pencil me-2"></i>Create a blog</p>
+        <div class="col-md-10 rounded border border-secondary">
+            <div class="bg-body-tertiary ps-3 py-3 rounded">
+                <p class="fs-5 m-0"><i class="bi bi-pencil me-2"></i>Create a blog</p>
+            </div>
             <hr class="m-0">
-            <form class="bg-body p-3">
+            <form id="createNewBlogPost" class="p-3">
                 <div class="mb-3">
                     <label for="blogFeaturedImage" class="form-label">Add Featured Image</label>
                     <input class="form-control" type="file" id="blogFeaturedImage">
                     <div class="form-text">This image will shown in the start of the blog.</div>
+                    <div class="d-flex justify-content-end align-items-end">
+                        <button class="btn btn-danger btn-sm"><i class="bi bi-trash me-1"></i>Remove Featured Image</button>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="blogTitle" class="form-label">Title</label>
@@ -40,7 +45,7 @@
                     <textarea class="form-control" id="blogExcerpt" rows="3"></textarea>
                     <div class="form-text">A short extract from writing.</div>
                 </div>
-                <button class="btn btn-prime">Publish</button>
+                <button class="btn btn-prime btn-publish-post">Publish</button>
             </form>
         </div>
     </div>
