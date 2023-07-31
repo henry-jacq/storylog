@@ -14,7 +14,7 @@ class AuthController extends Controller
             'title' => 'Login page',
             'name' => 'Henry'
         ];
-        return $this->render($request, $response, 'auth/login', $args);
+        return $this->render($response, 'auth/login', $args);
     }
 
     public function register(Request $request, Response $response): Response
@@ -23,7 +23,14 @@ class AuthController extends Controller
             'title' => 'Register page',
             'name' => 'Henry'
         ];
-        return $this->render($request, $response, 'auth/register', $args);
+        return $this->render($response, 'auth/register', $args);
+    }
+
+    public function store(Request $request, Response $response): Response
+    {
+        $data = [];
+        // dd($this->user->create($data));
+        return $this->writeAsJson($response, $data);
     }
 
     public function forgotPassword(Request $request, Response $response): Response
@@ -32,7 +39,7 @@ class AuthController extends Controller
             'title' => 'Forgot password',
             'name' => 'Henry'
         ];
-        return $this->render($request, $response, 'auth/forgot-password', $args);
+        return $this->render($response, 'auth/forgot-password', $args);
     }
 
     public function logout(Request $request, Response $response): Response
@@ -41,6 +48,6 @@ class AuthController extends Controller
             'title' => 'Forgot password',
             'name' => 'Henry'
         ];
-        return $this->render($request, $response, 'auth/forgot-password', $args);
+        return $this->render($response, 'auth/forgot-password', $args);
     }
 }

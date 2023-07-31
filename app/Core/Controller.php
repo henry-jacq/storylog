@@ -3,7 +3,6 @@
 namespace Storylog\Core;
 
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
 class Controller
 {
@@ -11,7 +10,7 @@ class Controller
     {
     }
     
-    public function render(Request $request, Response $response, string $viewPath, array $args)
+    public function render(Response $response, string $viewPath, array $args)
     {
         $response->getBody()->write(
             (string) $this->view->createPage($viewPath, $args)
@@ -19,4 +18,11 @@ class Controller
         return $response;
     }
 
+    public function writeAsJson(Response $response, array $payload)
+    {
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(201);
+    }
 }

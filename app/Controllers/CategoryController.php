@@ -15,6 +15,6 @@ class CategoryController extends Controller
             'title' => 'Category page',
             'categoryname' => $request->getAttribute('category'),
         ];
-        return $this->render($request, $response, 'home/category', $args);
+        return $this->render($response, 'home/category', $args);
     }
 }

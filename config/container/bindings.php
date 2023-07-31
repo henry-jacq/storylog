@@ -11,9 +11,9 @@ return [
         require CONFIG_PATH . '/app.php'
     ),
     PDO::class => function (ContainerInterface $container) {
-        $config = $container->get(Config::class);
+        $config = $container->get(Config::class)->get('db');
         $pdo = new PDO(
-            "{$config->get('db.driver')}:host={$config->get('db.host')};dbname={$config->get('db.dbname')}", $config->get('db.user'), $config->get('db.pass'), [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
+            "{$config['driver']}:host={$config['host']};port={$config['port']};dbname={$config['dbname']}", $config['user'], $config['pass'], [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
         );
         return $pdo;
     },

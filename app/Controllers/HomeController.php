@@ -14,7 +14,7 @@ class HomeController extends Controller
             'title' => 'Home',
             'name' => 'Henry'
         ];
-        return $this->render($request, $response, 'home/home', $args);
+        return $this->render($response, 'home/home', $args);
     }
 
     public function profile(Request $request, Response $response)
@@ -23,7 +23,7 @@ class HomeController extends Controller
             'title' => 'Profile page',
             'username' => $request->getAttribute('username'),
         ];
-        return $this->render($request, $response, 'home/profile', $args);
+        return $this->render($response, 'home/profile', $args);
 
     }
 
@@ -33,6 +33,6 @@ class HomeController extends Controller
             'title' => 'Edit Profile',
             'username' => $request->getAttribute('username'),
         ];
-        return $this->render($request, $response, 'home/edit-profile', $args);
+        return $this->render($response, 'home/edit-profile', $args);
     }
 }
