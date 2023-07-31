@@ -6,7 +6,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class Controller
 {
-    public function __construct(private readonly View $view)
+    public function __construct(
+        private readonly View $view,
+        private readonly Config $config
+    )
     {
     }
     

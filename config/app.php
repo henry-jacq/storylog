@@ -3,7 +3,7 @@
 return [
     'app' => [
         'name' => $_ENV['APP_NAME'],
-        'url' => $_ENV['APP_URL'],
+        'host' => $_ENV['APP_URL'] ?? 'http://localhost',
         'version' => $_ENV['APP_VERSION'] ?? '1.0'
     ],
     'db' => [

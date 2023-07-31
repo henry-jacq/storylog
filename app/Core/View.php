@@ -7,7 +7,12 @@ use Storylog\Interfaces\ViewInterface;
 class View implements ViewInterface
 {
     public $base_view = 'base.php';
-    public string $title = 'Storylog';
+    public string $title;
+    
+    public function __construct(private readonly Config $config)
+    {
+        $this->title = $config->get('app.name');
+    }
     
     // Insert layouts in page
     public function renderLayout($layout_name) {

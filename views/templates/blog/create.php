@@ -21,7 +21,7 @@
                 <div class="mb-3">
                     <label for="blogSlug" class="form-label">Slug</label>
                     <div class="input-group">
-                        <span class="input-group-text" id="blogUrl"><?= $request_proto . '://' . $app_host . '/blog/' ?></span>
+                        <span class="input-group-text" id="blogUrl"><?= $app_host . '/blog/' ?></span>
                         <input type="text" class="form-control" id="blogSlug" aria-describedby="blogUrl" name="blog-slug">
                     </div>
                     <div class="form-text">Field must contain an unique value</div>
