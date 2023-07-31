@@ -49,7 +49,6 @@ class BlogController extends Controller
 
     public function store(Request $request, Response $response)
     {
-        // $request->getParsedBody(); // For getting the blog data
-
+        dd($request->getUploadedFiles());
     }
 }

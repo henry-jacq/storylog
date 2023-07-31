@@ -19,6 +19,7 @@ $app->get('/profile/edit', [HomeController::class, 'edit_profile']);
 $app->get('/profile/{username}', [HomeController::class, 'profile']);
 
 $app->get('/blog/create', [BlogController::class, 'create']);
+$app->post('/blog/create', [BlogController::class, 'store']);
 $app->get('/blog/edit', [BlogController::class, 'edit']);
 $app->get('/blog/{blogname}', [BlogController::class, 'index']);
 
