@@ -2,22 +2,27 @@
 
 namespace Storylog\Model;
 
+use Exception;
 use Storylog\Core\Database;
-use Storylog\Model\Traits\SQLGetterSetter;
 
 class User
 {
-    use SQLGetterSetter;
-    protected $db;
-
-    public function __construct(Database $db)
+    public function __construct(private readonly Database $conn)
     {
-        $this->db = $db;    
+        $this->conn->setTable('auth');
     }
 
-    public function getUser()
+    public function create(array $data)
     {
-        // Return object
-        return '';
+        try {
+            $query = "SELECT * FROM auth WHERE username = ?";
+            if ($this->conn->getCount($query, [$data['username']]) != 1) {
+                return $this->conn->insert($data);
+            }
+            return false;
+
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 }
