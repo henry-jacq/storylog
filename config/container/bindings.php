@@ -2,6 +2,8 @@
 
 use function DI\create;
 use Storylog\Core\View;
+use Storylog\Model\Blog;
+use Storylog\Model\User;
 use Storylog\Core\Config;
 use Storylog\Core\Database;
 use Psr\Container\ContainerInterface;
@@ -20,7 +22,13 @@ return [
     Database::class => function (ContainerInterface $container) {
         return new Database($container->get(PDO::class));
     },
-    View::class => function(){
-        return new View();
+    View::class => function(ContainerInterface $container){
+        return new View($container->get(Config::class));
+    },
+    Blog::class => function (ContainerInterface $container) {
+        return new Blog($container->get(Database::class));
+    },
+    User::class => function (ContainerInterface $container) {
+        return new User($container->get(Database::class));
     }
 ];
