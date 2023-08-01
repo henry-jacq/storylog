@@ -8,42 +8,46 @@
             <form class="create-blog-form p-3" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="blogFeaturedImage" class="form-label">Add Featured Image</label>
-                    <input class="form-control" type="file" id="blogFeaturedImage" name="blog-featured-image">
-                    <div class="form-text">This image will shown in the start of the blog.</div>
+                    <input class="form-control" type="file" id="blogFeaturedImage" name="featured-image">
+                    <div class="form-text">The image added here will be shown at the start of the blog. This field is optional.</div>
                     <div class="d-flex justify-content-end align-items-end">
                         <button class="btn btn-danger btn-sm"><i class="bi bi-trash me-1"></i>Remove Featured Image</button>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="blogTitle" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="blogTitle" name="blog-title">
+                    <label for="blogTitle" class="form-label">Title<span class="text-danger ms-1">*</span></label>
+                    <input type="text" class="form-control" id="blogTitle" placeholder="Blog title" name="title" required>
                 </div>
                 <div class="mb-3">
                     <label for="blogSlug" class="form-label">Slug</label>
                     <div class="input-group">
                         <span class="input-group-text" id="blogUrl"><?= $app_host . '/blog/' ?></span>
-                        <input type="text" class="form-control" id="blogSlug" aria-describedby="blogUrl" name="blog-slug">
+                        <input type="text" class="form-control text-lowercase" id="blogSlug" placeholder="create-new-blog" aria-describedby="blogUrl" name="slug" required>
                     </div>
-                    <div class="form-text">Field must contain an unique value</div>
+                    <div class="form-text">The field must contain a unique value, or a unique slug ID will be generated.</div>
                 </div>
                 <div class="mb-3">
-                    <label for="selectTitle" class="form-label">Category</label>
-                    <select id="selectTitle" class="form-select" aria-label="Select Title" name="blog-category">
-                        <option selected>None</option>
-                        <option value="1">Design</option>
-                        <option value="2">Food</option>
-                        <option value="3">Health</option>
+                    <label for="selectTitle" class="form-label">Category<span class="text-danger ms-1">*</span></label>
+                    <select id="selectTitle" class="form-select" aria-label="Select Title" name="category" required>
+                        <option>None</option>
+                        <option value="Design">Design</option>
+                        <option value="Food">Food</option>
+                        <option value="Health">Health</option>
                         <option value="4">Science</option>
-                        <option value="5">Style</option>
-                        <option value="6">Technology</option>
-                        <option value="7">Travel</option>
-                        <option value="8">World</option>
+                        <option value="Science">Style</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Travel">Travel</option>
+                        <option value="World">World</option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="blogExcerpt" class="form-label">Excerpt</label>
-                    <textarea class="form-control" id="blogExcerpt" rows="3" name="blog-excerpt"></textarea>
+                    <label for="blogExcerpt" class="form-label">Excerpt<span class="text-danger ms-1">*</span></label>
+                    <textarea class="form-control" id="blogExcerpt" rows="3" name="excerpt" required></textarea>
                     <div class="form-text">A short extract from writing.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="blogContent" class="form-label">Content<span class="text-danger ms-1">*</span></label>
+                    <textarea class="form-control" id="blogContent" rows="6" name="content" required></textarea>
                 </div>
                 <button class="btn btn-prime btn-publish-post" type="submit">Publish</button>
             </form>

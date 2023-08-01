@@ -5,6 +5,7 @@ namespace Storylog\Controllers;
 use Storylog\Core\View;
 use Storylog\Core\Config;
 use Storylog\Core\Controller;
+use Storylog\Services\BlogService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -12,7 +13,8 @@ class BlogController extends Controller
 {
     public function __construct(
         private readonly View $view,
-        private readonly Config $config
+        private readonly Config $config,
+        private readonly BlogService $blog
     )
     {
         parent::__construct($view, $config);
@@ -45,8 +47,11 @@ class BlogController extends Controller
         return $this->render($response, 'blog/edit', $args);
     }
 
-    public function store(Request $request, Response $response)
+    public function publish(Request $request, Response $response)
     {
-        dd($request->getUploadedFiles());
+        $blogData = $request->getParsedBody();
+        $featuredImage = $request->getUploadedFiles()['featured-image'];
+        $this->blog->publishBlog($featuredImage, $blogData);
+        return $response;
     }
 }
