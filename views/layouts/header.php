@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md border-bottom px-1 py-0 fixed-top bg-body-tertiary mb-3 shadow" aria-label="header">
+<nav class="navbar navbar-expand-md border-bottom py-1 fixed-top bg-body-tertiary mb-3 shadow" aria-label="header">
     <div class="container py-1">
         <a class="navbar-brand fs-4 link-body-emphasis" href="/">Storylog</a>
         <button class="navbar-toggler collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#slHeader" aria-controls="slHeader" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,7 +10,7 @@
                 <i class="bi bi-search small text-body border-0 ps-3 position-absolute top-50 start-0 translate-middle-y"></i>
                 <input class="form-control shadow rounded-pill ps-5" type="search" placeholder="Search blogs..." aria-label="Search" aria-describedby="search-blogs">
             </form>
-            <div class="d-flex ms-auto my-2">
+            <div class="d-flex ms-auto">
                 <ul class="nav flex-nowrap align-items-center list-unstyled">
                     <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Write a blog">
                         <a href="/blog/create" class="btn border border-secondary rounded-pill" type="button"><i class="bi bi-pencil me-2"></i>Write</a>
