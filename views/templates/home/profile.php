@@ -1,4 +1,4 @@
-<div class="container pt-5">
+<div class="container py-5 my-4">
     <div class="profile-page-cover bg-body-secondary position-relative mt-3 rounded">
         <div class="position-absolute top-0 end-0 p-3">
             <a class="small text-secondary me-2" href="https://henry-jacq.github.io/portfolio" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Website"><i class="bi bi-globe fs-5"></i></a>
@@ -9,7 +9,7 @@
             <img class="img-fluid rounded-circle" src="https://photogram.selfmade.social/files/avatars/5055d53d114eb855590c28ef0ffcc1cc.jpeg" alt="">
         </div>
         <div class="position-absolute bottom-0 end-0 p-2">
-            <a href="/edit-profile" class="btn btn-prime btn-sm"><i class="bi bi-pencil me-1"></i>Edit Profile</a>
+            <a href="/edit-profile" class="btn btn-prime"><i class="bi bi-pencil me-1"></i>Edit Profile</a>
         </div>
     </div>
     <div class="container mt-5">

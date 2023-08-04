@@ -1,4 +1,4 @@
-<div class="pt-5">
+<div class="container py-5 my-4">
     <div class="row mb-2">
         <div class="mt-3">
             <h3>Category: <?= ucfirst($categoryname) ?></h3>

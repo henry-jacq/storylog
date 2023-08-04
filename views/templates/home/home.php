@@ -1,7 +1,7 @@
-<main class="container px-0 py-5 mt-3">
+<main class="container px-0 py-5 my-4">
     <div class="nav-scroller py-1 mb-4 border-bottom">
         <nav class="nav nav-underline justify-content-between px-5">
-            <a class="fw-normal text-uppercase nav-link nav-item">categories</a>
+            <a class="nav-item nav-link fw-normal text-uppercase" role="button">categories</a>
             <a class="nav-item nav-link link-body-emphasis" href="/category/world">World</a>
             <a class="nav-item nav-link link-body-emphasis" href="/category/food">Food</a>
             <a class="nav-item nav-link link-body-emphasis" href="/category/technology">Technology</a>
@@ -119,7 +119,7 @@
     </div>
 
     <div class="col-lg-4">
-        <div class="position-sticky" style="top: 4rem;">
+        <div class="position-sticky" style="top: 5rem;">
             <div class="p-4 mb-3 bg-body-tertiary rounded">
                 <h4 class="fst-normal">About</h4>
                 <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
