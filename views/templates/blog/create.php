@@ -5,8 +5,8 @@
                 <p class="fs-5 m-0"><i class="bi bi-pencil me-2"></i>Create a blog</p>
             </div>
             <hr class="m-0">
-            <form class="create-blog-form p-3" method="post" enctype="multipart/form-data">
-                <div class="mb-3">
+            <form class="create-blog-form p-3" method="POST" autocomplete="off" enctype="multipart/form-data">
+                <div class="form-group mb-3">
                     <label for="blogFeaturedImage" class="form-label">Add Featured Image</label>
                     <input class="form-control" type="file" id="blogFeaturedImage" name="featured-image">
                     <div class="form-text">The image added here will be shown at the start of the blog. This field is optional.</div>
@@ -14,11 +14,11 @@
                         <button class="btn btn-danger btn-sm"><i class="bi bi-trash me-1"></i>Remove Featured Image</button>
                     </div>
                 </div>
-                <div class="mb-3">
+                <div class="form-group mb-3">
                     <label for="blogTitle" class="form-label">Title<span class="text-danger ms-1">*</span></label>
                     <input type="text" class="form-control" id="blogTitle" placeholder="Blog title" name="title" required>
                 </div>
-                <div class="mb-3">
+                <div class="form-group mb-3">
                     <label for="blogSlug" class="form-label">Slug</label>
                     <div class="input-group">
                         <span class="input-group-text" id="blogUrl"><?= $app_host . '/blog/' ?></span>
@@ -26,7 +26,7 @@
                     </div>
                     <div class="form-text">The field must contain a unique value, or a unique slug ID will be generated.</div>
                 </div>
-                <div class="mb-3">
+                <div class="form-group mb-3">
                     <label for="selectTitle" class="form-label">Category<span class="text-danger ms-1">*</span></label>
                     <select id="selectTitle" class="form-select" aria-label="Select Title" name="category" required>
                         <option>None</option>
@@ -40,12 +40,12 @@
                         <option value="World">World</option>
                     </select>
                 </div>
-                <div class="mb-3">
+                <div class="form-group mb-3">
                     <label for="blogExcerpt" class="form-label">Excerpt<span class="text-danger ms-1">*</span></label>
                     <textarea class="form-control" id="blogExcerpt" rows="3" name="excerpt" required></textarea>
                     <div class="form-text">A short extract from writing.</div>
                 </div>
-                <div class="mb-3">
+                <div class="form-group mb-3">
                     <label for="blogContent" class="form-label">Content<span class="text-danger ms-1">*</span></label>
                     <textarea class="form-control" id="blogContent" rows="6" name="content" required></textarea>
                 </div>
