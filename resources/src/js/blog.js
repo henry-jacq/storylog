@@ -1,6 +1,3 @@
-/* Processed by Grunt on 5/8/2023 @8:48:46 */
-
-
 let btnRmFeatImg = document.querySelector('.btn-remove-image');
 let previewImg = document.getElementById('imagePreview');
 let inputFile = document.getElementById('blogFeaturedImage');
@@ -29,4 +26,3 @@ btnRmFeatImg.addEventListener('click', function (e) {
     previewImg.src = '';
     this.classList.add('d-none');
 });
-//# sourceMappingURL=app.js.map
