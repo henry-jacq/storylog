@@ -21,11 +21,15 @@ class Controller
         return $response;
     }
 
-    public function writeAsJson(Response $response, array $payload)
+    /**
+     * Write response as JSON
+     */
+    public function respondAsJson(Response $response, array $payload)
     {
-        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $statusCode = ($payload['message'] == false) ? 400 : 200;
+        $response->getBody()->write(packJson($payload));
         return $response
             ->withHeader('Content-Type', 'application/json')
-            ->withStatus(201);
+            ->withStatus($statusCode);
     }
 }

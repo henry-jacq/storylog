@@ -20,3 +20,11 @@ function now()
 {
     return date('Y-m-d H:i:s');
 }
+
+/**
+ * Return json encoded data
+ */
+function packJson(array $data)
+{
+    return json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+}
