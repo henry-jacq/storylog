@@ -1,5 +1,7 @@
 <?php
 
+use PDO;
+use Slim\App;
 use function DI\create;
 use Storylog\Core\View;
 use Storylog\Model\Blog;
@@ -7,10 +9,26 @@ use Storylog\Model\User;
 use Storylog\Core\Config;
 use Storylog\Model\Image;
 use Storylog\Core\Database;
+use Slim\Factory\AppFactory;
 use Storylog\Services\BlogService;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 
 return [
+    App::class => function (ContainerInterface $container) {
+        AppFactory::setContainer($container);
+
+        $middleware = require CONFIG_PATH . '/middleware.php';
+        $router     = require CONFIG_PATH . '/routes/web.php';
+
+        $app = AppFactory::create();
+
+        $router($app);
+
+        $middleware($app);
+
+        return $app;
+    },
     Config::class => create(Config::class)->constructor(
         require CONFIG_PATH . '/app.php'
     ),

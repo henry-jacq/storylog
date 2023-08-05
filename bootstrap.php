@@ -10,3 +10,5 @@ ini_set('display_errors', true);
 
 $dotenv = Dotenv::createImmutable(APP_PATH);
 $dotenv->load();
+
+return require CONFIG_PATH . '/container/container.php';
