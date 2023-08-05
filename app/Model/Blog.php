@@ -33,7 +33,12 @@ class Blog
             'updated_at' => now(),
         ];
 
-        return $this->conn->insert($publishBlog);
+        try {
+            $this->conn->insert($publishBlog);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**

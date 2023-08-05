@@ -22,6 +22,16 @@ class BlogService implements BlogServiceInterface
 
     public function publishBlog(object $featuredImage, array $blogData)
     {
+       
+        // Check for empty fields        
+        foreach ($blogData as $key => $value) {
+            if ($key == 'slug') {
+                continue;
+            } elseif (empty($key) || $key == 'category' && $value == 'None') {
+                return false;
+            }
+        }
+
         if ($this->image->exists($featuredImage)) {
             $imagePath = $this->image->save($featuredImage, 'posts');
         }

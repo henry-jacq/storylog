@@ -51,7 +51,7 @@ class BlogController extends Controller
     {
         $blogData = $request->getParsedBody();
         $featuredImage = $request->getUploadedFiles()['featured-image'];
-        $this->blog->publishBlog($featuredImage, $blogData);
-        return $response;
+        $status = $this->blog->publishBlog($featuredImage, $blogData);
+        return $this->respondAsJson($response, ['message' => $status]);
     }
 }
