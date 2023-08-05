@@ -14,6 +14,9 @@ AppFactory::setContainer($container);
 
 $app = AppFactory::create();
 
+$app->addRoutingMiddleware();
+$app->addErrorMiddleware(true, true, true);
+
 $app->get('/', [HomeController::class, 'index']);
 $app->get('/profile/edit', [HomeController::class, 'edit_profile']);
 $app->get('/profile/{username}', [HomeController::class, 'profile']);
