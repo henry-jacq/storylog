@@ -3,10 +3,15 @@
         <div class="row gap-4 justify-content-center">
             <div class="col-lg-8 col-sm-12 p-3 bg-body-secondary rounded">
                 <article>
-                    <a href="/blog/<?= $blogname?>" class="display-6 link-body-emphasis"><?= ucfirst(str_replace('-', ' ', $blogname))?></a>
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis, voluptatum error placeat quis non, delectus nisi ullam sapiente et alias deserunt? Eveniet non accusamus, amet quod fugiat dolorem alias corrupti!</p>
+                    <a href="/blog/<?= $data['slug']?>" class="display-6 link-body-emphasis"><?= ucfirst(str_replace('-', ' ', $data['title']))?></a>
+                    <p class="m-0">Published <?= $data['published_at']?> by <a href="/profile/<?= $data['uid']?>"><?= $data['uid']?></a> </p>
 
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Explicabo, iusto doloribus animi excepturi consequatur quis qui mollitia facilis, quo quod accusamus hic quibusdam atque debitis nobis blanditiis quidem corporis quaerat?Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit soluta eum corporis doloribus, aspernatur temporibus et vero modi quo, dolorem voluptatem voluptate cupiditate itaque voluptatum qui deleniti, laborum non dolore. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab ullam modi mollitia aliquam officia, ducimus unde id esse facere illo deleniti tempora dolorem quis expedita est inventore cumque labore architecto?</p>
+                    <? if ($data['featured_image'] != 0): ?>
+                        <img class="img-fluid mt-3" src="<?= $data['featured_image']?>" alt="">
+                    <? endif; ?>
+
+                    <p class="mt-3"><?= nl2br($data['excerpt'])?></p>
+                    <p><?= nl2br($data['content'])?></p>
                 </article>
             </div>
             <div class="col-lg-3 p-3 bg-body-secondary rounded">

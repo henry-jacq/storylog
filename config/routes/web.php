@@ -15,6 +15,7 @@ return function (App $app) {
     $app->post('/blog/create', [BlogController::class, 'publish']);
     $app->get('/blog/edit', [BlogController::class, 'edit']);
     $app->get('/blog/{blogname}', [BlogController::class, 'index']);
+    $app->get('/files/{category}/{image}', [BlogController::class, 'files']);
 
     $app->get('/category/{category}', [CategoryController::class, 'category']);
 

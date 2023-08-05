@@ -22,9 +22,13 @@ class BlogController extends Controller
     
     public function index(Request $request, Response $response)
     {
+        $slug = $request->getAttribute('blogname');
+        
+        $data = $this->blog->getBlog($slug);
+        
         $args = [
-            'title' => 'Blog page',
-            'blogname' => $request->getAttribute('blogname'),
+            'title' => $data['title'],
+            'data' => $data,
         ];
         return $this->render($response, 'blog/blog', $args);
     }
@@ -45,6 +49,23 @@ class BlogController extends Controller
             'app_host' => $this->config->get('app.host')
         ];
         return $this->render($response, 'blog/edit', $args);
+    }
+
+    /**
+     * Render requested images
+     */
+    public function files(Request $request, Response $response, array $args)
+    {
+        $pathName = '/' . $args['category'] . '/' . $args['image'];
+
+        if (!$this->blog->imageExists($pathName)) {
+            return $response->withStatus(404);
+        }
+        $imgData = $this->blog->getImage($pathName);
+
+        $response->getBody()->write($imgData);
+        
+        return $response->withHeader('Content-Type', mime_content_type(STORAGE_PATH.$pathName));
     }
 
     public function publish(Request $request, Response $response)

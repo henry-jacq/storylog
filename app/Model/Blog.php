@@ -5,15 +5,16 @@ namespace Storylog\Model;
 use Exception;
 use Storylog\Core\Database;
 
+use Carbon\Carbon;
+
 class Blog
 {
     private $blogData;
     private $table = 'blog';
     
-    public function __construct(private readonly Database $conn)
+    public function __construct(private readonly Database $db)
     {
-
-        $this->conn->setTable($this->table);
+        $this->db->setTable($this->table);
     }
 
     /**
@@ -34,7 +35,7 @@ class Blog
         ];
 
         try {
-            $this->conn->insert($publishBlog);
+            $this->db->insert($publishBlog);
             return true;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -42,32 +43,23 @@ class Blog
     }
 
     /**
-     * Verify the blog data
+     * Verify if the slug of the blog exists or not
      */
-    public function verify(array $data)
+    public function verifySlug(array $data)
     {
         $this->blogData = $data;
-                
+
         // Update the slug
         $this->blogData['slug'] = $this->CreateSlug($data['slug']);
         
-        return $this->slugExists($this->blogData['slug']);
-    }
-
-    /**
-     * Check if the slug of the blog exists
-     */
-    public function slugExists(string $slug): bool
-    {
         try {
             $query = "SELECT * FROM $this->table WHERE slug = ?";
 
-            if ($this->conn->getCount($query, [$slug]) == 1) {
+            if ($this->db->getCount($query, [$this->blogData['slug']]) == 1) {
                 return true;
             }
 
             return false;
-
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -90,5 +82,77 @@ class Blog
         }
 
         return $slug;
+    }
+
+    /**
+     * Delete a blog post
+     */
+    public function delete(string $blogId)
+    {
+        try {
+            $this->db->delete(['id' => $blogId], $limit = 1);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Update a blog post
+     */
+    public function update(int $blogId, array $data)
+    {        
+        $newData = [
+            'title' => $data['title'],
+            'slug' => $data['slug'],
+            'featured_image' => $data['featured-image'],
+            'category' => $data['category'],
+            'excerpt' => $data['excerpt'],
+            'content' => $data['content'],
+            'updated_at' => now(),
+        ];
+
+        // here check for empty key and then remove those keys
+
+        try {
+            $this->db->update($newData, ['id' => $blogId]);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function getAllBlogs()
+    {
+        return $this->db->run("SELECT * FROM $this->table")->fetchAll();
+    }
+
+    public function getBlog(string $slug)
+    {
+        try {
+            $blog = $this->db->run("SELECT * FROM $this->table WHERE slug = ?", [$slug])->fetch();
+            
+            $blog['published_at'] = $this->formatTime($blog['published_at']);
+            $blog['updated_at'] = $this->formatTime($blog['updated_at']);
+
+            return $blog;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function getUserBlogs(int $uid)
+    {
+        try {
+            return $this->db->run("SELECT * FROM $this->table WHERE uid = ?", [$uid])->fetchAll();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function formatTime($time)
+    {
+        $time = Carbon::parse($time);
+        return $time->diffForHumans();
     }
 }

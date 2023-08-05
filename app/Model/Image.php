@@ -23,12 +23,10 @@ class Image
         UPLOAD_ERR_CANT_WRITE,
         UPLOAD_ERR_EXTENSION
     ];
-    
-    public function __construct()
-    {
-    }
 
-    // Save Image to specified location
+    /**
+     * Save Image to specified location
+     */
     public function save(object $image, string $pathCategory)
     {        
         if (!isset($this->image, $this->imageType)) {
@@ -52,7 +50,10 @@ class Image
         throw new Exception("Image not uploaded!");
     }
 
-    public function exists(object $image)
+    /**
+     * Check file image upload error
+     */
+    public function checkError(object $image)
     {
         $errorCode = $image->getError();
         if (in_array($errorCode, $this->image_errors)) {
@@ -66,11 +67,23 @@ class Image
         }
     }
 
-    public function getImage()
+    /**
+     * Return the Image Source
+     */
+    public function getImage(string $path)
     {
-
+        $filePath = STORAGE_PATH . $path;
+        if (file_exists($filePath) && is_file($filePath)) {
+            return file_get_contents($filePath);
+        }
+        throw new Exception("Image " . $path . " not found in storage");
     }
 
+    public function exists(string $path)
+    {
+        return file_exists(STORAGE_PATH . $path);
+    }
+    
     public function deleteImage($id)
     {
         
