@@ -65,7 +65,7 @@ class BlogService implements BlogServiceInterface
 
     public function getAllBlogs()
     {
-        $this->blog->getAllBlogs();
+        return $this->blog->getAllBlogs();
     }
     
     public function deleteBlog(int $blogId)

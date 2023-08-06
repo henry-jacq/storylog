@@ -122,11 +122,27 @@ class Blog
         }
     }
 
+    /**
+     * Return all blog entries
+     */
     public function getAllBlogs()
     {
-        return $this->db->run("SELECT * FROM $this->table")->fetchAll();
+        $blogData = $this->db->run("SELECT * FROM $this->table ORDER BY `published_at` DESC")->fetchAll();
+
+        $updatedData = [];
+        
+        foreach ($blogData as $key => $value) {           
+            $value['published_at'] = $this->formatTime($value['published_at']);
+            $value['updated_at'] = $this->formatTime($value['updated_at']);
+            $updatedData[$key] = $value;
+        }
+
+        return $updatedData;
     }
 
+    /**
+     * Return blog by slug
+     */
     public function getBlog(string $slug)
     {
         try {

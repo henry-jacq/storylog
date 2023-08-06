@@ -73,43 +73,15 @@
         <hr class="mt-2 mb-4">
     </div>
     <div class="col-lg-8 col-md-12 mb-5">
-        <article class="blog-post">
-            <a href="/blog/test-blog-post" class="d-block display-6 link-body-emphasis mb-1 text-truncate" role="button">Test blog post</a>
-            <p class="blog-post-meta">January 1, 2021 by <a href="/profile/mark">Mark</a></p>
+        <?php foreach ($data as $article) : ?>
+            <article class="blog-post">
+                <a href="/blog/<?= $article['slug']?>" class="d-block display-6 link-body-emphasis mb-1 text-truncate" role="button"><?= $article['title']?></a>
+                <p class="blog-post-meta">Published <?= $article['published_at']?> by <a href="/profile/mark"><?= $article['uid']?></a></p>
 
-            <p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, lists, tables, images, code, and more are all supported as expected.</p>
-            <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
-        </article>
-        <hr class="my-4">
-        <article class="blog-post">
-            <a href="/blog/php-82-released" class="d-block display-6 link-body-emphasis mb-1 text-truncate" role="button">PHP 8.2 released!</a>
-            <p class=" blog-post-meta">December 23, 2020 by <a href="/profile/jacob">Jacob</a></p>
-
-            <p>With PHP 8.2 now available, PHP teams around the world are considering when, or if, they will upgrade to this latest PHP version.
-
-                In this blog, we discuss the PHP 8.2 release, including the key features, improvements, and deprecations teams can expect.
-            </p>
-        </article>
-        <hr class="my-4">
-        <article class="blog-post">
-            <a href="/blog/photogram-features" class="d-block display-6 link-body-emphasis mb-1 text-truncate" role="button">Photogram features!</a>
-            <p class="blog-post-meta">December 14, 2020 by <a href="/profile/chris">Chris</a></p>
-
-            <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
-            <ul>
-                <li>First list item</li>
-                <li>Second list item with a longer description</li>
-                <li>Third list item to close it out</li>
-            </ul>
-        </article>
-        <hr class="my-4">
-        <article class="blog-post">
-            <a href="/blog/storylog-under-development-process" class="d-block display-6 link-body-emphasis mb-1 text-truncate" role="button">Storylog under development process</a>
-            <p class="blog-post-meta">January 1, 2021 by <a href="/profile/jack">Jack</a></p>
-
-            <p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, lists, tables, images, code, and more are all supported as expected.</p>
-            <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
-        </article>
+                <p><?= $article['excerpt']?></p>
+            </article>
+            <hr class="my-4">
+        <?php endforeach; ?>
 
         <nav class="blog-pagination mt-5 d-flex justify-content-between" aria-label="Pagination">
             <a class="btn btn-outline-primary rounded-pill" href="#"><i class="bi bi-arrow-left me-2"></i>Previous</a>
