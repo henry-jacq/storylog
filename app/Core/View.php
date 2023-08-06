@@ -6,8 +6,9 @@ use Storylog\Interfaces\ViewInterface;
 
 class View implements ViewInterface
 {
-    public $base_view = 'base.php';
     public string $title;
+    public array $global = array();
+    public string $base_view = 'base.php';
     
     public function __construct(private readonly Config $config)
     {
@@ -41,6 +42,11 @@ class View implements ViewInterface
 
         if (!str_contains($template, '.php')) {
             $template = $template . '.php';
+        }
+
+        // Adding global variables
+        foreach ($this->global as $key => $value) {
+            $$key = $value;
         }
 
         $path = VIEW_PATH . '/templates/' . $template;
@@ -90,5 +96,13 @@ class View implements ViewInterface
         $mainView = $this->renderBaseView($params);
         $templateView = $this->renderTemplate($view, $params);
         echo(str_replace('{{contents}}', $templateView, $mainView));
+    }
+
+    /**
+     * Add global variables
+     */
+    public function addGlobal(string $key, string $value)
+    {
+        $this->global[$key] = $value;
     }
 }
