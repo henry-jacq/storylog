@@ -8,10 +8,12 @@ use Storylog\Model\Blog;
 use Storylog\Model\User;
 use Storylog\Core\Config;
 use Storylog\Model\Image;
+use Storylog\Core\Session;
 use Storylog\Core\Database;
 use Slim\Factory\AppFactory;
 use Storylog\Services\BlogService;
 use Psr\Container\ContainerInterface;
+use Storylog\Interfaces\SessionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 
 return [
@@ -62,5 +64,8 @@ return [
             $container->get(Blog::class),
             $container->get(Image::class)
         );
+    },
+    SessionInterface::class => function (ContainerInterface $container) {
+        return new Session($container->get(Config::class));
     }
 ];

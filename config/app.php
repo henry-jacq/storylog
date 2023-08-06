@@ -8,6 +8,8 @@ $boolean = function (mixed $value) {
     return false;
 };
 
+$appSnakeName = strtolower(str_replace(' ', '_', $_ENV['APP_NAME']));
+
 return [
     'app' => [
         'name' => $_ENV['APP_NAME'],
@@ -28,5 +30,12 @@ return [
     'mailer' => [
         'dsn' => $_ENV['MAILER_DSN'],
         'from' => $_ENV['MAILER_FROM']
+    ],
+    'session'               => [
+        'name'       => $appSnakeName . '_session',
+        'flash_name' => $appSnakeName . '_flash',
+        'secure'     => $boolean($_ENV['SESSION_SECURE'] ?? true),
+        'httponly'   => $boolean($_ENV['SESSION_HTTP_ONLY'] ?? true),
+        'samesite'   => $_ENV['SESSION_SAME_SITE'] ?? 'lax',
     ]
 ];
