@@ -7,22 +7,25 @@ use Storylog\Interfaces\ViewInterface;
 class View implements ViewInterface
 {
     public string $title;
-    public array $global = array();
-    public string $base_view = 'base.php';
+    public string $baseView;
+    private array $globals = [];
     
     public function __construct(private readonly Config $config)
     {
+        $this->baseView = 'base.php';
         $this->title = $config->get('app.name');
     }
-    
-    // Insert layouts in page
-    public function renderLayout($layout_name) {
-        
-        if (!str_contains($layout_name, '.php')) {
-            $layout = $layout_name . '.php';
+
+    /**
+     * Generates the layout view
+     */
+    public function renderLayout(string $layoutName)
+    {
+        if (!str_contains($layoutName, '.php')) {
+            $layoutName = $layoutName . '.php';
         }
 
-        $path = VIEW_PATH . '/layouts/' . $layout;
+        $path = VIEW_PATH . '/layouts/' . $layoutName;
 
         if (file_exists($path)) {
             ob_start();
@@ -34,7 +37,10 @@ class View implements ViewInterface
         }
     }
 
-    private function renderTemplate($template, $params = array())
+    /**
+     * Generates the template view
+     */
+    public function renderTemplate($template, $params = [])
     {
         foreach ($params as $key => $value) {
             $$key = $value;
@@ -44,8 +50,8 @@ class View implements ViewInterface
             $template = $template . '.php';
         }
 
-        // Adding global variables
-        foreach ($this->global as $key => $value) {
+        // Inserting global variables
+        foreach ($this->globals as $key => $value) {
             $$key = $value;
         }
 
@@ -64,8 +70,10 @@ class View implements ViewInterface
         }
     }
 
-    // Generates the base view
-    private function renderBaseView($params = array())
+    /**
+     * Generates the base view
+     */
+    public function renderBaseView(string $baseView, $params = [])
     {
         foreach ($params as $key => $value) {
             $$key = $value;
@@ -75,7 +83,7 @@ class View implements ViewInterface
             $this->title = $title;
         }
 
-        $baseView = VIEW_PATH . DIRECTORY_SEPARATOR . $this->base_view;
+        $baseView = VIEW_PATH . DIRECTORY_SEPARATOR . $this->baseView;
 
         if (file_exists($baseView)) {
             ob_start();
@@ -89,11 +97,16 @@ class View implements ViewInterface
             return false;
         }
     }
-    
-    // Generates a page with the given template name
-    public function createPage($view, $params = array())
+
+    /**
+     * Creates a page with the template name and params
+     */
+    public function createPage(string $view, $params = []): void
     {
-        $mainView = $this->renderBaseView($params);
+        if (!str_contains($this->baseView ,'.php')) {
+            $this->baseView = $this->baseView . '.php';
+        }
+        $mainView = $this->renderBaseView($this->baseView, $params);
         $templateView = $this->renderTemplate($view, $params);
         echo(str_replace('{{contents}}', $templateView, $mainView));
     }
@@ -101,8 +114,22 @@ class View implements ViewInterface
     /**
      * Add global variables
      */
-    public function addGlobal(string $key, string $value)
+    public function addGlobals(string $key, $value): void
     {
-        $this->global[$key] = $value;
+        if (!array_key_exists($key, $this->globals)) {
+            $this->globals[$key] = $value;
+        }
+    }
+
+    /**
+     * Return the saved globals
+     */
+    public function getGlobals(): array
+    {
+        if (null !== $this->globals) {
+            return $this->globals;
+        }
+
+        return [];
     }
 }
