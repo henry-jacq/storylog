@@ -40,15 +40,15 @@ return [
         }
         throw new \RuntimeException('gd extension not loaded');
     },
-    PDO::class => function (ContainerInterface $container) {
+    Database::class => function (ContainerInterface $container) {
         $config = $container->get(Config::class)->get('db');
         $pdo = new PDO(
-            "{$config['driver']}:host={$config['host']};port={$config['port']};dbname={$config['dbname']}", $config['user'], $config['pass'], [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
+            "{$config['driver']}:host={$config['host']};port={$config['port']};dbname={$config['dbname']}",
+            $config['user'],
+            $config['pass'],
+            [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
         );
-        return $pdo;
-    },
-    Database::class => function (ContainerInterface $container) {
-        return new Database($container->get(PDO::class));
+        return Database::getConnection($pdo);
     },
     View::class => function(ContainerInterface $container){
         return new View($container->get(Config::class));

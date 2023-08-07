@@ -15,6 +15,14 @@ class Database
     }
 
     /**
+     * Factory pattern for getting a database connection
+     */
+    public static function getConnection(PDO $pdo)
+    {
+        return new static($pdo);
+    }
+
+    /**
      * Return a PDO statement object
      */
     public function run($sql, $args = [])
