@@ -16,7 +16,19 @@ class Controller
     public function render(Response $response, string $viewPath, array $args)
     {
         $response->getBody()->write(
-            (string) $this->view->createPage($viewPath, $args)
+            (string) $this->view
+            ->createPage($viewPath, $args)
+            ->render()
+        );
+        return $response;
+    }
+
+    public function renderWithoutFrame(Response $response, string $viewPath, array $args)
+    {
+        $response->getBody()->write(
+            (string) $this->view
+                ->createPage($viewPath, $args, withFrame: false)
+                ->render()
         );
         return $response;
     }

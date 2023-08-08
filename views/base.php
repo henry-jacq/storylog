@@ -4,13 +4,15 @@
 <?php echo ($this->renderLayout('head')); ?>
 
 <body>
-    <div class="container">
-        <?php echo ($this->renderLayout('header')); ?>
-
+    
+    {{header}}
+    
+    <main class="container">
         {{contents}}
-    </div>
+    </main>
 
-    <?php echo ($this->renderLayout('footer')); ?>
+    {{footer}}
+
     <?php echo ($this->renderLayout('elements')); ?>
     <?php echo ($this->renderLayout('script')); ?>
 </body>

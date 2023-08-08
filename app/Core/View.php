@@ -2,6 +2,7 @@
 
 namespace Storylog\Core;
 
+use Exception;
 use Storylog\Interfaces\ViewInterface;
 
 class View implements ViewInterface
@@ -9,6 +10,7 @@ class View implements ViewInterface
     public string $title;
     public string $baseView;
     private array $globals = [];
+    private mixed $resultView;
     
     public function __construct(private readonly Config $config)
     {
@@ -101,14 +103,28 @@ class View implements ViewInterface
     /**
      * Creates a page with the template name and params
      */
-    public function createPage(string $view, $params = []): void
+    public function createPage(string $view, $params = [], $withFrame = true): View
     {
         if (!str_contains($this->baseView ,'.php')) {
             $this->baseView = $this->baseView . '.php';
         }
         $mainView = $this->renderBaseView($this->baseView, $params);
         $templateView = $this->renderTemplate($view, $params);
-        echo(str_replace('{{contents}}', $templateView, $mainView));
+        $this->resultView = str_replace('{{contents}}', $templateView, $mainView);
+        if ($withFrame) {
+            $this->withFrame();
+        } else {
+            $this->withoutFrame();
+        }
+        return $this;
+    }
+
+    /**
+     * Render the page
+     */
+    public function render(): void
+    {
+        echo($this->resultView);
     }
 
     /**
@@ -132,4 +148,44 @@ class View implements ViewInterface
 
         return [];
     }
+
+    /**
+     * Render page with header and footer
+     * 
+     * It is a custom implementation, you can modify this with your needs.
+     */
+    public function withFrame(): View
+    {
+        if (null == $this->resultView) {
+            throw new Exception('Page is not rendered');
+        }
+        
+        $baseView = $this->resultView;
+        $header = str_replace('{{header}}', $this->renderLayout('header'), $baseView);
+        $result = str_replace('{{footer}}', $this->renderLayout('footer'), $header);
+
+        $this->resultView = $result;
+        
+        return $this;
+    }
+
+    /**
+     * Render page without header and footer
+     * 
+     * It is a custom implementation, you can modify this with your needs.
+     */
+    public function withoutFrame(): View
+    {
+        if (null == $this->resultView) {
+            throw new Exception('Page is not rendered');
+        }
+
+        $baseView = $this->resultView;
+        $header = str_replace('{{header}}', '', $baseView);
+        $result = str_replace('{{footer}}', '', $header);
+
+        $this->resultView = $result;
+
+        return $this;
+    } 
 }
