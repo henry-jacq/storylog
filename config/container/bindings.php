@@ -1,6 +1,5 @@
 <?php
 
-use PDO;
 use Slim\App;
 use function DI\create;
 use Storylog\Core\View;
@@ -42,7 +41,7 @@ return [
     },
     Database::class => function (ContainerInterface $container) {
         $config = $container->get(Config::class)->get('db');
-        $pdo = new PDO(
+        $pdo = new \PDO(
             "{$config['driver']}:host={$config['host']};port={$config['port']};dbname={$config['dbname']}",
             $config['user'],
             $config['pass'],
@@ -67,5 +66,6 @@ return [
     },
     SessionInterface::class => function (ContainerInterface $container) {
         return new Session($container->get(Config::class));
-    }
+    },
+    ResponseFactoryInterface::class => fn(App $app) => $app->getResponseFactory()
 ];
