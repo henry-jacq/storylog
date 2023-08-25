@@ -11,10 +11,14 @@ class View implements ViewInterface
     public string $baseView;
     private array $globals = [];
     private mixed $resultView;
+    private string $headerBlock;
+    private string $footerBlock;
     
     public function __construct(private readonly Config $config)
     {
         $this->baseView = 'base.php';
+        $this->headerBlock = '{{header}}';
+        $this->footerBlock = '{{footer}}';
         $this->title = $config->get('app.name');
     }
 
@@ -161,8 +165,8 @@ class View implements ViewInterface
         }
         
         $baseView = $this->resultView;
-        $header = str_replace('{{header}}', $this->renderLayout('header'), $baseView);
-        $result = str_replace('{{footer}}', $this->renderLayout('footer'), $header);
+        $header = str_replace($this->headerBlock, $this->renderLayout('header'), $baseView);
+        $result = str_replace($this->footerBlock, $this->renderLayout('footer'), $header);
 
         $this->resultView = $result;
         
@@ -181,8 +185,8 @@ class View implements ViewInterface
         }
 
         $baseView = $this->resultView;
-        $header = str_replace('{{header}}', '', $baseView);
-        $result = str_replace('{{footer}}', '', $header);
+        $header = str_replace($this->headerBlock, '', $baseView);
+        $result = str_replace($this->footerBlock, '', $header);
 
         $this->resultView = $result;
 
