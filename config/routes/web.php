@@ -1,26 +1,37 @@
 <?php
 
 use Slim\App;
+use Slim\Routing\RouteCollectorProxy;
 use Storylog\Controllers\AuthController;
 use Storylog\Controllers\BlogController;
 use Storylog\Controllers\HomeController;
 use Storylog\Controllers\CategoryController;
+use Storylog\Middleware\AuthMiddleware;
+use Storylog\Middleware\AuthoriseMiddleware;
 
 return function (App $app) {
-    $app->get('/', [HomeController::class, 'index']);
-    $app->get('/profile/edit', [HomeController::class, 'edit_profile']);
-    $app->get('/profile/{username}', [HomeController::class, 'profile']);
 
-    $app->get('/blog/create', [BlogController::class, 'create']);
-    $app->post('/blog/create', [BlogController::class, 'publish']);
-    $app->get('/blog/edit', [BlogController::class, 'edit']);
-    $app->get('/blog/{blogname}', [BlogController::class, 'index']);
-    $app->get('/files/{category}/{image}', [BlogController::class, 'files']);
+    $app->group('/', function(RouteCollectorProxy $group) {
+        $group->get('', [HomeController::class, 'index']);
+        $group->get('profile/edit', [HomeController::class, 'edit_profile']);
+        $group->get('profile/{username}', [HomeController::class, 'profile']);
 
-    $app->get('/category/{category}', [CategoryController::class, 'category']);
+        $group->get('blog/create', [BlogController::class, 'create']);
+        $group->post('blog/create', [BlogController::class, 'publish']);
+        $group->get('blog/edit', [BlogController::class, 'edit']);
+        $group->get('blog/{blogname}', [BlogController::class, 'index']);
+        $group->get('files/{category}/{image}', [BlogController::class, 'files']);
 
-    $app->get('/login', [AuthController::class, 'login']);
-    $app->get('/register', [AuthController::class, 'register']);
+        $group->get('category/{category}', [CategoryController::class, 'category']);
+    })->add(AuthoriseMiddleware::class);
+
+    $app->group('/', function (RouteCollectorProxy $group) {
+        $group->get('login', [AuthController::class, 'login']);
+        $group->post('login', [AuthController::class, 'verifyLogin']);
+        $group->get('register', [AuthController::class, 'register']);
+        $group->post('register', [AuthController::class, 'createUser']);
+        $group->get('forgot-password', [AuthController::class, 'forgotPassword']);
+    })->add(AuthMiddleware::class);
+    
     $app->get('/logout', [AuthController::class, 'logout']);
-    $app->get('/forgot-password', [AuthController::class, 'forgotPassword']);
 };
