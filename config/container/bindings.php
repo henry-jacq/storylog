@@ -14,6 +14,8 @@ use Storylog\Services\BlogService;
 use Psr\Container\ContainerInterface;
 use Storylog\Interfaces\SessionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Storylog\Interfaces\AuthInterface;
+use Storylog\Services\RequestService;
 
 return [
     App::class => function (ContainerInterface $container) {
@@ -52,11 +54,17 @@ return [
     View::class => function(ContainerInterface $container){
         return new View($container->get(Config::class));
     },
+    SessionInterface::class => function (ContainerInterface $container) {
+        return new Session($container->get(Config::class));
+    },
     Blog::class => function (ContainerInterface $container) {
         return new Blog($container->get(Database::class));
     },
     User::class => function (ContainerInterface $container) {
-        return new User($container->get(Database::class));
+        return new User(
+            $container->get(Database::class),
+            $container->get(Session::class)
+        );
     },
     BlogService::class => function(ContainerInterface $container) {
         return new BlogService(
@@ -64,8 +72,9 @@ return [
             $container->get(Image::class)
         );
     },
-    SessionInterface::class => function (ContainerInterface $container) {
-        return new Session($container->get(Config::class));
+    ResponseFactoryInterface::class => fn(App $app) => $app->getResponseFactory(),
+    AuthInterface::class => fn(ContainerInterface $container) => $container->get(Auth::class),
+    RequestService::class => function(ContainerInterface $container) {
+        return new RequestService($container->get(SessionInterface::class));
     },
-    ResponseFactoryInterface::class => fn(App $app) => $app->getResponseFactory()
 ];
