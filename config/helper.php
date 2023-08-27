@@ -28,3 +28,46 @@ function packJson(array $data)
 {
     return json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
 }
+
+/**
+ * Return json encoded data
+ */
+function unpackJson(string $data)
+{
+    return json_decode($data);
+}
+
+/**
+ * Return the length of the given data
+ */
+function getLength($data)
+{
+    if (is_array($data)) {
+        return count($data);
+    } else if (is_object($data)) {
+        return count(get_object_vars($data));
+    } else {
+        return strlen((string) $data);
+    }
+}
+
+/**
+ * Return validated email
+ */
+function isEmail(string $email)
+{
+    return (filter_var($email, FILTER_VALIDATE_EMAIL) !== false) ? true : false;
+}
+
+function dump($var)
+{
+    if (is_bool($var)) {
+        $var = 'bool(' . ($var ? 'true' : 'false') . ')';
+    }
+
+    if (php_sapi_name() === 'cli') {
+        print_r($var);
+    } else {
+        highlight_string("<?php\n" . var_export($var, true));
+    }
+}
