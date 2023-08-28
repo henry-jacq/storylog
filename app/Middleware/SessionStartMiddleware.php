@@ -33,7 +33,3 @@ class SessionStartMiddleware implements MiddlewareInterface
         return $response;
     }
 }
-
-// Watch this
-// https://youtu.be/y4sCssjSFIA?list=PLr3d3QYzkw2xabQRUpcZ_IBk9W50M9pe-&t=449
-// Fix the js location issue in app.js

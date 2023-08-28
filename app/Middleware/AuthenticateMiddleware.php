@@ -19,7 +19,7 @@ class AuthenticateMiddleware implements MiddlewareInterface
     {
         if (!empty($_SESSION['user'])) {
             $user = $this->user->getUser();
-            $request = $request->withAttribute('user', $user);
+            $request = $request->withAttribute('userData', $user);
         }
         
         return $handler->handle($request);
