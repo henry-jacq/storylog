@@ -9,9 +9,10 @@ use Storylog\Core\Traits\SqlGetterSetter;
 
 class User
 {
-    private $id;
+    public $id;
     private $conn;
     private $table = 'auth';
+    protected $length = 32;
 
     use SqlGetterSetter;
     
@@ -21,7 +22,6 @@ class User
     )
     {
         $this->db->setTable($this->table);
-        $this->id = $this->session->get('user');
 
         if (!$this->conn) {
             $this->conn = $this->db->getDB();
@@ -31,10 +31,10 @@ class User
     public function create(array $data)
     {
         try {
-            $query = "SELECT * FROM auth WHERE username = ?";
-            if ($this->db->getCount($query, [$data['username']]) != 1) {
-                return $this->db->insert($data);
+            if ($result = $this->db->insert($data)) {
+                return $result;
             }
+            
             return false;
 
         } catch (Exception $e) {
@@ -42,8 +42,37 @@ class User
         }
     }
 
+    /**
+     * Return user data if it exists in the DB
+     */
+    public function exists(string|array $data): array|bool
+    {
+        $conditions = [];
+
+        if (is_array($data)) {
+            foreach ($data as $value) {
+                $conditions[] = "`username` = '{$value}' OR `email` = '{$value}'";
+            }
+        } else {
+            $conditions[] = "`username` = '{$data}' OR `email` = '{$data}'";
+        }
+
+        $query = "SELECT * FROM $this->table WHERE " . implode(" OR ", $conditions);
+        
+        $result = $this->db->rows($query);
+
+        if (count($result) > 1) {
+            throw new Exception('Duplicate User Entry Found!');
+        }
+
+        return empty($result) ? false : $result;
+    }
+
     public function getUser()
     {
+        if (!isset($this->id)) {
+            $this->id = $this->session->get('user');
+        }
         return $this->db->getRowById($this->id);
     }
     
@@ -51,4 +80,33 @@ class User
     {
         return $this->db->getRowById($id);
     }
+
+    public function getByEmail(string $email)
+    {
+        $query = "SELECT * FROM $this->table WHERE `email` = ?'";
+
+        if ($this->validateEmail($email)) {
+            return $this->db->run($query, [$email]);
+        }
+
+        return false;
+        
+    }
+
+    public function validateEmail(string $email)
+    {
+        return filterEmail($email);
+    }
+
+    /**
+     * Sanitize the username according to the app needs
+     */
+    public function validateUsername(string $username)
+    {
+        // Replace whitespace with underscore
+        $username = str_replace(' ', '_', trim($username));
+
+        return strtolower($username);
+    }
+    
 }
