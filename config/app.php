@@ -31,11 +31,19 @@ return [
         'dsn' => $_ENV['MAILER_DSN'],
         'from' => $_ENV['MAILER_FROM']
     ],
-    'session'               => [
+    'session' => [
         'name'       => $appSnakeName . '_session',
         'flash_name' => $appSnakeName . '_flash',
         'secure'     => $boolean($_ENV['SESSION_SECURE'] ?? true),
         'httponly'   => $boolean($_ENV['SESSION_HTTP_ONLY'] ?? true),
         'samesite'   => $_ENV['SESSION_SAME_SITE'] ?? 'lax',
+    ],
+    'view' => [
+        'base_view' => 'base.php',
+        'placeholder' => [
+            'header' => '{{header}}',
+            'contents' => '{{contents}}',
+            'footer' => '{{footer}}'
+        ]
     ]
 ];

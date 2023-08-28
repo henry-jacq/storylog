@@ -8,18 +8,20 @@ use Storylog\Interfaces\ViewInterface;
 class View implements ViewInterface
 {
     public string $title;
-    public string $baseView;
-    private array $globals = [];
     private mixed $resultView;
+    private array $globals = [];
     private string $headerBlock;
     private string $footerBlock;
+    private string $baseViewName;
+    private string $contentsBlock;
     
     public function __construct(private readonly Config $config)
     {
-        $this->baseView = 'base.php';
-        $this->headerBlock = '{{header}}';
-        $this->footerBlock = '{{footer}}';
         $this->title = $config->get('app.name');
+        $this->baseViewName = $config->get('view.base_view');
+        $this->headerBlock = $config->get('view.placeholder.header');
+        $this->footerBlock = $config->get('view.placeholder.footer');
+        $this->contentsBlock = $config->get('view.placeholder.contents');
     }
 
     /**
@@ -83,7 +85,7 @@ class View implements ViewInterface
     /**
      * Generates the base view
      */
-    public function renderBaseView(string $baseView, $params = [])
+    public function renderBaseView(string $baseViewName, $params = [])
     {
         foreach ($params as $key => $value) {
             $$key = $value;
@@ -93,11 +95,11 @@ class View implements ViewInterface
             $this->title = $title;
         }
 
-        $baseView = VIEW_PATH . DIRECTORY_SEPARATOR . $this->baseView;
+        $baseViewPath = VIEW_PATH . DIRECTORY_SEPARATOR . $baseViewName;
 
-        if (file_exists($baseView)) {
+        if (file_exists($baseViewPath)) {
             ob_start();
-            include $baseView;
+            include $baseViewPath;
             $contents = ob_get_clean();
             if (ob_get_length() > 0) {
                 ob_end_clean();
@@ -113,17 +115,13 @@ class View implements ViewInterface
      */
     public function createPage(string $view, $params = [], $withFrame = true): View
     {
-        if (!str_contains($this->baseView ,'.php')) {
-            $this->baseView = $this->baseView . '.php';
+        if (!str_contains($this->baseViewName ,'.php')) {
+            $this->baseViewName = $this->baseViewName . '.php';
         }
-        $mainView = $this->renderBaseView($this->baseView, $params);
+        $mainView = $this->renderBaseView($this->baseViewName, $params);
         $templateView = $this->renderTemplate($view, $params);
-        $this->resultView = str_replace('{{contents}}', $templateView, $mainView);
-        if ($withFrame) {
-            $this->withFrame($params);
-        } else {
-            $this->withoutFrame();
-        }
+        $this->resultView = str_replace($this->contentsBlock, $templateView, $mainView);
+        $this->pageFrame($withFrame, $params);
         return $this;
     }
 
@@ -158,42 +156,29 @@ class View implements ViewInterface
     }
 
     /**
-     * Render page with header and footer
+     * Render page with or without header and footer
      * 
-     * It is a custom implementation, you can modify this with your needs.
+     * It is a custom implementation, you can modify this to your needs.
      */
-    public function withFrame(array $params): View
+    public function pageFrame(bool $withFrame, array $params): View
     {
         if (null == $this->resultView) {
             throw new Exception('Page is not rendered');
         }
-        
-        $baseView = $this->resultView;
-        $header = str_replace($this->headerBlock, $this->renderLayout('header', $params), $baseView);
-        $result = str_replace($this->footerBlock, $this->renderLayout('footer'), $header);
 
-        $this->resultView = $result;
+        $baseView = $this->resultView;
+        $header = $this->renderLayout('header', $params);
+        $footer = $this->renderLayout('footer');
+
+        if ($withFrame) {
+            $output = str_replace([$this->headerBlock, $this->footerBlock], [$header, $footer], $baseView);
+        } else {
+            $output = str_replace([$this->headerBlock, $this->footerBlock], '', $baseView);
+        }
+        
+        $this->resultView = $output;
         
         return $this;
     }
 
-    /**
-     * Render page without header and footer
-     * 
-     * It is a custom implementation, you can modify this with your needs.
-     */
-    public function withoutFrame(): View
-    {
-        if (null == $this->resultView) {
-            throw new Exception('Page is not rendered');
-        }
-
-        $baseView = $this->resultView;
-        $header = str_replace($this->headerBlock, '', $baseView);
-        $result = str_replace($this->footerBlock, '', $header);
-
-        $this->resultView = $result;
-
-        return $this;
-    } 
 }

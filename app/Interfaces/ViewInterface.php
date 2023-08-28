@@ -23,7 +23,5 @@ interface ViewInterface
 
     public function getGlobals(): array;
 
-    public function withFrame(array $params): View;
-
-    public function withoutFrame(): View;
+    public function pageFrame(bool $withFrame, array $params): View;
 }
