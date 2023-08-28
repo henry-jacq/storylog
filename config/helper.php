@@ -52,11 +52,11 @@ function getLength($data)
 }
 
 /**
- * Return validated email
+ * Validate given email
  */
-function isEmail(string $email)
+function filterEmail(string $email)
 {
-    return (filter_var($email, FILTER_VALIDATE_EMAIL) !== false) ? true : false;
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
 function dump($var)
