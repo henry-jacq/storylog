@@ -5,35 +5,38 @@ namespace Storylog\Core;
 use Exception;
 use Storylog\Model\User;
 use Storylog\Core\Session;
-use Storylog\Core\Database;
+use Storylog\Services\HashService;
 use Storylog\Interfaces\AuthInterface;
 
 class Auth implements AuthInterface
-{
-    private $table = 'auth';
-    
+{    
     public function __construct(
         private readonly User $user,
-        private readonly Database $db,
         private readonly Session $session,
+        private readonly HashService $hasher,
     )
     {
-        $this->db->setTable($this->table);
+    }
+
+    public function user()
+    {
+        
     }
     
     /**
      * Register user
      */
-    public function register($username, $fullname, $email, $password)
-    {
-        // Amount of cost requires to generate a random hash
-        $options = [
-            'cost' => 8
-        ];
-        $fullname = trim($fullname);
-        $username = strtolower($username);
-        $password = password_hash($password, PASSWORD_DEFAULT, $options);
+    public function register(array $credentials)
+    {      
+        $fullname = ucfirst(trim($credentials['fullname']));
+        $password = $this->hasher->make($credentials['password']);
+        $email = $this->user->validateEmail($credentials['email_address']);
+        $username = $this->user->validateUsername($credentials['username']);
 
+        if ($email === false) {
+            return false;
+        }
+        
         $data = [
             'username' => $username,
             'fullname' => $fullname,
@@ -44,9 +47,13 @@ class Auth implements AuthInterface
         ];
 
         try {
-            return $this->db->insert($data);
+            if ($this->user->exists([$username, $email])) {
+                return false;
+            }
+            
+            return $this->user->create($data);
         } catch (Exception $e) {
-            return $e;
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -54,39 +61,27 @@ class Auth implements AuthInterface
      * Login user
      */
     public function login(array $credentials)
-    {        
-        $query = "SELECT * FROM $this->table WHERE `username` = '{$credentials['user']}' OR `email` = '{$credentials['user']}'";
-
-        $user = $this->db->rows($query);
-
-        if (count($user) > 1) {
-            throw new Exception('Duplicate User Entry Found!');
-        }
-       
-        if (empty($user)) {
-            return false;
-        }
+    {
+        $result = $this->user->exists($credentials['user']);
         
-        $user = $user[0];
+        if ($result) {
+            $user = $result[0];
 
-        if ($this->checkCredentials($user, $credentials)) {
-            $this->session->put('user', $user['id']);
-            return $this->user->getId();
+            if ($this->hasher->check($credentials['password'], $user['password'])) {
+                $this->session->put('user', $user['id']);
+                $this->user->id = $this->session->get('user');
+                return $this->user->getID();
+            }
         }
 
         return false;
     }
-
-    public function checkCredentials(array $user, array $credentials): bool
-    {
-        return password_verify($credentials['password'], $user['password']);
-    }
-
+    
     public function logout(): void
     {
-        unset($_SESSION['user']);
+        $this->session->forget('user');
 
-        $this->user = null;
+        // $this->user = null;
     }
     
 }

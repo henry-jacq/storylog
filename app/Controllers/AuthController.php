@@ -25,7 +25,7 @@ class AuthController extends Controller
         $args = [
             'title' => 'Login page'
         ];
-        return $this->renderWithoutFrame($response, 'auth/login', $args);
+        return $this->render($response, 'auth/login', $args, false);
     }
 
     public function register(Request $request, Response $response): Response
@@ -33,38 +33,21 @@ class AuthController extends Controller
         $args = [
             'title' => 'Register page'
         ];
-        return $this->renderWithoutFrame($response, 'auth/register', $args);
+        return $this->render($response, 'auth/register', $args, false);
     }
 
-    public function store(Request $request, Response $response): Response
+    public function createUser(Request $request, Response $response, array $args): Response
     {
-        $data = [
-            'username' => '',
-            'fullname' => '',
-            'password' => 'SuperSecretPassword',
-            'email' => '@gmail.com',
-            'active' => 0,
-            'created_at' => now()
-        ];
-        // dd($this->user->create($data));
-        return $this->respondAsJson($response, $data);
-    }
-
-    public function createUser(Request $request, Response $response): Response
-    {
-        return $response;
+        $result = $this->auth->register($request->getParsedBody());
+        return $this->respondAsJson($response, ['message' => boolval($result)]);
     }
     
     public function verifyLogin(Request $request, Response $response): Response
     {
         $result = $this->auth->login($request->getParsedBody());
-        // if ($result !== false) {
-        //     $data = ['message' => false];
-        // }
-        // $data = ['message' => true];
-        // return $this->respondAsJson($response, $data);
-        // return $response
-        return $response->withHeader('Location', '/')->withStatus(302);
+        $data = ['message' => (boolval($result)) ? true : false];
+        return $this->respondAsJson($response, $data);
+        // return $response->withHeader('Location', '/')->withStatus(302);
     }
 
     public function forgotPassword(Request $request, Response $response): Response
@@ -73,7 +56,7 @@ class AuthController extends Controller
             'title' => 'Forgot password',
             'name' => 'Henry'
         ];
-        return $this->renderWithoutFrame($response, 'auth/forgot-password', $args);
+        return $this->render($response, 'auth/forgot-password', $args, false);
     }
 
     public function logout(Request $request, Response $response): Response
