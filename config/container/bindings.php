@@ -15,6 +15,7 @@ use Psr\Container\ContainerInterface;
 use Storylog\Interfaces\SessionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Storylog\Interfaces\AuthInterface;
+use Storylog\Services\HashService;
 use Storylog\Services\RequestService;
 
 return [
@@ -35,6 +36,9 @@ return [
     Config::class => create(Config::class)->constructor(
         require CONFIG_PATH . '/app.php'
     ),
+    HashService::class => function() {
+        return new HashService();
+    },
     Image::class => function () {
         if (extension_loaded('gd')) {
             return new Image();
