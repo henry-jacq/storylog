@@ -13,22 +13,12 @@ class Controller
     {
     }
     
-    public function render(Response $response, string $viewPath, array $args)
+    public function render(Response $response, string $viewPath, array $args, $withFrame = true)
     {
         $response->getBody()->write(
             (string) $this->view
-            ->createPage($viewPath, $args)
+            ->createPage($viewPath, $args, $withFrame)
             ->render()
-        );
-        return $response;
-    }
-
-    public function renderWithoutFrame(Response $response, string $viewPath, array $args)
-    {
-        $response->getBody()->write(
-            (string) $this->view
-                ->createPage($viewPath, $args, withFrame: false)
-                ->render()
         );
         return $response;
     }
@@ -36,10 +26,9 @@ class Controller
     /**
      * Write response as JSON
      */
-    public function respondAsJson(Response $response, array $payload)
+    public function respondAsJson(Response $response, array $payload, int $statusCode = 200)
     {
-        $statusCode = ($payload['message'] == false) ? 400 : 200;
-        $response->getBody()->write(packJson($payload));
+        $response->getBody()->write(packJson($payload));   
         return $response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode);
