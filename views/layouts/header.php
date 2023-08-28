@@ -34,13 +34,13 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end mt-2 shadow">
                                 <li>
-                                    <a class="dropdown-item" href="/profile/henry"><i class="bi bi-person-circle me-2"></i>My Profile</a>
+                                    <a class="dropdown-item" href="/profile/<?= $userData['username'] ?>" role="button"><i class="bi bi-person-circle me-2"></i>My Profile</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="/profile/edit"><i class="bi bi-pencil-square me-2"></i>Edit Profile</a>
+                                    <a class="dropdown-item" href="/profile/edit" role="button"><i class="bi bi-pencil-square me-2"></i>Edit Profile</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="/settings"><i class="bi bi-gear me-2"></i>Settings</a>
+                                    <a class="dropdown-item" onclick="dialog('Not Implemented!',' This feature is not implemented');" role="button"><i class="bi bi-gear me-2"></i>Settings</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">

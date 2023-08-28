@@ -8,15 +8,23 @@
         <div class="profile-page-avatar bg-body-secondary">
             <img class="img-fluid rounded-circle" src="https://photogram.selfmade.social/files/avatars/5055d53d114eb855590c28ef0ffcc1cc.jpeg" alt="">
         </div>
-        <div class="position-absolute bottom-0 end-0 p-2">
-            <a href="/edit-profile" class="btn btn-prime"><i class="bi bi-pencil me-1"></i>Edit Profile</a>
-        </div>
+        <?php
+        if ($userData['username'] == $username) : ?>
+            <div class="position-absolute bottom-0 end-0 p-2">
+                <a href="/profile/edit" class="btn btn-prime"><i class="bi bi-pencil me-1"></i>Edit Profile</a>
+            </div>
+        <?php else : ?>
+            <div class="position-absolute bottom-0 end-0 p-2">
+                <button class="btn btn-sm btn-primary btn-follow" data-id="2"><i class="bi-person-check me-1"></i>Following</button>
+                <button class="btn btn-sm btn-secondary" onclick="dialog('Not Implemented!',' This feature is not implemented');"><i class="bi bi-chat-left-text-fill me-1"></i>Message</button>
+            </div>
+        <?php endif; ?>
     </div>
     <div class="container mt-5">
         <div class="row mx-2 mb-2">
             <div class="col-md-7">
-                <h5 class="m-0">Henry </h5>
-                <p class="mb-2">@<?= $username?> <span class="small mb-2"> • App Developer</span></p>
+                <h5 class="m-0"><?= ucfirst($username) ?> </h5>
+                <p class="mb-2">@<?= $username ?> <span class="small mb-2"> • App Developer</span></p>
                 <p class="text-secondary small"><i class="bi bi-geo-alt me-1"></i>Chennai, India</p>
                 <p>#!/bin/bash<br>
                     Full stack developer<br>

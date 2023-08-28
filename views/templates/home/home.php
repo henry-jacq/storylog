@@ -73,7 +73,7 @@
         <hr class="mt-2 mb-4">
     </div>
     <div class="col-lg-8 col-md-12 mb-5">
-        <?php foreach ($data as $article) : ?>
+        <?php foreach ($blogs as $article) : ?>
             <article class="blog-post">
                 <a href="/blog/<?= $article['slug']?>" class="d-block display-6 link-body-emphasis mb-1 text-truncate" role="button"><?= $article['title']?></a>
                 <p class="blog-post-meta">Published <?= $article['published_at']?> by <a href="/profile/mark"><?= $article['uid']?></a></p>

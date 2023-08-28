@@ -9,7 +9,7 @@ interface ViewInterface
 {
     public function __construct(Config $config);
 
-    public function renderLayout(string $layoutName);
+    public function renderLayout(string $layoutName, array $params);
 
     public function renderTemplate($template, $params = []);
 
@@ -23,7 +23,7 @@ interface ViewInterface
 
     public function getGlobals(): array;
 
-    public function withFrame(): View;
+    public function withFrame(array $params): View;
 
     public function withoutFrame(): View;
 }

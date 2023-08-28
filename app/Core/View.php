@@ -25,8 +25,12 @@ class View implements ViewInterface
     /**
      * Generates the layout view
      */
-    public function renderLayout(string $layoutName)
+    public function renderLayout(string $layoutName, array $params = [])
     {
+        foreach ($params as $key => $value) {
+            $$key = $value;
+        }
+        
         if (!str_contains($layoutName, '.php')) {
             $layoutName = $layoutName . '.php';
         }
@@ -116,7 +120,7 @@ class View implements ViewInterface
         $templateView = $this->renderTemplate($view, $params);
         $this->resultView = str_replace('{{contents}}', $templateView, $mainView);
         if ($withFrame) {
-            $this->withFrame();
+            $this->withFrame($params);
         } else {
             $this->withoutFrame();
         }
@@ -158,14 +162,14 @@ class View implements ViewInterface
      * 
      * It is a custom implementation, you can modify this with your needs.
      */
-    public function withFrame(): View
+    public function withFrame(array $params): View
     {
         if (null == $this->resultView) {
             throw new Exception('Page is not rendered');
         }
         
         $baseView = $this->resultView;
-        $header = str_replace($this->headerBlock, $this->renderLayout('header'), $baseView);
+        $header = str_replace($this->headerBlock, $this->renderLayout('header', $params), $baseView);
         $result = str_replace($this->footerBlock, $this->renderLayout('footer'), $header);
 
         $this->resultView = $result;

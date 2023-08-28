@@ -3,7 +3,7 @@
         <form class="user-register-form needs-validation" method="post" autocomplete="off">
             <div class="form-control p-4 bg-black bg-opacity-25">
                 <img src="https://photogram.selfmade.social/assets/brand/photogram-logo.png" alt="logo" class="img-fluid mx-auto d-block mb-2" width="63" height="63">
-                <h4 class="fw-light text-center mb-4">Photogram</h4>
+                <h4 class="fw-light text-center mb-4">Storylog</h4>
                 <hr class="mb-3">
                 <h5 class="fw-semi-bold mb-4">Register</h5>
                 <label for="fullname" class="form-label">Full name</label>
@@ -19,7 +19,7 @@
                 <input type="password" id="password" name="password" class="form-control bg-transparent" required="">
                 <div class="invalid-feedback"></div>
                 <div class="d-grid mt-4 mb-2">
-                    <button type="submit" class="btn btn-prime btn-register" disabled="">Register now!</button>
+                    <button type="submit" class="btn btn-prime btn-register">Register now!</button>
                 </div>
                 <p class="text-center text-muted mb-0">Do you already have an account? <a href="/login">Login now</a>.</p>
             </div>
