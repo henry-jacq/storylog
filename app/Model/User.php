@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Storylog\Model;
 
 use Exception;
@@ -76,9 +78,9 @@ class User
         return $this->db->getRowById($this->id);
     }
     
-    public function getById(int $id)
+    public function getUserById(int $uid)
     {
-        return $this->db->getRowById($id);
+        return $this->db->run("SELECT * FROM auth WHERE id = ?", [$uid])->fetch();
     }
 
     public function getByEmail(string $email)

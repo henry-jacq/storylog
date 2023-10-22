@@ -76,7 +76,7 @@
         <?php foreach ($blogs as $article) : ?>
             <article class="blog-post">
                 <a href="/blog/<?= $article['slug']?>" class="d-block display-6 link-body-emphasis mb-1 text-truncate" role="button"><?= $article['title']?></a>
-                <p class="blog-post-meta">Published <?= $article['published_at']?> by <a href="/profile/mark"><?= $article['uid']?></a></p>
+                <p class="blog-post-meta">Published <?= $article['published_at']?> by <a href="/profile/<?= $article['user_data']['username']?>"><?= $article['user_data']['fullname']?></a></p>
 
                 <p><?= $article['excerpt']?></p>
             </article>

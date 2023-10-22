@@ -4,7 +4,7 @@
             <div class="col-lg-8 col-sm-12 p-3 bg-body-secondary rounded">
                 <article>
                     <a href="/blog/<?= $data['slug']?>" class="display-6 link-body-emphasis"><?= ucfirst(str_replace('-', ' ', $data['title']))?></a>
-                    <p class="mb-3">Published <?= $data['published_at']?> by <a href="/profile/<?= $data['uid']?>"><?= $data['uid']?></a> </p>
+                    <p class="mb-3">Published <?= $data['published_at']?> by <a href="/profile/<?= $data['user_data']['username']?>"><?= $data['user_data']['fullname']?></a> </p>
 
                     <? if ($data['featured_image'] != 0): ?>
                         <img class="img-fluid mb-3" src="<?= $data['featured_image']?>" alt="">

@@ -61,13 +61,16 @@ return [
     SessionInterface::class => function (ContainerInterface $container) {
         return new Session($container->get(Config::class));
     },
-    Blog::class => function (ContainerInterface $container) {
-        return new Blog($container->get(Database::class));
-    },
     User::class => function (ContainerInterface $container) {
         return new User(
             $container->get(Database::class),
             $container->get(Session::class)
+        );
+    },
+    Blog::class => function (ContainerInterface $container) {
+        return new Blog(
+            $container->get(User::class),
+            $container->get(Database::class)
         );
     },
     BlogService::class => function(ContainerInterface $container) {

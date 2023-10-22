@@ -21,11 +21,11 @@ class HomeController extends Controller
     
     public function index(Request $request, Response $response): Response
     {        
-        $data = $this->blog->getAllBlogs();
+        $blogs = $this->blog->getAllBlogs();
 
         $args = [
             'title' => 'Home',
-            'data' => $data
+            'blogs' => $blogs
         ];
         return $this->render($response, 'home/home', $args);
     }
@@ -35,6 +35,7 @@ class HomeController extends Controller
         $args = [
             'title' => 'Profile page',
             'username' => $request->getAttribute('username'),
+            'userData' => $request->getAttribute('userData')
         ];
         return $this->render($response, 'home/profile', $args);
 

@@ -1,18 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Storylog\Model;
 
 use Exception;
-use Storylog\Core\Database;
-
 use Carbon\Carbon;
+use Storylog\Model\User;
+use Storylog\Core\Database;
 
 class Blog
 {
     private $blogData;
     private $table = 'blog';
     
-    public function __construct(private readonly Database $db)
+    public function __construct(
+        private readonly User $user,
+        private readonly Database $db,
+    )
     {
         $this->db->setTable($this->table);
     }
@@ -130,10 +135,11 @@ class Blog
         $blogData = $this->db->run("SELECT * FROM $this->table ORDER BY `published_at` DESC")->fetchAll();
 
         $updatedData = [];
-        
+
         foreach ($blogData as $key => $value) {           
             $value['published_at'] = $this->formatTime($value['published_at']);
             $value['updated_at'] = $this->formatTime($value['updated_at']);
+            $value['user_data'] = $this->user->getUserById($value['uid']);
             $updatedData[$key] = $value;
         }
 
@@ -150,6 +156,7 @@ class Blog
             
             $blog['published_at'] = $this->formatTime($blog['published_at']);
             $blog['updated_at'] = $this->formatTime($blog['updated_at']);
+            $blog['user_data'] = $this->user->getUserById($blog['uid']);
 
             return $blog;
         } catch (Exception $e) {
