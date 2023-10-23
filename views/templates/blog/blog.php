@@ -3,15 +3,20 @@
         <div class="row gap-4 justify-content-center">
             <div class="col-lg-8 col-sm-12 p-3 bg-body-secondary rounded">
                 <article>
-                    <a href="/blog/<?= $data['slug']?>" class="display-6 link-body-emphasis"><?= ucfirst(str_replace('-', ' ', $data['title']))?></a>
-                    <p class="mb-3">Published <?= $data['published_at']?> by <a href="/profile/<?= $data['user_data']['username']?>"><?= $data['user_data']['fullname']?></a> </p>
+                    <a href="/blog/<?= $blogData['slug'] ?>" class="display-6 link-body-emphasis"><?= ucfirst(str_replace('-', ' ', $blogData['title'])) ?></a>
+                    <p class="mt-2">Published <?= $blogData['published_at'] ?> by <a href="/profile/<?= $blogData['blog_owner_data']['username'] ?>"><?= $blogData['blog_owner_data']['fullname'] ?></a> </p>
 
-                    <? if ($data['featured_image'] != 0): ?>
-                        <img class="img-fluid mb-3" src="<?= $data['featured_image']?>" alt="">
+                    <?php
+                    if ($sessionUser['id'] == $blogData['uid']) : ?>
+                        <a class="btn btn-sm btn-outline-secondary btn-edit-blog mb-4" href="/blog/edit/<?= $blogData['slug'] ?>" role="button"><i class="bi bi-pencil me-2"></i>Edit Post</a>
+                    <?php endif; ?>
+
+                    <? if ($blogData['featured_image'] != 0) : ?>
+                        <img class="img-fluid mb-3" src="<?= $blogData['featured_image'] ?>" alt="">
                     <? endif; ?>
 
-                    <p><?= nl2br($data['excerpt'])?></p>
-                    <p><?= nl2br($data['content'])?></p>
+                    <p><?= nl2br($blogData['excerpt']) ?></p>
+                    <p><?= nl2br($blogData['content']) ?></p>
                 </article>
             </div>
             <div class="col-lg-3 p-3 bg-body-secondary rounded">

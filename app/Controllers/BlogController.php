@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class BlogController extends Controller
-{
+{    
     public function __construct(
         private readonly View $view,
         private readonly Config $config,
@@ -23,12 +23,13 @@ class BlogController extends Controller
     public function index(Request $request, Response $response)
     {
         $slug = $request->getAttribute('blogname');
-        
-        $data = $this->blog->getBlog($slug);
+        $sess_user = $request->getAttribute('userData');
+        $blogData = $this->blog->getBlog($slug);
         
         $args = [
-            'title' => $data['title'],
-            'data' => $data,
+            'title' => $blogData['title'],
+            'blogData' => $blogData,
+            'sessionUser' => $sess_user
         ];
         return $this->render($response, 'blog/blog', $args);
     }
@@ -44,10 +45,21 @@ class BlogController extends Controller
 
     public function edit(Request $request, Response $response)
     {
+        $slug = $request->getAttribute('slug');
+        $sess_user = $request->getAttribute('userData');
+        $blogData = $this->blog->getBlog($slug);
+
         $args = [
             'title' => 'Edit Blog',
+            'blogData' => $blogData,
             'app_host' => $this->config->get('app.host')
         ];
+        
+        // If the blog owner equals to session owner, then edit operation is done
+        if (!$this->blog->slugExists($slug) || $blogData['uid'] != $sess_user['id']) {
+            return $this->render($response, 'error', $args);
+        }
+
         return $this->render($response, 'blog/edit', $args);
     }
 

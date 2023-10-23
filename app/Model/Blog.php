@@ -11,7 +11,7 @@ use Storylog\Core\Database;
 
 class Blog
 {
-    private $blogData;
+    public $blogData;
     private $table = 'blog';
     
     public function __construct(
@@ -28,7 +28,7 @@ class Blog
     public function publish()
     {
         $publishBlog = [
-            'uid' => 6,
+            'uid' => $this->user->id,
             'title' => $this->blogData['title'],
             'slug' => $this->blogData['slug'],
             'featured_image' => $this->blogData['featured-image'],
@@ -50,17 +50,14 @@ class Blog
     /**
      * Verify if the slug of the blog exists or not
      */
-    public function verifySlug(array $data)
+    public function verifySlug(string $data)
     {
-        $this->blogData = $data;
-
-        // Update the slug
-        $this->blogData['slug'] = $this->CreateSlug($data['slug']);
+        $slug = $this->CreateSlug($data);
         
         try {
             $query = "SELECT * FROM $this->table WHERE slug = ?";
 
-            if ($this->db->getCount($query, [$this->blogData['slug']]) == 1) {
+            if ($this->db->getCount($query, [$slug]) == 1) {
                 return true;
             }
 
@@ -154,9 +151,13 @@ class Blog
         try {
             $blog = $this->db->run("SELECT * FROM $this->table WHERE slug = ?", [$slug])->fetch();
             
+            if (!$blog) {
+                return false;
+            }
+            
             $blog['published_at'] = $this->formatTime($blog['published_at']);
             $blog['updated_at'] = $this->formatTime($blog['updated_at']);
-            $blog['user_data'] = $this->user->getUserById($blog['uid']);
+            $blog['blog_owner_data'] = $this->user->getUserById($blog['uid']);
 
             return $blog;
         } catch (Exception $e) {

@@ -17,7 +17,6 @@ class BlogService implements BlogServiceInterface
 
     public function publishBlog(object $featuredImage, array $blogData)
     {
-       
         // Check for empty fields        
         foreach ($blogData as $key => $value) {
             if ($key == 'slug') {
@@ -27,18 +26,32 @@ class BlogService implements BlogServiceInterface
             }
         }
 
+        // Overiding the slug, if the format has been changed
+        $blogData['slug'] = $this->blog->createSlug($blogData['slug']);
+
+        // Verify error code in uploaded image
         if ($this->image->checkError($featuredImage)) {
             $imagePath = $this->image->save($featuredImage, 'posts');
+            $blogData += ['featured-image' => $imagePath ?? 0];
         }
         
-        $blogData += ['featured-image' => $imagePath ?? 0];
-
         // If verified means blog is stored
-        if ($this->blog->verifySlug($blogData) !== true) {
+        if ($this->blog->verifySlug($blogData['slug']) !== true) {
+            $this->blog->blogData = $blogData;
             return $this->blog->publish();
         }
 
         return false;
+    }
+
+    public function slugExists(string $slug)
+    {
+        return $this->blog->verifySlug($slug);
+    }
+
+    public function generateSlug(string $slug)
+    {
+        return $this->blog->createSlug($slug);
     }
 
     public function updateBlog(int $blogId, array $data)
@@ -65,6 +78,8 @@ class BlogService implements BlogServiceInterface
 
     public function getAllBlogs()
     {
+        // TODO: Manage blog and user model here
+        // TODO: Get the user logic from blog model
         return $this->blog->getAllBlogs();
     }
     

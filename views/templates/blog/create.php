@@ -36,8 +36,8 @@
                         <option value="Design">Design</option>
                         <option value="Food">Food</option>
                         <option value="Health">Health</option>
-                        <option value="4">Science</option>
-                        <option value="Science">Style</option>
+                        <option value="Science">Science</option>
+                        <option value="Style">Style</option>
                         <option value="Technology">Technology</option>
                         <option value="Travel">Travel</option>
                         <option value="World">World</option>
