@@ -1,18 +1,32 @@
 {
-  "name": "slim-starter",
+  "name": "storylog",
   "version": "1.0.0",
-  "description": "A PHP template framework that hooks slim and other packages.",
+  "description": "A simple personal journal managing application in PHP.",
   "scripts": {
-    "dev": "npx vite --host",
-    "build": "npx vite build"
+    "dev": "cd resources/ && bash runner.sh -t all",
+    "build": ""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "autoprefixer": "^10.4.19",
+    "bootstrap": "^5.3.3",
+    "grunt-cli": "^1.5.0",
+    "jquery": "^3.7.1",
     "postcss": "^8.4.38",
+    "sass": "^1.79.4",
     "tailwindcss": "^3.4.4",
     "vite": "^5.3.1"
+  },
+  "devDependencies": {
+    "grunt-contrib-concat": "^2.1.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^5.0.0",
+    "grunt-contrib-obfuscator": "^8.0.0",
+    "grunt-contrib-sass": "^2.0.0",
+    "grunt-contrib-uglify": "^5.2.2",
+    "grunt-contrib-watch": "^1.1.0"
   }
 }
