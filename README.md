@@ -1,5 +1,5 @@
-# Slim Starter
-A PHP template framework that hooks slim and other packages.
+# Storylog
+A simple personal journal managing application in PHP.
 
 ## Dependencies
 - Sass
@@ -21,12 +21,3 @@ Install NPM Dependencies
 npm install
 ```
 
-Run Development Server to Serve Static Files
-```bash
-npm run dev
-```
-
-Compile and build Production Files
-```bash
-npm run build
-```
