@@ -1,22 +1,19 @@
 <?php
 
 use Slim\App;
-use App\Controller\AuthController;
 use App\Controller\HomeController;
-use App\Controller\AdminController;
+use App\Controller\BaseController;
 use Slim\Routing\RouteCollectorProxy;
 
 return function (App $app) {
     $app->any('/', [HomeController::class, 'index']);
-    $app->any('/request', [HomeController::class, 'request']);
-    $app->any('/login', [AuthController::class, 'login']);
 
-    $app->group('/admin', function(RouteCollectorProxy $group) {
-        $group->any('/dashboard', [AdminController::class, 'dashboard']);
-        $group->any('/manage/request', [AdminController::class, 'manageRequests']);
-        $group->any('/manage/users', [AdminController::class, 'manageUsers']);
-        $group->any('/analytics', [AdminController::class, 'analytics']);
-        $group->any('/create/announcements', [AdminController::class, 'announcements']);
-        $group->any('/settings', [AdminController::class, 'settings']);
+    $app->group('/static', function (RouteCollectorProxy $group) {
+        $group->any('/{type}/{file}', [BaseController::class, 'getStatic']);
+    });
+
+    // API Routes
+    $app->group('/api', function (RouteCollectorProxy $group) {
+        $group->any('/{namespace}/{resource}[/{params:.*}]', [ApiController::class, 'process']);
     });
 };
