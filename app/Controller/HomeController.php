@@ -2,25 +2,17 @@
 
 namespace App\Controller;
 
-use App\Core\View;
-use App\Core\Controller;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class HomeController extends Controller
+class HomeController extends BaseController
 {
-    public function __construct(
-        private readonly View $view,
-    ) {
-        parent::__construct($view);
-    }
-
     public function index(Request $request, Response $response): Response
     {
+        parent::addGlobals('appTheme', 'dark');
         $args = [
-            'title' => 'Home'
+            'title' => 'Home',
         ];
-        return $this->render($request, $response, 'home', $args);
+        return parent::render($request, $response, 'user/home', $args);
     }
-
 }
