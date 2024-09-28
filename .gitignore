@@ -1,5 +1,7 @@
 .env/
 .idea/
 vendor/
+storage/*
 node_modules/
+resources/dist/
 resources/.sass-cache/
