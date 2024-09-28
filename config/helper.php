@@ -75,27 +75,27 @@ function dump($var)
     }
 }
 
-function get_assets($asset) {
-    // $asset = "resources/css/app.css";
-    $manifestPath = PUBLIC_PATH . '/build/.vite/manifest.json';
-
-    if (strtolower($_ENV['APP_ENV']) == 'dev') {
-        if (!file_exists($manifestPath)) {
-            // Handle case where manifest does not exist (e.g., in development)
-            return 'http://localhost:5173/'.$asset;
-        }
-        return 'http://localhost:5173/' . $asset;
+/**
+ * Get URL for assets if it exists
+ */
+function get_asset_path($assetType, $fileName) {
+    $asset_path = STORAGE_PATH . "/static/{$assetType}/{$fileName}";
+    if (file_exists($asset_path) && is_readable($asset_path)) {
+        return "/static/{$assetType}/{$fileName}";
     }
+    return null;
+}
 
-    if (!file_exists($manifestPath)) {
-        throw new Exception("Production assets not found!");
+/**
+ * Return asset contents
+ */
+function get_asset_content($assetType, $fileName) {
+    $assetPath = STORAGE_PATH . "/static/{$assetType}/{$fileName}";
+    if (file_exists($assetPath) && is_readable($assetPath)) {
+        return [
+            'content' => file_get_contents($assetPath),
+            'path' => $assetPath,
+        ];
     }
-
-    $manifest = json_decode(file_get_contents($manifestPath), true);
-    if (isset($manifest[$asset])) {
-        return '/build/' . $manifest[$asset]['file'];
-    }
-    
-    // Handle case where the asset is not found in the manifest
-    return $asset;
+    return null;
 }
