@@ -63,4 +63,12 @@ class HomeController extends BaseController
         ];
         return parent::render($request, $response, 'user/journal', $args);
     }
+
+    public function onboarding(Request $request, Response $response): Response
+    {
+        $args = [
+            'title' => 'Onboarding'
+        ];
+        return parent::render($request, $response, 'user/onboarding', $args);
+    }
 }
