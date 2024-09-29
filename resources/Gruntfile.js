@@ -33,7 +33,7 @@ module.exports = function (grunt) {
                 dest: "dist/core.js",
             },
             js_app: {
-                src: ["src/js/templates/**/*.js"],
+                src: ["src/js/pages/**/*.js"],
                 dest: "dist/app.js",
             },
             scss: {

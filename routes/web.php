@@ -8,6 +8,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 return function (App $app) {
     $app->any('/', [HomeController::class, 'index']);
+    $app->any('/onboarding', [HomeController::class, 'onboarding']);
     $app->any('/journals', [HomeController::class, 'myJournals']);
     $app->any('/journal/create', [HomeController::class, 'createJournal']);
     $app->any('/settings', [HomeController::class, 'settings']);

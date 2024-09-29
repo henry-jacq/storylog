@@ -29,19 +29,19 @@
         <div class="row mt-4">
             <div class="col-lg-4">
                 <div class="stat-card p-4 bg-body-tertiary rounded shadow-sm">
-                    <h3 class="text-teal display-5">50</h3>
+                    <h3 class="text-teal display-5 counter" data-target="50">0</h3>
                     <p class="text-muted">Total Entries</p>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="stat-card p-4 bg-body-tertiary rounded shadow-sm">
-                    <h3 class="text-teal display-5">10</h3>
+                    <h3 class="text-teal display-5 counter" data-target="10">0</h3>
                     <p class="text-muted">Favorite Entries</p>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="stat-card p-4 bg-body-tertiary rounded shadow-sm">
-                    <h3 class="text-teal display-5">5</h3>
+                    <h3 class="text-teal display-5 counter" data-target="5">0</h3>
                     <p class="text-muted">Entries This Month</p>
                 </div>
             </div>
@@ -92,5 +92,52 @@
         </ul>
     </div>
 </section>
+
+<?= $this->renderLayout('footer') ?>
+
+<!-- Counter Animation Script -->
+<script>
+    const counters = document.querySelectorAll('.counter');
+    let hasStartedCounting = false;
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !hasStartedCounting) {
+                hasStartedCounting = true; // Start counting only once
+                counters.forEach(counter => {
+                    const target = +counter.getAttribute('data-target');
+                    let count = 0;
+
+                    // Calculate the increment based on the target and desired time (4 seconds)
+                    const duration = 4000; // 4 seconds
+                    const increment = target / (duration / 20); // Calculate increment based on time and frame rate
+
+                    const updateCounter = () => {
+                        count += increment;
+
+                        // Ensure it doesn't exceed target
+                        if (count > target) {
+                            count = target; 
+                        }
+
+                        counter.innerText = Math.ceil(count);
+
+                        if (count < target) {
+                            setTimeout(updateCounter, 20); // Continue counting
+                        } else {
+                            counter.innerText = target; // Set to exact target if overshot
+                        }
+                    };
+
+                    updateCounter();
+                });
+            }
+        });
+    });
+
+    // Observe the stats section
+    observer.observe(document.querySelector('.bg-body.py-5'));
+</script>
+
 
 <?= $this->renderLayout('footer') ?>

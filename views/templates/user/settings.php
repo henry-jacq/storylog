@@ -1,6 +1,6 @@
 <?= $this->renderLayout('header') ?>
 
-<section class="py-5 bg-light">
+<section class="py-5 bg-body">
     <div class="container">
         <h2 class="text-center mb-4">Settings</h2>
 
@@ -103,7 +103,7 @@
                 </form>
                 <div class="mt-3">
                     <h5>Daily Writing Prompt:</h5>
-                    <p class="border rounded p-2 bg-white">"What made you smile today?"</p>
+                    <p class="border rounded p-2 bg-body">"What made you smile today?"</p>
                 </div>
             </div>
         </div>
