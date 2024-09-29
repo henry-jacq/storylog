@@ -10,76 +10,93 @@
 // Custom styles
 $link-decoration: none;
 
+// Define the primary color
+$primary: #51a3a3; // Set Teal as the primary color
+
 // Customizing form-check-input focus and checked styles
-$form-check-input-focus-box-shadow: 0 0 0 0.25rem rgba($purple, .25);
-$form-check-input-focus-border: $purple-300;
-$form-check-input-checked-border-color: $purple;
-$form-check-input-checked-bg-color: $purple;
+$form-check-input-focus-box-shadow: 0 0 0 0.25rem rgba($primary, .25);
+$form-check-input-focus-border: $primary;
+$form-check-input-checked-border-color: $primary;
+$form-check-input-checked-bg-color: $primary;
 
 // Customizing input focus styles
-$input-focus-border-color: $purple-300;
-$input-focus-box-shadow: 0 0 0 0.2rem rgba($purple-400, .25);
+$input-focus-border-color: $primary;
+$input-focus-box-shadow: 0 0 0 0.2rem rgba($primary, .25);
 
 // Customizing dropdown link active background
-$dropdown-link-active-bg: $purple-500;
+$dropdown-link-active-bg: $primary;
 
 // Customizing navigation link colors
-$nav-link-color: var(--bs-text-bg);
-$nav-link-hover-color: $gray-600;
-$nav-pills-link-active-bg: $purple;
+$nav-link-color: $gray-800; // Better contrast for visibility
+$nav-link-hover-color: $primary;
+$nav-pills-link-active-bg: $primary;
 
 // Customizing form select focus styles
-$form-select-focus-border-color: $purple-200;
-$form-select-focus-box-shadow: 0 0 0 0.25rem rgba($purple, .25);
+$form-select-focus-border-color: $primary;
+$form-select-focus-box-shadow: 0 0 0 0.25rem rgba($primary, .25);
 
 // Customizing carousel control icon size
 $carousel-control-icon-width: 1.8rem;
 
 // Define custom theme colors
 $custom-theme-colors: (
-        "prime": $purple-500,
+    "teal": #51a3a3,
+    "mauve": #75485e,
+    "amber": #cb904d,
+    "sand": #dfcc74,
+    "lime": #c3e991
 );
 
 // Merge custom theme colors with Bootstrap theme colors
 $theme-colors: map-merge($custom-theme-colors, $theme-colors);
 
-/* Define custom fonts */
+// Define a darker shade of the primary color for hover effects
+$primary-dark: darken($primary, 10%);
+
+// Define custom fonts
 :root {
-  --bs-body-font-family: 'Source sans', 'Roboto', sans-serif !important;
+    --bs-body-font-family: 'Lato', 'Roboto', sans-serif !important;
+}
+
+// Define global colors
+:root {
+    --bs-text-bg: #3c3c3c; // Darker text color for better contrast
+    --bs-tertiary-color: #c3e991; // Light lime for highlights
 }
 
 // Define custom scrollbar styles
 ::-webkit-scrollbar {
-  width: 9px;
+    width: 9px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bs-body-bg);
+    background: var(--bs-body-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bs-tertiary-color);
-  border-radius: 10px;
+    background: var(--bs-tertiary-color);
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--bs-tertiary-color);
+    background: $primary-dark; // Use the darker primary color for hover
 }
 
+// Remove search input buttons
 input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none;
+    -webkit-appearance: none;
 }
 
 input[type="search"]::-ms-clear {
-  display: none;
-  width: 0;
-  height: 0;
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 input[type="search"] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 // Import Bootstrap

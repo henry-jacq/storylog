@@ -12,6 +12,7 @@ class BaseController
         private readonly View $view
     )
     {
+        $this->addGlobals('appTheme', 'dark');
     }
 
     public function renderErrorPage(Response $response, $params = [])
