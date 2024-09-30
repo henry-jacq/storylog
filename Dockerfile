@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     zip \
     unzip \
+    bash-completion \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -14,10 +15,18 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     nodejs \
     npm \
+    sass \
+    dos2unix \
     openssl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo_mysql mbstring zip exif pcntl \
-    && docker-php-ext-enable gd pdo_mysql mbstring zip exif pcntl
+    locales \
+    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+    && locale-gen en_US.UTF-8 \
+    && /usr/sbin/update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
+# Set the environment variables for the locale
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+ENV LANGUAGE en_US:en
 
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -25,11 +34,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Enable required Apache modules
 RUN a2enmod headers rewrite actions expires deflate socache_shmcb ssl
 
+# Install grunt globally
+RUN npm install -g grunt-cli
+
 # Set Apache to serve from /var/www/html/public and configure the directory
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf \
     && echo "<Directory /var/www/html/public>\n\
-        AllowOverride All\n\
-        Require all granted\n\
+    AllowOverride All\n\
+    Require all granted\n\
     </Directory>" >> /etc/apache2/sites-available/000-default.conf
 
 # Copy the application code
