@@ -1,11 +1,33 @@
-<?= $this->renderLayout('header'); ?>
-
+<nav class="navbar navbar-expand-lg d-lg-block d-none navbar-dark bg-transparent bg-gradient position-absolute w-100 z-2">
+    <div class="container fs-5 my-2">
+        <a class="navbar-brand text-teal d-flex align-items-center" href="/" style="font-size: 1.5rem;">
+            <i class="fas fa-book-open text-teal me-2"></i>Storylog
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile">My Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/journals">My Journals</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">Get Started</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 <!-- Hero Section -->
-<section class="hero-section position-relative text-center d-flex align-items-center justify-content-center" style="background: url('/path-to-hero-image.jpg') center/cover no-repeat; height: 75vh;">
-    <div class="overlay position-absolute w-100 h-100" style="background-color: rgba(0, 0, 0, 0.5);"></div>
-    <div class="container position-relative z-1">
-        <h1 class="display-3 fw-bold mb-3">Welcome Back, Henry!</h1>
-        <p class="lead mb-5">Your journey continues. Let's capture today's thoughts and make them timeless memories.</p>
+<!-- Hero Section -->
+<section class="hero-section position-relative text-center d-flex align-items-center justify-content-center" style="background: url('http://localhost:8000/images/Designer.png') center/cover no-repeat; height: 100vh;">
+    <div class="overlay position-absolute w-100 h-100" style="background-color: rgba(0, 0, 0, 0.7);"></div>
+    <div class="container position-relative text-light z-1">
+        <h1 class="display-3 fw-bold mb-3">Welcome Back, <span class="text-teal">Henry!</span></h1>
+        <p class="fs-4 fw-light mb-5">Your journey continues. Let's capture today's thoughts and make them timeless memories.</p>
         <a href="/journal/create" class="btn btn-lg btn-teal me-3 px-4 shadow">Create Journal</a>
         <a href="/dashboard" class="btn btn-lg btn-outline-light px-4 shadow">My Dashboard</a>
     </div>
@@ -27,19 +49,19 @@
         <h2 class="fw-bold text-body">Your Journaling Stats</h2>
         <hr class="border-3">
         <div class="row mt-4">
-            <div class="col-lg-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <div class="stat-card p-4 bg-body-tertiary rounded shadow-sm">
                     <h3 class="text-teal display-5 counter" data-target="50">0</h3>
                     <p class="text-muted">Total Entries</p>
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <div class="stat-card p-4 bg-body-tertiary rounded shadow-sm">
                     <h3 class="text-teal display-5 counter" data-target="10">0</h3>
                     <p class="text-muted">Favorite Entries</p>
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <div class="stat-card p-4 bg-body-tertiary rounded shadow-sm">
                     <h3 class="text-teal display-5 counter" data-target="5">0</h3>
                     <p class="text-muted">Entries This Month</p>
@@ -117,7 +139,7 @@
 
                         // Ensure it doesn't exceed target
                         if (count > target) {
-                            count = target; 
+                            count = target;
                         }
 
                         counter.innerText = Math.ceil(count);
@@ -138,6 +160,3 @@
     // Observe the stats section
     observer.observe(document.querySelector('.bg-body.py-5'));
 </script>
-
-
-<?= $this->renderLayout('footer') ?>

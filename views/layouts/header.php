@@ -1,8 +1,8 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg border-bottom shadow-sm py-3">
-    <div class="container">
+    <div class="container fs-5">
         <!-- Logo and Brand -->
-        <a class="navbar-brand fw-bold text-teal d-flex align-items-center" href="/" style="font-size: 1.5rem;">
+        <a class="navbar-brand text-teal d-flex align-items-center" href="/" style="font-size: 1.5rem;">
             <i class="fas fa-book-open text-teal me-2"></i>Storylog
         </a>
 
