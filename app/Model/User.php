@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity, ORM\Table(name: 'users')]
 class User
@@ -31,17 +30,6 @@ class User
 
     #[ORM\Column(type: 'datetime', name: 'reset_token_expiry', nullable: true)]
     private ?\DateTime $resetTokenExpiry;
-
-    public function __construct()
-    {
-        $this->posts = new ArrayCollection();
-        $this->emails = new ArrayCollection();
-        $this->payments = new ArrayCollection();
-        $this->followers = new ArrayCollection();
-        $this->following = new ArrayCollection();
-        $this->subscriptions = new ArrayCollection();
-        $this->storage = null;
-    }
 
     public function getId(): int
     {

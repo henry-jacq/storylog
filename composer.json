@@ -9,13 +9,13 @@
         "optimize-autoloader": true
     },
     "require": {
-        "vlucas/phpdotenv": "^5.5",
-        "slim/slim": "4.*",
-        "slim/psr7": "^1.6",
-        "php-di/php-di": "^7.0",
-        "nesbot/carbon": "^2.68",
-        "doctrine/orm": "^3.2",
+        "ext-pdo": "*",
         "doctrine/migrations": "^3.8",
-        "ext-pdo": "*"
+        "doctrine/orm": "^3.2",
+        "nesbot/carbon": "^2.68",
+        "php-di/php-di": "^7.0",
+        "slim/psr7": "^1.6",
+        "slim/slim": "4.*",
+        "vlucas/phpdotenv": "^5.5"
     }
 }

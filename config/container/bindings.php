@@ -6,7 +6,9 @@ use App\Core\Config;
 use App\Core\Request;
 use App\Core\Session;
 use function DI\create;
+use Doctrine\ORM\ORMSetup;
 use Slim\Factory\AppFactory;
+use Doctrine\ORM\EntityManager;
 use App\Interfaces\SessionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -29,7 +31,18 @@ return [
     Config::class => create(Config::class)->constructor(
         require CONFIG_PATH . '/app.php'
     ),
-    View::class => function(ContainerInterface $container){
+    EntityManager::class => fn(Config $config) => EntityManager::create(
+        $config->get('doctrine.connection'),
+        ORMSetup::createAttributeMetadataConfiguration(
+            $config->get('doctrine.entity_dir'),
+            $config->get('doctrine.dev_mode')
+        )
+    ),
+    ResponseFactoryInterface::class => fn(App $app) => $app->getResponseFactory(),
+    Request::class => function (ContainerInterface $container) {
+        return new Request($container->get(SessionInterface::class));
+    },
+    View::class => function (ContainerInterface $container) {
         return new View(
             $container->get(Config::class),
             $container->get(Session::class)
@@ -43,4 +56,3 @@ return [
         return new Request($container->get(SessionInterface::class));
     }
 ];
-

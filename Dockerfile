@@ -1,5 +1,5 @@
 # Use an official PHP image with Apache
-FROM php:8.1-apache
+FROM php:8.2-apache
 
 # Install necessary system packages and PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -30,6 +30,9 @@ ENV LANGUAGE en_US:en
 
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install necessary PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql mysqli
 
 # Enable required Apache modules
 RUN a2enmod headers rewrite actions expires deflate socache_shmcb ssl
