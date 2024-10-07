@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build:
+      context: ./docker/web
     ports:
       - "8000:80"
     volumes:
@@ -21,7 +22,8 @@ services:
     restart: always
 
   adminer:
-    image: adminer
+    build: 
+      context: ./docker/adminer
     ports:
       - "8080:8080"
     restart: always
