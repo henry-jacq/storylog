@@ -27,7 +27,7 @@ return [
     'doctrine' => [
         'dev_mode' => AppEnvironment::isDevelopment($appEnv) ?? 'development',
         'cache_dir' => STORAGE_PATH . '/cache/doctrine',
-        'entity_dir' => [APP_PATH . '/Model'],
+        'entity_dir' => [APP_PATH . '/Entity'],
         'connection' => [
             'driver' => $_ENV['DB_DRIVER'] ?? 'pdo_mysql',
             'host' => $_ENV['DB_HOST'],
