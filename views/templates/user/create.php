@@ -93,7 +93,7 @@
                 </div>
                 <label class="form-text">Enable to automatically save your journal as a draft with each change; only one draft will be kept and overwritten with new edits.</label>
             </div>
-
+    
             <!-- Submit Buttons -->
             <div class="text-center d-flex justify-content-between">
                 <a href="/" class="btn btn-outline-secondary btn-lg btn-hover-shadow">Cancel</a>

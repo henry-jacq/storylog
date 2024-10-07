@@ -1,42 +1,84 @@
-<div class="flex min-h-svh flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
-        <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to <?= $this->appName ?></h2>
-    </div>
+<style>
+    body {
+        background: url('http://localhost:8000/images/Designer.jpeg') center/cover no-repeat;
+        position: relative;
+    }
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="#" method="POST">
-            <div>
-                <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
-                <div class="mt-2">
-                    <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none sm:text-sm sm:leading-6">
-                </div>
+    /* Add a dark overlay on top of the background image */
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Adjust the opacity for darkness */
+        z-index: 0;
+    }
+
+    .login-container {
+        background-color: rgba(0, 0, 0, 0.75);
+        padding: 2rem;
+        width: 400px;
+        border-radius: 0.75rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+        z-index: 1;
+        /* Ensure the login container is on top of the overlay */
+        position: relative;
+    }
+</style>
+
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-gradient">
+    <div class="login-container text-center">
+        <h3 class="mb-3 fw-bold text-teal"><i class="fas fa-book-open text-teal me-2"></i>Storylog</h3>
+        <p class="text-muted mb-4">Please login to secure your journals</p>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+            <div class="mb-3">
+                <input type="email" class="form-control form-control-lg bg-transparent border-0 shadow-sm text-white" id="email" placeholder="Email address" required>
             </div>
-
-            <div>
-                <div class="flex items-center justify-between">
-                    <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-                    <div class="text-sm">
-                        <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none sm:text-sm sm:leading-6">
-                </div>
+            <div class="mb-3">
+                <input type="password" class="form-control form-control-lg bg-transparent border-0 shadow-sm text-white" id="password" placeholder="Password" required>
             </div>
+            <div class="d-flex justify-content-between mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Remember Me</label>
+                </div>
+                <a href="#" class="text-muted">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn btn-lg w-100 bg-teal text-white shadow-sm">Login</button>
 
-            <div class="flex justify-center flex-col">
-                <button type="submit" class="w-full rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all ease-in-out">Sign in</button>
-                <button type="button" class="w-full rounded-md bg-slate-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-slate-500 mt-3 focus:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-opacity-50 transition-all ease-in-out">
-                    <i class="fab fa-google my-auto mr-1"></i>
-                    Google
+            <!-- Google Login Button -->
+            <div class="mt-3">
+                <button type="button" class="btn btn-lg btn-google w-100 shadow-sm">
+                    <i class="fab fa-google me-2"></i>Login with Google
                 </button>
             </div>
         </form>
 
-        <p class="mt-5 text-center text-sm text-gray-500">
-            Want to Join <?= $this->appName ?>?
-            <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Register Now</a>
-        </p>
+        <!-- MFA and Security Assurance -->
+        <div class="text-center mt-3">
+            <small class="d-block mb-2 text-muted">
+                <i class="bi bi-shield-shaded me-1"></i>
+                Secured by End-to-End Encryption
+            </small>
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer mt-4">
+            <p class="mb-0">Don't have an account? <a class="text-sand" href="/register">Sign Up</a></p>
+            <p><a class="text-sand" href="/privacy-policy">Privacy Policy</a> | <a class="text-sand" href="/terms">Terms & Conditions</a></p>
+        </div>
     </div>
 </div>
+
+<script>
+    // Handle login form submission
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Add login logic here (e.g., API call, form validation)
+    });
+</script>

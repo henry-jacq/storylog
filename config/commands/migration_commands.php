@@ -17,7 +17,7 @@ use Doctrine\Migrations\Tools\Console\Command\SyncMetadataCommand;
 use Doctrine\Migrations\Tools\Console\Command\UpToDateCommand;
 use Doctrine\Migrations\Tools\Console\Command\VersionCommand;
 
-return fn (DependencyFactory $dependencyFactory) => [
+return fn(DependencyFactory $dependencyFactory) => [
     new CurrentCommand($dependencyFactory),
     new DumpSchemaCommand($dependencyFactory),
     new ExecuteCommand($dependencyFactory),

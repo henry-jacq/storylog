@@ -2,6 +2,7 @@
 
 use Slim\App;
 use App\Controller\ApiController;
+use App\Controller\AuthController;
 use App\Controller\BaseController;
 use App\Controller\HomeController;
 use Slim\Routing\RouteCollectorProxy;
@@ -16,6 +17,9 @@ return function (App $app) {
     $app->any('/profile', [HomeController::class, 'profile']);
     $app->any('/journal/edit/{id}', [HomeController::class, 'editJournal']);
     $app->any('/journal/{id}', [HomeController::class, 'showJournal']);
+
+    $app->any('/login', [AuthController::class, 'login']);
+
 
     $app->group('/static', function (RouteCollectorProxy $group) {
         $group->any('/{type}/{file}', [BaseController::class, 'getStatic']);
