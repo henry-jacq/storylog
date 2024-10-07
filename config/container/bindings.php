@@ -9,8 +9,10 @@ use function DI\create;
 use Doctrine\ORM\ORMSetup;
 use Slim\Factory\AppFactory;
 use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\DriverManager;
 use App\Interfaces\SessionInterface;
 use Psr\Container\ContainerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 
 return [
@@ -31,15 +33,19 @@ return [
     Config::class => create(Config::class)->constructor(
         require CONFIG_PATH . '/app.php'
     ),
-    EntityManager::class => fn(Config $config) => EntityManager::create(
-        $config->get('doctrine.connection'),
-        ORMSetup::createAttributeMetadataConfiguration(
+    EntityManagerInterface::class => function (Config $config) {
+        $ormConfig = ORMSetup::createAttributeMetadataConfiguration(
             $config->get('doctrine.entity_dir'),
             $config->get('doctrine.dev_mode')
-        )
-    ),
+        );
+
+        return new EntityManager(
+            DriverManager::getConnection($config->get('doctrine.connection'), $ormConfig),
+            $ormConfig
+        );
+    },
     ResponseFactoryInterface::class => fn(App $app) => $app->getResponseFactory(),
-    Request::class => function (ContainerInterface $container) {
+    Request::class => function(ContainerInterface $container) {
         return new Request($container->get(SessionInterface::class));
     },
     View::class => function (ContainerInterface $container) {
@@ -51,8 +57,7 @@ return [
     SessionInterface::class => function (ContainerInterface $container) {
         return new Session($container->get(Config::class));
     },
-    ResponseFactoryInterface::class => fn(App $app) => $app->getResponseFactory(),
-    Request::class => function(ContainerInterface $container) {
-        return new Request($container->get(SessionInterface::class));
+    ZipArchive::class => function () {
+        return new ZipArchive();
     }
 ];

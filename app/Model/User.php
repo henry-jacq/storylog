@@ -1,49 +1,60 @@
 <?php
 
-namespace App\Entity;
+namespace App\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity, ORM\Table(name: 'users')]
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="users")
+ */
 class User
 {
-    #[ORM\Id, ORM\Column(type: 'integer', options: ['unsigned' => true]), ORM\GeneratedValue]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
     private int $id;
 
-    #[ORM\Column(type: 'string', unique: true)]
-    private string $username;
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     */
+    private string $email;
 
-    #[ORM\Column(type: 'string')]
+    /**
+     * @ORM\Column(type="string")
+     */
     private string $password;
 
-    #[ORM\Column(type: 'integer')]
-    private int $active;
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(type: 'integer', name: 'pass_code', nullable: true)]
-    private ?string $passCode;
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private ?\DateTimeInterface $updatedAt = null;
 
-    #[ORM\Column(type: 'datetime', name: 'created_at')]
-    private \DateTime $createdAt;
-
-    #[ORM\Column(type: 'string', name: 'reset_token', nullable: true)]
-    private ?string $resetToken;
-
-    #[ORM\Column(type: 'datetime', name: 'reset_token_expiry', nullable: true)]
-    private ?\DateTime $resetTokenExpiry;
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function getUsername(): string
+    public function getEmail(): string
     {
-        return $this->username;
+        return $this->email;
     }
 
-    public function setUsername(string $username): self
+    public function setEmail(string $email): self
     {
-        $this->username = $username;
+        $this->email = $email;
         return $this;
     }
 
@@ -58,58 +69,19 @@ class User
         return $this;
     }
 
-    public function getActive(): int
-    {
-        return $this->active;
-    }
-
-    public function setActive(int $active): self
-    {
-        $this->active = $active;
-        return $this;
-    }
-
-    public function getPassCode(): int
-    {
-        return $this->passCode;
-    }
-
-    public function setPassCode(int $passCode): self
-    {
-        $this->passCode = $passCode;
-        return $this;
-    }
-
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
-        $this->createdAt = $createdAt;
-        return $this;
+        return $this->updatedAt;
     }
 
-    public function getResetToken(): ?string
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
-        return $this->resetToken;
-    }
-
-    public function setResetToken(?string $resetToken): self
-    {
-        $this->resetToken = $resetToken;
-        return $this;
-    }
-
-    public function getResetTokenExpiry(): ?\DateTime
-    {
-        return $this->resetTokenExpiry;
-    }
-
-    public function setResetTokenExpiry(?\DateTime $resetTokenExpiry): self
-    {
-        $this->resetTokenExpiry = $resetTokenExpiry;
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }
