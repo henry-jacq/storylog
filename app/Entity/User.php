@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -28,6 +29,12 @@ class User
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;
 
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager
+    )
+    {
+    }
+    
     // Getters and Setters
     public function getId(): ?int
     {
@@ -88,4 +95,17 @@ class User
         $this->createdAt = $createdAt;
         return $this;
     }
+
+    public function authenticate($email, $password)
+    {
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if ($user && password_verify($password, $user->getPassword())) {
+            // Authentication successful
+            return $user;
+        }
+        // Authentication failed
+        return null;
+    }
+
 }

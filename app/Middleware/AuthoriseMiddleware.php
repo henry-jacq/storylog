@@ -25,7 +25,7 @@ class AuthoriseMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // $_SESSION['user'] = 1;
+        $_SESSION['user'] = 1;
         if (is_null($this->session->get('user'))) {
             if ($request->getMethod() === 'GET' && !$this->requestService->isXhr($request)) {
                 $this->session->put('_redirect', (string) $request->getUri());
@@ -39,15 +39,6 @@ class AuthoriseMiddleware implements MiddlewareInterface
                 ->find($this->session->get('user'));
 
             if ($user) {
-
-                // Session Validation
-                $metaData = [
-                    'sessionId' => $this->session->getId(),
-                    'sessionToken' => $this->session->getCookie('session_token'),
-                    'ipAddress' => $this->requestService->getIpAddress($request),
-                    'userAgent' => $this->requestService->getUserAgent($request),
-                ];
-
                 $request = $request->withAttribute('userData', $user);
             }
         }

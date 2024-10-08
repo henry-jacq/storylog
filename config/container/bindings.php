@@ -10,7 +10,6 @@ use Doctrine\ORM\ORMSetup;
 use Slim\Factory\AppFactory;
 use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\DriverManager;
-use App\Interfaces\SessionInterface;
 use Psr\Container\ContainerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -46,7 +45,7 @@ return [
     },
     ResponseFactoryInterface::class => fn(App $app) => $app->getResponseFactory(),
     Request::class => function(ContainerInterface $container) {
-        return new Request($container->get(SessionInterface::class));
+        return new Request($container->get(Session::class));
     },
     View::class => function (ContainerInterface $container) {
         return new View(
@@ -54,7 +53,7 @@ return [
             $container->get(Session::class)
         );
     },
-    SessionInterface::class => function (ContainerInterface $container) {
+    Session::class => function (ContainerInterface $container) {
         return new Session($container->get(Config::class));
     },
     ZipArchive::class => function () {

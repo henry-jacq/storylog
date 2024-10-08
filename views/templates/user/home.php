@@ -15,7 +15,7 @@
                     <a class="nav-link" href="/journals">My Journals</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/about">Get Started</a>
+                    <a class="nav-link" href="/logout">Log out</a>
                 </li>
             </ul>
         </div>

@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\Core;
 
 use RuntimeException;
-use App\Interfaces\SessionInterface;
 
-class Session implements SessionInterface
+class Session
 {
     public array $options;
 

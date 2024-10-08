@@ -19,6 +19,8 @@ services:
       MYSQL_PASSWORD: mypassword
     ports:
       - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql  # Add this line for data persistence
     restart: always
 
   adminer:
@@ -27,3 +29,6 @@ services:
     ports:
       - "8080:8080"
     restart: always
+    
+volumes:
+  db_data:  # Define the named volume
