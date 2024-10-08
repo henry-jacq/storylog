@@ -3,6 +3,7 @@
 use Slim\App;
 use App\Core\View;
 use App\Core\Config;
+use App\Middleware\AuthoriseMiddleware;
 use Slim\Psr7\Request;
 use App\Middleware\SessionStartMiddleware;
 
@@ -46,7 +47,8 @@ return function (App $app) {
         ->withHeader('Content-Type', 'application/json');
     };
 
-    // $app->add(SessionStartMiddleware::class);
+    $app->add(AuthoriseMiddleware::class);
+    $app->add(SessionStartMiddleware::class);
     $app->addRoutingMiddleware();
     $app->addBodyParsingMiddleware();
     $errorMiddleware = $app->addErrorMiddleware(

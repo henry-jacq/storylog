@@ -21,12 +21,12 @@
         </div>
     </div>
 </nav>
-<!-- Hero Section -->
+
 <!-- Hero Section -->
 <section class="hero-section position-relative text-center d-flex align-items-center justify-content-center" style="background: url('http://localhost:8000/images/Designer.png') center/cover no-repeat; height: 100vh;">
     <div class="overlay position-absolute w-100 h-100" style="background-color: rgba(0, 0, 0, 0.7);"></div>
     <div class="container position-relative text-light z-1">
-        <h1 class="display-3 fw-bold mb-3">Welcome Back, <span class="text-teal">Henry!</span></h1>
+        <h1 class="display-3 fw-bold mb-3">Welcome Back, <span class="text-teal"><?= $user->getName() ?>!</span></h1>
         <p class="fs-4 fw-light mb-5">Your journey continues. Let's capture today's thoughts and make them timeless memories.</p>
         <a href="/journal/create" class="btn btn-lg btn-teal me-3 px-4 shadow">Create Journal</a>
         <a href="/dashboard" class="btn btn-lg btn-outline-light px-4 shadow">My Dashboard</a>

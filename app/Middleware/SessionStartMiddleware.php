@@ -13,8 +13,7 @@ class SessionStartMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly SessionInterface $session
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

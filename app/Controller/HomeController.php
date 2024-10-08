@@ -9,8 +9,11 @@ class HomeController extends BaseController
 {
     public function index(Request $request, Response $response): Response
     {
+        $userData = $request->getAttribute('userData');
+        
         $args = [
             'title' => 'Home',
+            'user' => $userData
         ];
         return parent::render($request, $response, 'user/home', $args);
     }

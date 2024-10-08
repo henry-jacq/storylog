@@ -7,10 +7,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Request
 {
-    public function __construct(private readonly SessionInterface $session)
-    {        
-    }
-    
+    public function __construct(private readonly SessionInterface $session) {}
+
     public function getReferer(ServerRequestInterface $request): string
     {
         $referer = $request->getHeader('referer')[0] ?? '';
@@ -25,11 +23,21 @@ class Request
             $referer = $this->session->get('previousUrl');
         }
 
-        return $referer;        
+        return $referer;
     }
 
     public function isXhr(ServerRequestInterface $request): bool
     {
         return $request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
+    }
+
+    public function getIpAddress(ServerRequestInterface $request): string
+    {
+        return $request->getServerParams()['REMOTE_ADDR'] ?? null;
+    }
+
+    public function getUserAgent(ServerRequestInterface $request): string
+    {
+        return $request->getHeaderLine('User-Agent') ?? null;
     }
 }
