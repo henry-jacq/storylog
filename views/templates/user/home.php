@@ -78,15 +78,15 @@
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm border-0 p-4 rounded bg-body-tertiary">
                     <h3 class="card-title text-teal">Days Remaining in the Year</h3>
-                    <h2 class="display-5 text-body">70 days</h2>
+                    <h2 class="display-5 text-body"><?= $remainingDays ?> days</h2>
                     <p class="text-muted">Make the most of the remaining days to capture your memories.</p>
                 </div>
             </div>
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm border-0 p-4 rounded bg-body-tertiary">
                     <h3 class="card-title text-teal">Current Day of the Year</h3>
-                    <h2 class="display-5 text-body">295</h2>
-                    <p class="text-muted">Today is the 295th day of the year. What will you write about?</p>
+                    <h2 class="display-5 text-body"><?= $currentDayOfYear ?></h2>
+                    <p class="text-muted">Today is the <?= $currentDayOfYear ?>th day of the year. What will you write about?</p>
                 </div>
             </div>
         </div>

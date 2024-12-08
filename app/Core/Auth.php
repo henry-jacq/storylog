@@ -2,7 +2,7 @@
 
 namespace App\Core;
 
-use App\Model\User;
+use App\Entity\User;
 use App\Core\Session;
 
 class Auth

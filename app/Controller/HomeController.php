@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -10,10 +11,28 @@ class HomeController extends BaseController
     public function index(Request $request, Response $response): Response
     {
         $userData = $request->getAttribute('userData');
-        
+
+        // Get today's date
+        $today = new DateTime();
+
+        // Get the current year dynamically
+        $currentYear = $today->format('Y');
+
+        // Get the current day of the year (1-based)
+        $currentDayOfYear = $today->format('z') + 1; // 'z' returns 0-365, so adding 1 makes it 1-366
+
+        // Get the last day of the current year (December 31st)
+        $endOfYear = new DateTime("last day of December $currentYear");
+
+        // Calculate the difference between today and the end of the year
+        $interval = $today->diff($endOfYear)->days;
+
+
         $args = [
             'title' => 'Home',
-            'user' => $userData
+            'user' => $userData,
+            'remainingDays' => $interval,
+            'currentDayOfYear' => $currentDayOfYear,
         ];
         return parent::render($request, $response, 'user/home', $args);
     }
