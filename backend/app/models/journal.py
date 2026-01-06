@@ -1,9 +1,28 @@
-from sqlalchemy import Column, Integer, String, Text, Date
+from sqlalchemy import (
+    Column,
+    Integer,
+    Date,
+    Time,
+    String,
+    Text,
+    DateTime,
+)
+from sqlalchemy.sql import func
 from app.core.database import Base
+
 
 class Journal(Base):
     __tablename__ = "journals"
 
     id = Column(Integer, primary_key=True)
-    date = Column(Date, unique=True, nullable=False)
-    raw_markdown = Column(Text, nullable=False)
+
+    journal_date = Column(Date, unique=True, nullable=False)
+    journal_time = Column(Time, nullable=False)
+
+    day = Column(String(16), nullable=False)
+    day_of_year = Column(Integer, nullable=False)
+
+    content_md = Column(Text, nullable=False)
+    content_html = Column(Text, nullable=False)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
