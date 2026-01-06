@@ -1,5 +1,5 @@
 from pathlib import Path
-from backend.app.services.journal_parser import parse_journal_markdown
+from app.services.journal_parser import parse_journal_markdown
 
 DOCS_DIR = Path("../../../docs")
 
