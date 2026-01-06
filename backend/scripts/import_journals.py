@@ -1,39 +1,29 @@
+import typer
 from pathlib import Path
 from app.core.database import SessionLocal
-from backend.app.services.import_journal import bulk_import_markdown_folder
-
-DOCS_DIR = Path("../../../docs")
+from app.services.import_journal import bulk_import_markdown_folder
 
 
-def main():
+def run_import(path: str, debug=False):
+    DOCS_DIR = Path(path)
     db = SessionLocal()
 
     try:
         report = bulk_import_markdown_folder(db, DOCS_DIR)
 
-        print("====== Bulk Journal Import Report ======")
-        print(f"Imported : {len(report['imported'])}")
-        print(f"Skipped  : {len(report['skipped'])}")
-        print(f"Failed   : {len(report['failed'])}")
-
         if report["imported"]:
-            print("\n✅ Imported:")
-            for f in report["imported"]:
-                print(f" - {f}")
-
+            print(f"[✔] Imported {len(report['imported'])} Journals.")
+            
         if report["skipped"]:
-            print("\n⚠️ Skipped (already exists):")
-            for f in report["skipped"]:
-                print(f" - {f}")
+            print(f"[✔] Skipped (already exists): {len(report['skipped'])}")
+            if debug:
+                for f in report["skipped"]:
+                    print(f" - {f}")
 
         if report["failed"]:
-            print("\n❌ Failed:")
-            for f in report["failed"]:
-                print(f" - {f}")
-
+            print(f"[✔] Failed: {len(report['failed'])}")
+            if debug:
+                for f in report["failed"]:
+                    print(f" - {f}")
     finally:
         db.close()
-
-
-if __name__ == "__main__":
-    main()

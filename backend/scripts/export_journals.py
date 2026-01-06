@@ -1,13 +1,12 @@
 from pathlib import Path
 from app.core.database import SessionLocal
 from app.models.journal import Journal
-from backend.app.services.export_journal import journal_to_markdown
+from app.services.export_journal import journal_to_markdown
+from time import sleep
 
-EXPORT_DIR = Path("../../../exports")
-
-
-def main():
-    EXPORT_DIR.mkdir(exist_ok=True)
+def run_export(path: str):
+    exportDir = Path(path)
+    exportDir.mkdir(exist_ok=True)
 
     db = SessionLocal()
 
@@ -17,24 +16,16 @@ def main():
             .order_by(Journal.journal_date.asc())
             .all()
         )
-
-        print("====== Journal Export Report ======")
-        print(f"Total journals: {len(journals)}")
-
-        for journal in journals:
+        
+        for i, journal in enumerate(journals):
             filename = f"{journal.journal_date.isoformat()}.md"
-            filepath = EXPORT_DIR / filename
+            filepath = exportDir / filename
 
             md_text = journal_to_markdown(journal)
             filepath.write_text(md_text, encoding="utf-8")
-
-            print(f"✔ Exported {filename}")
-
-        print("\n✅ Export completed.")
+            print(f"[✔] Exporting {i+1}/{len(journals)} files [{filename}]", end="\r")
+            sleep(0.01)
 
     finally:
+        print()
         db.close()
-
-
-if __name__ == "__main__":
-    main()
