@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { JournalsAPI } from "../services/journals";
 
 import Loader from "../components/Loader";
@@ -10,7 +10,9 @@ import Toast from "../components/Toast";
 
 export default function BrowseJournals() {
     const navigate = useNavigate();
+    const location = useLocation();
 
+    /* ---------- State ---------- */
     const [journals, setJournals] = useState([]);
     const [selected, setSelected] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,11 +20,27 @@ export default function BrowseJournals() {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [toast, setToast] = useState(null);
 
+    const [importing, setImporting] = useState(false);
+    const [importProgress, setImportProgress] = useState(null);
+
+    const [lastSelectedId, setLastSelectedId] = useState(null);
+
+    const actionsDisabled = importing;
+
     // future-ready
     const [page] = useState(1);
 
-    /* ---------- Data ---------- */
+    /* ---------- Toast from Navigation ---------- */
+    useEffect(() => {
+        if (location.state?.toast) {
+            setToast(location.state.toast);
+            window.history.replaceState({}, "");
+            const t = setTimeout(() => setToast(null), 2500);
+            return () => clearTimeout(t);
+        }
+    }, [location.state]);
 
+    /* ---------- Load Data ---------- */
     useEffect(() => {
         loadJournals();
     }, []);
@@ -37,42 +55,43 @@ export default function BrowseJournals() {
         }
     }
 
-    async function handleImport(file) {
-        try {
-            await JournalsAPI.importMd(file);
-            await loadJournals();
+    /* ---------- Selection Logic ---------- */
+    function handleSelect(id, event) {
+        const isMeta = event.metaKey || event.ctrlKey;
+        const isShift = event.shiftKey;
 
-            setToast({
-                type: "success",
-                message: "Journal imported",
-            });
-        } catch (e) {
-            setToast({
-                type: "error",
-                message: e.message,
-            });
-        } finally {
-            setTimeout(() => setToast(null), 2500);
+        if (!isMeta && !isShift) {
+            setSelected((prev) => (prev.includes(id) ? prev : [id]));
+            setLastSelectedId(id);
+            return;
         }
-    }
 
-    async function handleExport() {
-        setToast({
-            type: "info",
-            message: "Export feature coming soon",
-        });
+        if (isMeta) {
+            setSelected((prev) =>
+                prev.includes(id)
+                    ? prev.filter((x) => x !== id)
+                    : [...prev, id]
+            );
+            setLastSelectedId(id);
+            return;
+        }
 
-        setTimeout(() => setToast(null), 2200);
-    }
+        if (isShift && lastSelectedId !== null) {
+            const ids = journals.map((j) => j.id);
+            const start = ids.indexOf(lastSelectedId);
+            const end = ids.indexOf(id);
 
-    /* ---------- Selection ---------- */
+            if (start === -1 || end === -1) return;
 
-    function toggleSelect(id) {
-        setSelected((prev) =>
-            prev.includes(id)
-                ? prev.filter((x) => x !== id)
-                : [...prev, id]
-        );
+            const range = ids.slice(
+                Math.min(start, end),
+                Math.max(start, end) + 1
+            );
+
+            setSelected((prev) =>
+                Array.from(new Set([...prev, ...range]))
+            );
+        }
     }
 
     function toggleSelectAll() {
@@ -87,8 +106,42 @@ export default function BrowseJournals() {
     const allSelected =
         journals.length > 0 && selected.length === journals.length;
 
-    /* ---------- Bulk Actions ---------- */
+    /* ---------- Import / Export ---------- */
+    async function handleImport(file) {
+        setImporting(true);
+        setImportProgress("Uploading…");
 
+        try {
+            await JournalsAPI.importMd(file);
+            setImportProgress("Finalizing…");
+            await loadJournals();
+
+            setToast({
+                type: "success",
+                message: "Journal imported",
+            });
+        } catch (e) {
+            setToast({
+                type: "error",
+                message: e.message || "Import failed",
+            });
+        } finally {
+            setImporting(false);
+            setImportProgress(null);
+            setTimeout(() => setToast(null), 2500);
+        }
+    }
+
+    function handleExport() {
+        setToast({
+            type: "info",
+            message: "Export feature coming soon",
+        });
+
+        setTimeout(() => setToast(null), 2200);
+    }
+
+    /* ---------- Bulk Delete ---------- */
     async function bulkDelete() {
         try {
             for (const id of selected) {
@@ -114,9 +167,8 @@ export default function BrowseJournals() {
     }
 
     /* ---------- UI States ---------- */
-
     if (loading) {
-        return <Loader label="Loading journals..." />;
+        return <Loader label="Loading journals…" />;
     }
 
     if (journals.length === 0) {
@@ -131,7 +183,6 @@ export default function BrowseJournals() {
     }
 
     /* ---------- Render ---------- */
-
     return (
         <>
             <div className="space-y-6">
@@ -144,56 +195,63 @@ export default function BrowseJournals() {
                     <div className="flex gap-3">
                         {/* Import */}
                         <label
-                            className={`text-sm px-3 py-1.5 rounded-md border transition cursor-pointer
-    ${hasSelection
+                            className={`text-sm px-3 py-1.5 rounded-md border transition
+                                ${hasSelection || actionsDisabled
                                     ? "text-gray-400 border-gray-200 cursor-not-allowed"
-                                    : "text-[#1F2933] border-[#E5E7EB] hover:bg-gray-100"
-                                }
-  `}
+                                    : "text-[#1F2933] border-[#E5E7EB] hover:bg-gray-100 cursor-pointer"
+                                }`}
                         >
                             Import
                             <input
                                 type="file"
                                 accept=".md"
-                                disabled={hasSelection}
+                                disabled={hasSelection || actionsDisabled}
                                 className="hidden"
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     if (file) handleImport(file);
-                                    e.target.value = ""; // allow re-import same file
+                                    e.target.value = "";
                                 }}
                             />
                         </label>
 
                         {/* Export */}
                         <button
-                            disabled={!hasSelection}
+                            disabled={!hasSelection || actionsDisabled}
                             onClick={handleExport}
                             className={`text-sm px-3 py-1.5 rounded-md border transition
-      ${hasSelection
+                                ${hasSelection && !actionsDisabled
                                     ? "text-[#1F2933] border-[#E5E7EB] hover:bg-gray-100"
                                     : "text-gray-400 border-gray-200 cursor-not-allowed"
-                                }
-    `}
+                                }`}
                         >
                             Export
                         </button>
 
                         {/* Delete */}
                         <button
-                            disabled={!hasSelection}
+                            disabled={!hasSelection || actionsDisabled}
                             onClick={() => setConfirmOpen(true)}
                             className={`text-sm px-3 py-1.5 rounded-md transition
-                ${hasSelection
+                                ${hasSelection && !actionsDisabled
                                     ? "bg-red-500 text-white hover:bg-red-600"
                                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                }
-              `}
+                                }`}
                         >
                             Delete
                         </button>
                     </div>
                 </div>
+
+                {/* Import Progress */}
+                {importing && (
+                    <div className="text-sm text-[#6B7280] flex items-center gap-3">
+                        <div className="h-1 w-24 bg-[#E5E7EB] rounded overflow-hidden">
+                            <div className="h-full w-full bg-[#3B82F6] animate-pulse" />
+                        </div>
+                        <span>{importProgress}</span>
+                    </div>
+                )}
 
                 {/* Select All */}
                 <label className="flex items-center gap-2 text-sm text-[#6B7280]">
@@ -212,13 +270,13 @@ export default function BrowseJournals() {
                             key={j.id}
                             journal={j}
                             selected={selected.includes(j.id)}
-                            onSelect={() => toggleSelect(j.id)}
+                            onSelect={(e) => handleSelect(j.id, e)}
                             onOpen={() => navigate(`/journals/${j.id}`)}
                         />
                     ))}
                 </div>
 
-                {/* Pagination (future-ready) */}
+                {/* Pagination */}
                 <div className="pt-6 flex justify-between text-sm text-[#6B7280]">
                     <span>Page {page}</span>
                     <div className="space-x-3">
@@ -239,12 +297,7 @@ export default function BrowseJournals() {
             />
 
             {/* Toast */}
-            {toast && (
-                <Toast
-                    type={toast.type}
-                    message={toast.message}
-                />
-            )}
+            {toast && <Toast type={toast.type} message={toast.message} />}
         </>
     );
 }

@@ -1,24 +1,30 @@
+import { useNavigate } from "react-router-dom";
+import JournalForm from "../components/JournalForm";
+import { JournalsAPI } from "../services/journals";
+
 export default function CreateJournal() {
+    const navigate = useNavigate();
+
+    async function handleSave(payload) {
+        await JournalsAPI.create(payload);
+
+        navigate("/journals", {
+            state: {
+                toast: {
+                    type: "success",
+                    message: "Journal saved successfully",
+                },
+            },
+        });
+    }
+
     return (
-        <section className="max-w-3xl space-y-8">
-            <h2 className="text-2xl font-semibold">Write Journal</h2>
+        <div className="max-w-3xl mx-auto space-y-6">
+            <h2 className="text-xl font-semibold text-[#1F2933]">
+                New Journal
+            </h2>
 
-            <div className="grid grid-cols-2 gap-6">
-                <input className="input" placeholder="Date" />
-                <input className="input" placeholder="Time" />
-                <input className="input" placeholder="Day" />
-                <input className="input" placeholder="Day of year" />
-            </div>
-
-            <textarea
-                rows={10}
-                className="w-full p-4 border rounded-lg"
-                placeholder="One thought per line…"
-            />
-
-            <button className="px-6 py-3 bg-[#3B82F6] text-white rounded-lg">
-                Save Journal
-            </button>
-        </section>
+            <JournalForm onSubmit={handleSave} />
+        </div>
     );
 }

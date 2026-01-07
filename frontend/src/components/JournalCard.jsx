@@ -7,21 +7,25 @@ export default function JournalCard({
     return (
         <div
             className={`p-4 rounded-lg border transition
-        ${selected
+                ${selected
                     ? "border-[#3B82F6] bg-blue-50"
-                    : "border-[#E5E7EB] bg-white"}
-      `}
+                    : "border-[#E5E7EB] bg-white"
+                }`}
         >
             <div className="flex items-start gap-4">
-                {/* Selection */}
+                {/* Checkbox */}
                 <input
                     type="checkbox"
                     checked={selected}
-                    onChange={onSelect}
+                    onChange={(e) => {
+                        e.stopPropagation();
+                        onSelect(e);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
                     className="mt-1 cursor-pointer"
                 />
 
-                {/* Clickable content only */}
+                {/* Clickable content */}
                 <div
                     onClick={onOpen}
                     className="flex-1 space-y-1 cursor-pointer hover:opacity-90"
