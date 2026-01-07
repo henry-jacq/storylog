@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { JournalsAPI } from "../services/journals";
 
@@ -9,27 +9,25 @@ export default function EditJournal() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const fetchedRef = useRef(false);
-
     const [journal, setJournal] = useState(null);
     const [content, setContent] = useState("");
     const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
 
-    /* ---------- Load existing journal (safe) ---------- */
+    /* Load existing journal */
     useEffect(() => {
-        if (fetchedRef.current) return;
-        fetchedRef.current = true;
         load();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     async function load() {
         try {
+            setLoading(true);
             const data = await JournalsAPI.get(id);
             setJournal(data);
 
-            // UI works with plain text (no markdown syntax)
+            // Convert markdown list → plain text (UI format)
             setContent(
                 data.content_md
                     .split("\n")
@@ -54,7 +52,7 @@ export default function EditJournal() {
 
         try {
             const payload = {
-                content: content
+                content_md: content
                     .split("\n")
                     .filter(Boolean)
                     .map((l) => `- ${l}`)
@@ -87,15 +85,30 @@ export default function EditJournal() {
 
     return (
         <>
-            <div className="max-w-3xl space-y-8">
+            <div className="space-y-8">
                 {/* Header */}
-                <div>
-                    <h1 className="text-2xl font-semibold text-[#1F2933]">
-                        Edit Journal
-                    </h1>
-                    <p className="text-sm text-[#6B7280] mt-1">
-                        {journal.journal_date} · {journal.day}
-                    </p>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-2xl font-semibold text-[#1F2933]">
+                            Edit Journal
+                        </h1>
+                        <p className="mt-1 text-sm text-[#6B7280]">
+                            {journal.journal_date} · {journal.day}
+                        </p>
+                    </div>
+                    <button
+                        onClick={handleSave}
+                        disabled={saving || !content.trim()}
+                        className={`
+                            text-sm font-normal px-3 py-2 rounded-md transition
+                            ${saving || !content.trim()
+                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                : "bg-[#3B82F6] text-white hover:bg-blue-600 hover:cursor-pointer"
+                            }
+                        `}
+                    >
+                        {saving ? "Saving…" : "Save changes"}
+                    </button>
                 </div>
 
                 {/* Editor */}
@@ -108,33 +121,9 @@ export default function EditJournal() {
                         w-full rounded-xl border border-[#E5E7EB]
                         bg-white p-4 text-[15px] leading-relaxed
                         focus:outline-none focus:ring-2 focus:ring-[#3B82F6]
-                        resize-none
+                        resize-none mb-4
                     "
                 />
-
-                {/* Actions */}
-                <div className="flex items-center justify-between">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="text-sm text-[#6B7280] hover:underline"
-                        disabled={saving}
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        onClick={handleSave}
-                        disabled={saving || !content.trim()}
-                        className={`
-                            px-5 py-2 rounded-md text-sm transition
-                            ${saving || !content.trim()
-                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                : "bg-[#3B82F6] text-white hover:bg-blue-600"}
-                        `}
-                    >
-                        {saving ? "Saving…" : "Save changes"}
-                    </button>
-                </div>
             </div>
 
             {toast && <Toast {...toast} />}
