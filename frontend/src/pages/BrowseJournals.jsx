@@ -37,6 +37,25 @@ export default function BrowseJournals() {
         }
     }
 
+    async function handleImport(file) {
+        try {
+            await JournalsAPI.importMd(file);
+            await loadJournals();
+
+            setToast({
+                type: "success",
+                message: "Journal imported",
+            });
+        } catch (e) {
+            setToast({
+                type: "error",
+                message: e.message,
+            });
+        } finally {
+            setTimeout(() => setToast(null), 2500);
+        }
+    }
+
     async function handleExport() {
         setToast({
             type: "info",
@@ -124,17 +143,27 @@ export default function BrowseJournals() {
 
                     <div className="flex gap-3">
                         {/* Import */}
-                        <button
-                            disabled={hasSelection}
-                            className={`text-sm px-3 py-1.5 rounded-md border transition
-                ${hasSelection
+                        <label
+                            className={`text-sm px-3 py-1.5 rounded-md border transition cursor-pointer
+    ${hasSelection
                                     ? "text-gray-400 border-gray-200 cursor-not-allowed"
                                     : "text-[#1F2933] border-[#E5E7EB] hover:bg-gray-100"
                                 }
-              `}
+  `}
                         >
                             Import
-                        </button>
+                            <input
+                                type="file"
+                                accept=".md"
+                                disabled={hasSelection}
+                                className="hidden"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) handleImport(file);
+                                    e.target.value = ""; // allow re-import same file
+                                }}
+                            />
+                        </label>
 
                         {/* Export */}
                         <button

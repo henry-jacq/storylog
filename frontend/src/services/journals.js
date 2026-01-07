@@ -33,7 +33,7 @@ export const JournalsAPI = {
     remove: (id) =>
         request(`/journals/${id}`, { method: "DELETE" }),
 
-    importFile: async (file) => {
+    importMd: async (file) => {
         const form = new FormData();
         form.append("file", file);
 
