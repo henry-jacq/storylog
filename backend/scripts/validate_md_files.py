@@ -52,8 +52,8 @@ def run_validation(path: str):
     
     if invalid_files:
         typer.secho(f"Invalid files : {len(invalid_files)}", fg=typer.colors.RED)
-        typer.echo("\n❌ Invalid file list:")
+        typer.echo("\n[✘] Invalid file list:")
         for f in invalid_files:
             typer.echo(f" - {f}")
     else:
-        typer.secho("\n✅ All files are valid.", fg=typer.colors.GREEN, bold=True)
+        typer.secho("\n[✔] All files are valid.", fg=typer.colors.GREEN, bold=True)

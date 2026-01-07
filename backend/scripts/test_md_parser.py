@@ -40,4 +40,4 @@ def run_parser_test(path: str, limit: int = None):
             # in a test tool, but you can if preferred.
             continue
 
-    typer.secho("\n✅ Parser test completed.", fg=typer.colors.GREEN, bold=True)
+    typer.secho("\n[✔] Parser test completed.", fg=typer.colors.GREEN, bold=True)
