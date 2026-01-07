@@ -1,32 +1,43 @@
+import typer
 from pathlib import Path
-from app.services.journal_parser import parse_journal_markdown
+from app.services.journal_parser import run_parser
 
-DOCS_DIR = Path("../../../docs")
+def run_parser_test(path: str, limit: int = None):
+    """
+    Tests the journal parser against markdown files in a directory.
+    - limit: Optional integer to test only the first N files.
+    """
+    docs_dir = Path(path)
+    
+    if not docs_dir.exists():
+        typer.secho(f"[✘] Path not found: {path}", fg=typer.colors.RED)
+        return
 
+    md_files = list(docs_dir.glob("*.md"))
+    if limit:
+        md_files = md_files[:limit]
 
-def main():
-    md_files = list(DOCS_DIR.glob("*.md"))
-
-    print("====== Journal Parser Test ======")
+    typer.secho(f"====== Journal Parser Test ({len(md_files)} files) ======", bold=True)
 
     for md in md_files:
         try:
             text = md.read_text(encoding="utf-8")
-            parsed = parse_journal_markdown(text)
+            parsed = run_parser(text)
 
-            print(f"✔ {md.name}")
-            print(f"  Date       : {parsed.journal_date}")
-            print(f"  Time       : {parsed.journal_time}")
-            print(f"  Day        : {parsed.day}")
-            print(f"  DayOfYear  : {parsed.day_of_year}")
-            print(f"  Items      : {parsed.content_md.count('- ')}")
+            # Use green checkmark for success
+            success_msg = typer.style(f"✔ {md.name}", fg=typer.colors.GREEN)
+            typer.echo(success_msg)
+            
+            typer.echo(f"  Date       : {parsed.journal_date}")
+            typer.echo(f"  Time       : {parsed.journal_time}")
+            typer.echo(f"  Day        : {parsed.day}")
+            typer.echo(f"  DayOfYear  : {parsed.day_of_year}")
+            typer.echo(f"  Items      : {parsed.content_md.count('- ')}")
 
         except Exception as e:
-            print(f"✘ {md.name} → {e}")
-            break
+            typer.secho(f"✘ {md.name} → {e}", fg=typer.colors.RED)
+            # We don't necessarily want to 'break' on a single file error 
+            # in a test tool, but you can if preferred.
+            continue
 
-    print("\n✅ Parser test completed.")
-
-
-if __name__ == "__main__":
-    main()
+    typer.secho("\n✅ Parser test completed.", fg=typer.colors.GREEN, bold=True)
