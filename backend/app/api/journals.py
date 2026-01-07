@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.deps import get_db
 from app.models.journal import Journal
-from app.services.journal_parser import parse_journal_markdown
+from app.services.journal_parser import run_parser
 
 router = APIRouter(prefix="/journals", tags=["Journals"])
 
@@ -20,7 +20,7 @@ async def import_journal_md(
 
     # ---- Parse markdown (single source of truth) ----
     try:
-        parsed = parse_journal_markdown(raw_text)
+        parsed = run_parser(raw_text)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

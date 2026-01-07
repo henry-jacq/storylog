@@ -29,7 +29,7 @@ class ParsedJournal:
 
 # ---------- Parser ----------
 
-def parse_journal_markdown(md_text: str) -> ParsedJournal:
+def run_parser(md_text: str) -> ParsedJournal:
     lines = md_text.splitlines()
 
     if len(lines) < 3:

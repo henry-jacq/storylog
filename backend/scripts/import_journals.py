@@ -1,7 +1,7 @@
 import typer
 from pathlib import Path
 from app.core.database import SessionLocal
-from app.services.import_journal import bulk_import_markdown_folder
+from app.services.import_journal import bulk_import_markdown
 
 
 def run_import(path: str, debug=False):
@@ -9,7 +9,7 @@ def run_import(path: str, debug=False):
     db = SessionLocal()
 
     try:
-        report = bulk_import_markdown_folder(db, DOCS_DIR)
+        report = bulk_import_markdown(db, DOCS_DIR)
 
         if report["imported"]:
             print(f"[✔] Imported {len(report['imported'])} Journals.")

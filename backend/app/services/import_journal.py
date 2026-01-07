@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from typing import Dict, List
 
 from app.models.journal import Journal
-from app.services.journal_parser import parse_journal_markdown
+from app.services.journal_parser import run_parser
 
 
-def bulk_import_markdown_folder(
+def bulk_import_markdown(
     db: Session,
     docs_dir: Path,
 ) -> Dict[str, List[str]]:
@@ -33,7 +33,7 @@ def bulk_import_markdown_folder(
         try:
             raw_text = md_file.read_text(encoding="utf-8")
 
-            parsed = parse_journal_markdown(raw_text)
+            parsed = run_parser(raw_text)
 
             # ---- Idempotency check ----
             exists = (
