@@ -221,7 +221,7 @@ export default function BrowseJournals() {
                             onClick={handleExport}
                             className={`text-sm px-3 py-1.5 rounded-md border transition
                                 ${hasSelection && !actionsDisabled
-                                    ? "text-[#1F2933] border-[#E5E7EB] hover:bg-gray-100"
+                                ? "text-[#1F2933] border-[#E5E7EB] hover:bg-gray-100 hover:cursor-pointer"
                                     : "text-gray-400 border-gray-200 cursor-not-allowed"
                                 }`}
                         >
@@ -234,7 +234,7 @@ export default function BrowseJournals() {
                             onClick={() => setConfirmOpen(true)}
                             className={`text-sm px-3 py-1.5 rounded-md transition
                                 ${hasSelection && !actionsDisabled
-                                    ? "bg-red-500 text-white hover:bg-red-600"
+                                ? "bg-red-500 text-white hover:bg-red-600 hover:cursor-pointer"
                                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
                                 }`}
                         >

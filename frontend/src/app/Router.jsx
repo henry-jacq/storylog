@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import Home from "../pages/Home";
 import CreateJournal from "../pages/CreateJournal";
 import BrowseJournals from "../pages/BrowseJournals";
+import EditJournal from "../pages/EditJournal";
 import ViewJournal from "../pages/ViewJournal";
 import Settings from "../pages/Settings";
 
@@ -15,6 +16,7 @@ export default function Router() {
                 <Route path="/journals/new" element={<CreateJournal />} />
                 <Route path="/journals" element={<BrowseJournals />} />
                 <Route path="/journals/:id" element={<ViewJournal />} />
+                <Route path="/journals/:id/edit" element={<EditJournal />} />
                 <Route path="/settings" element={<Settings />} />
             </Route>
         </Routes>
