@@ -19,7 +19,7 @@ export default function CreateJournal() {
     }
 
     return (
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-3xl space-y-6">
             <h2 className="text-xl font-semibold text-[#1F2933]">
                 New Journal
             </h2>

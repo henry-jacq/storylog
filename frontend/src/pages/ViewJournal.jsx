@@ -131,6 +131,14 @@ export default function ViewJournal() {
                 </div>
             </div>
 
+            {/* Toast */}
+            {toast && (
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                />
+            )}
+
             {/* Confirm Delete */}
             <ConfirmDialog
                 open={confirmOpen}
@@ -140,14 +148,6 @@ export default function ViewJournal() {
                 onCancel={() => setConfirmOpen(false)}
                 onConfirm={handleDelete}
             />
-
-            {/* Toast */}
-            {toast && (
-                <Toast
-                    type={toast.type}
-                    message={toast.message}
-                />
-            )}
         </>
     );
 }

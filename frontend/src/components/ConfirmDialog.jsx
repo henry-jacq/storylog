@@ -1,17 +1,25 @@
+import { createPortal } from "react-dom";
+
 export default function ConfirmDialog({
     open,
     title,
     message,
     confirmText = "Confirm",
-    cancelText = "Cancel",
-    onConfirm,
     onCancel,
+    onConfirm,
 }) {
     if (!open) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
-            <div className="w-full max-w-sm p-6 bg-white shadow-lg rounded-xl">
+    return createPortal(
+        <div className="fixed inset-0 z-[900] flex items-center justify-center">
+            {/* Backdrop */}
+            <div
+                className="absolute inset-0 bg-black/30"
+                onClick={onCancel}
+            />
+
+            {/* Dialog */}
+            <div className="relative z-10 w-full max-w-sm p-6 bg-white shadow-xl rounded-xl">
                 <h3 className="text-lg font-semibold text-[#1F2933]">
                     {title}
                 </h3>
@@ -23,19 +31,20 @@ export default function ConfirmDialog({
                 <div className="flex justify-end gap-3 mt-6">
                     <button
                         onClick={onCancel}
-                        className="px-3 py-1.5 text-sm text-[#1F2933] border border-[#E5E7EB] rounded-md hover:bg-gray-100"
+                        className="text-sm text-[#6B7280] hover:underline hover:cursor-pointer"
                     >
-                        {cancelText}
+                        Cancel
                     </button>
 
                     <button
                         onClick={onConfirm}
-                        className="px-3 py-1.5 text-sm text-white bg-red-500 rounded-md hover:bg-red-600"
+                        className="px-4 py-1.5 text-sm rounded-md bg-red-500 text-white hover:bg-red-600 hover:cursor-pointer"
                     >
                         {confirmText}
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
