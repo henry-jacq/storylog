@@ -2,6 +2,7 @@ import typer, os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.journals import router as journal_router
+from app.api.settings import router as settings_router
 from app.core.database import Base, engine
 from app import models
 
@@ -25,6 +26,7 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 app.include_router(journal_router)
+app.include_router(settings_router)
 
 @app.get("/health")
 def health():

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
 from app.core.database import Base
 
@@ -6,12 +6,17 @@ from app.core.database import Base
 class Settings(Base):
     __tablename__ = "settings"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, default=1)
 
-    app_lock_hash = Column(String(255), nullable=True)
-    journal_secret_hash = Column(String(255), nullable=True)
+    # App-level lock (future use)
+    app_lock_secret = Column(String(255), nullable=True)
 
-    encryption_enabled = Column(Boolean, default=False)
+    # Journal encryption / protection (future use)
+    journal_secret = Column(String(255), nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
