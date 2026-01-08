@@ -1,7 +1,9 @@
-import typer
+import typer, os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.api.journals import router as journal_router
 from app.core.database import Base, engine
+from app import models
 
 from scripts.import_journals import run_import 
 from scripts.export_journals import run_export
@@ -10,6 +12,17 @@ from scripts.test_md_parser import run_parser_test
 
 # 1. FastAPI App Setup
 app = FastAPI(title="Storylog")
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 Base.metadata.create_all(bind=engine)
 app.include_router(journal_router)
 

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_db
@@ -11,16 +11,30 @@ from app.schemas.journal import (
     JournalResponse,
 )
 from app.schemas.common import APIResponse
+from app.schemas.pagination import PaginatedResponse
 
 router = APIRouter(prefix="/journals", tags=["Journals"])
 
 
-@router.get("/", response_model=APIResponse[list[JournalResponse]])
-def list_journals(db: Session = Depends(get_db)):
-    journals = journal_service.list_journals(db)
+@router.get("", response_model=APIResponse[PaginatedResponse[JournalResponse]],)
+def list_journals(
+    db: Session = Depends(get_db),
+    page: int = Query(1, ge=1),
+    limit: int = Query(30, ge=1, le=100),
+    year: int | None = Query(None),
+    q: str | None = Query(None),
+):
+    data = journal_service.list_journals(
+        db,
+        page=page,
+        limit=limit,
+        year=year,
+        q=q,
+    )
+
     return {
         "status": True,
-        "data": journals,
+        "data": data,
     }
 
 

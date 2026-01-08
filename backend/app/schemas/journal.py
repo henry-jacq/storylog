@@ -8,7 +8,7 @@ class JournalBase(BaseModel):
     journal_time: time
     day: str
     day_of_year: int
-    content_md: str
+    content: str
 
 
 class JournalCreate(JournalBase):
@@ -19,12 +19,11 @@ class JournalUpdate(BaseModel):
     journal_time: Optional[time] = None
     day: Optional[str] = None
     day_of_year: Optional[int] = None
-    content_md: Optional[str] = None
+    content: Optional[str] = None
 
 
 class JournalResponse(JournalBase):
     id: int
-    content_html: str
 
     class Config:
         from_attributes = True

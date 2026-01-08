@@ -1,17 +1,48 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import extract
 from fastapi import HTTPException
 
 from app.models.journal import Journal
 from app.schemas.journal import JournalCreate, JournalUpdate
-from app.services.journal_parser import markdown_to_safe_html
+from app.services.journal_parser import markdown_to_text
 
 
-def list_journals(db: Session):
-    return (
-        db.query(Journal)
+def list_journals(
+    db: Session,
+    *,
+    page: int,
+    limit: int,
+    year: int | None = None,
+    q: str | None = None,
+):
+    query = db.query(Journal)
+
+    if year:
+        query = query.filter(
+            extract("year", Journal.journal_date) == year
+        )
+
+    if q:
+        query = query.filter(
+            Journal.content.ilike(f"%{q}%")
+        )
+
+    total = query.count()
+
+    items = (
+        query
         .order_by(Journal.journal_date.desc())
+        .offset((page - 1) * limit)
+        .limit(limit)
         .all()
     )
+
+    return {
+        "items": items,
+        "page": page,
+        "limit": limit,
+        "total": total,
+    }
 
 
 def get_journal(db: Session, journal_id: int):
@@ -35,8 +66,7 @@ def create_journal(db: Session, data: JournalCreate):
         journal_time=data.journal_time,
         day=data.day,
         day_of_year=data.day_of_year,
-        content_md=data.content_md,
-        content_html=markdown_to_safe_html(data.content_md),
+        content=data.content,
     )
 
     db.add(journal)
@@ -50,9 +80,6 @@ def update_journal(db: Session, journal_id: int, data: JournalUpdate):
 
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(journal, field, value)
-
-    if data.content_md is not None:
-        journal.content_html = markdown_to_safe_html(data.content_md)
 
     db.commit()
     db.refresh(journal)

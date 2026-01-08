@@ -1,6 +1,6 @@
 import re
-import html
 import markdown
+from bs4 import BeautifulSoup
 from datetime import date, time
 
 from app.schemas.journal_parsed import JournalParsed
@@ -45,20 +45,15 @@ def run_parser(md_text: str) -> JournalParsed:
     if not content_md:
         raise ValueError("Journal content is empty")
 
-    # Markdown to HTML
-    content_html = markdown.markdown(
-        content_md,
-        extensions=["extra", "sane_lists"],
-        output_format="html5",
-    )
+    # Markdown to Plain Text
+    text = markdown_to_text(content_md)
 
     return JournalParsed(
         journal_date=journal_date,
         journal_time=journal_time,
         day=day_str,
         day_of_year=day_of_year,
-        content_md=content_md,
-        content_html=content_html,
+        content=text,
     )
 
 
@@ -72,9 +67,10 @@ def _parse_time(t: str) -> time:
     return datetime.strptime(t, "%I:%M:%S %p").time()
 
 
-def markdown_to_safe_html(md_text: str) -> str:
+def markdown_to_text(md_text: str) -> str:
     """
-    Converts markdown list to minimal, web-safe HTML.
+    Converts markdown list plain text.
     """
     raw_html = markdown.markdown(md_text, extensions=["extra"])
-    return html.escape(raw_html, quote=False)
+    text = BeautifulSoup(raw_html, "html.parser").get_text("\n")
+    return text

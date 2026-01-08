@@ -1,12 +1,4 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    Date,
-    Time,
-    String,
-    Text,
-    DateTime,
-)
+from sqlalchemy import Column, Integer, Date, Time, String, Text, DateTime
 from sqlalchemy.sql import func
 from app.core.database import Base
 
@@ -22,7 +14,6 @@ class Journal(Base):
     day = Column(String(16), nullable=False)
     day_of_year = Column(Integer, nullable=False)
 
-    content_md = Column(Text, nullable=False)
-    content_html = Column(Text, nullable=False)
+    content = Column(Text, nullable=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())

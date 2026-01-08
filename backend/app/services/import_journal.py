@@ -35,7 +35,7 @@ def bulk_import_markdown(
 
             parsed = run_parser(raw_text)
 
-            # ---- Idempotency check ----
+            # Idempotency check
             exists = (
                 db.query(Journal)
                 .filter(Journal.journal_date == parsed.journal_date)
@@ -51,8 +51,7 @@ def bulk_import_markdown(
                 journal_time=parsed.journal_time,
                 day=parsed.day,
                 day_of_year=parsed.day_of_year,
-                content_md=parsed.content_md,
-                content_html=parsed.content_html,
+                content=parsed.content,
             )
 
             db.add(journal)
