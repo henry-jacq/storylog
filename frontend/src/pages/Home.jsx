@@ -1,13 +1,23 @@
 import { Link } from "react-router-dom";
+import { Cog6ToothIcon } from '@heroicons/react/24/outline'; 
 
 export default function Home() {
     return (
         <section className="space-y-10">
-            <div>
-                <h1 className="text-3xl font-semibold">Storylog</h1>
-                <p className="mt-2 text-[#6B7280]">
-                    Quiet place to think and write about the day.
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-semibold">Storylog</h1>
+                    <p className="mt-2 text-[#6B7280]">
+                        Quiet place to think and write about the day.
+                    </p>
+                </div>
+
+                <Link
+                    to="/settings"
+                    className="px-2 py-2 border border-[#E5E7EB] rounded-lg flex items-center"
+                >
+                    <Cog6ToothIcon className="inline-block w-5 h-5" />
+                </Link>
             </div>
 
             <div className="flex gap-6">
