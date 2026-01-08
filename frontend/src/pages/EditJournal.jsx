@@ -118,7 +118,7 @@ export default function EditJournal() {
                     placeholder="One thought per line…"
                     rows={12}
                     className="
-                        w-full rounded-xl border border-[#E5E7EB]
+                        w-full rounded-lg border border-[#E5E7EB]
                         bg-white p-4 text-[15px] leading-relaxed
                         focus:outline-none focus:ring-2 focus:ring-[#3B82F6]
                         resize-none mb-4

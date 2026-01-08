@@ -264,7 +264,7 @@ export default function BrowseJournals() {
                 </label>
 
                 {/* List */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                     {journals.map((j) => (
                         <JournalCard
                             key={j.id}

@@ -6,7 +6,7 @@ export default function JournalCard({
 }) {
     return (
         <div
-            className={`p-4 rounded-lg border transition
+            className={`p-4 rounded-md border transition
                 ${selected
                     ? "border-[#3B82F6] bg-blue-50"
                     : "border-[#E5E7EB] bg-white"

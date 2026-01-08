@@ -116,7 +116,7 @@ export default function ViewJournal() {
                 </div>
 
                 {/* Content */}
-                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 space-y-4">
+                <div className="bg-white border border-[#E5E7EB] rounded-lg p-6 space-y-2">
                     {journal.content_md
                         .split("\n")
                         .filter(Boolean)
