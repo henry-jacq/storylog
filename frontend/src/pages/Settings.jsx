@@ -1,5 +1,6 @@
-import { useState } from "react";
 import Toast from "../components/Toast";
+import { useState, useEffect } from "react";
+import { SettingsAPI } from "../services/settings";
 
 export default function Settings() {
     const [appLock, setAppLock] = useState("");
@@ -9,12 +10,25 @@ export default function Settings() {
 
     const [toast, setToast] = useState(null);
 
+    useEffect(() => {
+        SettingsAPI.get().then(data => {
+            setAppLock(data.app_lock_secret || "");
+            setJournalSecret(data.journal_secret || "");
+        });
+    }, []);
+
+
     function notify(message, type = "success") {
         setToast({ type, message });
         setTimeout(() => setToast(null), 2200);
     }
 
     function handleSave() {
+        SettingsAPI.update({
+            app_lock_secret: appLock || null,
+            journal_secret: journalSecret || null,
+        });
+
         notify("Settings saved");
     }
 

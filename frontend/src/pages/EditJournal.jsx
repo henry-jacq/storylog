@@ -27,13 +27,8 @@ export default function EditJournal() {
             const data = await JournalsAPI.get(id);
             setJournal(data);
 
-            // Convert markdown list → plain text (UI format)
-            setContent(
-                data.content_md
-                    .split("\n")
-                    .map((l) => l.replace(/^- /, ""))
-                    .join("\n")
-            );
+            // Set Plain text content
+            setContent(data.content);
         } catch {
             setToast({
                 type: "error",
@@ -52,7 +47,7 @@ export default function EditJournal() {
 
         try {
             const payload = {
-                content_md: content
+                content: content
                     .split("\n")
                     .filter(Boolean)
                     .map((l) => `- ${l}`)

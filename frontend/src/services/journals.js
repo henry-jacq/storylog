@@ -1,18 +1,13 @@
-const API_BASE = "http://127.0.0.1:8000";
-
-async function request(url, options = {}) {
-    const res = await fetch(`${API_BASE}${url}`, options);
-    const json = await res.json();
-
-    if (!json.status) {
-        throw new Error(json.detail || "API Error");
-    }
-
-    return json.data;
-}
+import { API_BASE, request } from "./api.js";
 
 export const JournalsAPI = {
-    list: () => request("/journals/"),
+    list: ({ page = 1, limit = 30, year, q } = {}) => {
+        const params = new URLSearchParams({ page, limit });
+        if (year) params.append("year", year);
+        if (q) params.append("q", q);
+
+        return request(`/journals?${params.toString()}`);
+    },
 
     get: (id) => request(`/journals/${id}`),
 
@@ -47,4 +42,6 @@ export const JournalsAPI = {
         return json.data;
     },
 
+    stats: () => request("/journals/stats"),
+    insights: () => request("/journals/insights"),
 };

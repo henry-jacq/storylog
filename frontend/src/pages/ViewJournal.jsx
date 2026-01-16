@@ -117,15 +117,12 @@ export default function ViewJournal() {
 
                 {/* Content */}
                 <div className="bg-white border border-[#E5E7EB] rounded-lg p-6 space-y-2">
-                    {journal.content_md
+                    {journal.content
                         .split("\n")
                         .filter(Boolean)
                         .map((line, idx) => (
-                            <p
-                                key={idx}
-                                className="text-[15px] leading-relaxed text-[#1F2933]"
-                            >
-                                {line.replace(/^- /, "")}
+                            <p key={idx} className="text-[15px] leading-relaxed">
+                                {line}
                             </p>
                         ))}
                 </div>

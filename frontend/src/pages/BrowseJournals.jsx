@@ -12,6 +12,11 @@ export default function BrowseJournals() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // pagination
+    const [page, setPage] = useState(1);
+    const [total, setTotal] = useState(0);
+    const limit = 30;
+    
     /* ---------- State ---------- */
     const [journals, setJournals] = useState([]);
     const [selected, setSelected] = useState([]);
@@ -27,9 +32,6 @@ export default function BrowseJournals() {
 
     const actionsDisabled = importing;
 
-    // future-ready
-    const [page] = useState(1);
-
     /* ---------- Toast from Navigation ---------- */
     useEffect(() => {
         if (location.state?.toast) {
@@ -43,13 +45,14 @@ export default function BrowseJournals() {
     /* ---------- Load Data ---------- */
     useEffect(() => {
         loadJournals();
-    }, []);
+    }, [page]);
 
     async function loadJournals() {
         setLoading(true);
         try {
-            const data = await JournalsAPI.list();
-            setJournals(data);
+            const data = await JournalsAPI.list({ page, limit });
+            setJournals(data.items);
+            setTotal(data.total);
         } finally {
             setLoading(false);
         }
@@ -280,8 +283,19 @@ export default function BrowseJournals() {
                 <div className="pt-6 flex justify-between text-sm text-[#6B7280]">
                     <span>Page {page}</span>
                     <div className="space-x-3">
-                        <button className="hover:underline">Previous</button>
-                        <button className="hover:underline">Next</button>
+                        <button className="text-sm px-3 py-1.5 rounded-md border transition text-[#1F2933] border-[#E5E7EB] hover:bg-gray-100 hover:cursor-pointer text-gray-400 border-gray-200 cursor-not-allowed"
+                            disabled={page === 1}
+                            onClick={() => setPage(p => p - 1)}
+                        >
+                            Previous
+                        </button>
+
+                        <button className="text-sm px-3 py-1.5 rounded-md border transition text-[#1F2933] border-[#E5E7EB] hover:bg-gray-100 hover:cursor-pointer text-gray-400 border-gray-200 cursor-not-allowed"
+                            disabled={page * limit >= total}
+                            onClick={() => setPage(p => p + 1)}
+                        >
+                            Next
+                        </button>
                     </div>
                 </div>
             </div>

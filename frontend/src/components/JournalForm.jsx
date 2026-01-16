@@ -9,7 +9,7 @@ export default function JournalForm({ onSubmit, loading = false }) {
         journal_time: meta.time,
         day: meta.day,
         day_of_year: meta.dayOfYear,
-        content_md: "",
+        content: "",
     });
 
     function update(field, value) {
@@ -61,8 +61,8 @@ export default function JournalForm({ onSubmit, loading = false }) {
                 </label>
 
                 <textarea
-                    value={form.content_md}
-                    onChange={(e) => update("content_md", e.target.value)}
+                    value={form.content}
+                    onChange={(e) => update("content", e.target.value)}
                     rows={10}
                     placeholder="One thought per line. Keep it simple."
                     className="w-full p-4 text-sm leading-relaxed border rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"

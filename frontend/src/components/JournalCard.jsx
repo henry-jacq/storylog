@@ -39,7 +39,9 @@ export default function JournalCard({
                     </div>
 
                     <div className="text-sm text-[#6B7280] line-clamp-2">
-                        {journal.content_md.replace(/^- /gm, "")}
+                        <div className="text-sm text-[#6B7280] line-clamp-2">
+                            {journal.content}
+                        </div>
                     </div>
                 </div>
             </div>
