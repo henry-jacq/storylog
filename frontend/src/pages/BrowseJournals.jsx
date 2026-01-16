@@ -17,7 +17,7 @@ export default function BrowseJournals() {
     const [total, setTotal] = useState(0);
     const limit = 30;
     
-    /* ---------- State ---------- */
+    /* State */
     const [journals, setJournals] = useState([]);
     const [selected, setSelected] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ export default function BrowseJournals() {
 
     const actionsDisabled = importing;
 
-    /* ---------- Toast from Navigation ---------- */
+    /* Toast from Navigation */
     useEffect(() => {
         if (location.state?.toast) {
             setToast(location.state.toast);
@@ -42,9 +42,12 @@ export default function BrowseJournals() {
         }
     }, [location.state]);
 
-    /* ---------- Load Data ---------- */
+    /* Load Data */
     useEffect(() => {
         loadJournals();
+        setSelected([]);
+        setLastSelectedId(null);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
     async function loadJournals() {
@@ -58,42 +61,44 @@ export default function BrowseJournals() {
         }
     }
 
-    /* ---------- Selection Logic ---------- */
-    function handleSelect(id, event) {
-        const isMeta = event.metaKey || event.ctrlKey;
-        const isShift = event.shiftKey;
+    /* Selection Logic */
+    function handleSelect(id, mode) {
+        setSelected(prev => {
+            // RANGE selection (shift)
+            if (mode === "range" && lastSelectedId !== null) {
+                const ids = journals.map(j => j.id);
+                const start = ids.indexOf(lastSelectedId);
+                const end = ids.indexOf(id);
 
-        if (!isMeta && !isShift) {
-            setSelected((prev) => (prev.includes(id) ? prev : [id]));
+                if (start === -1 || end === -1) return prev;
+
+                return Array.from(
+                    new Set(
+                        ids.slice(
+                            Math.min(start, end),
+                            Math.max(start, end) + 1
+                        )
+                    )
+                );
+            }
+
+            // TOGGLE selection (checkbox / ctrl)
+            if (mode === "toggle") {
+                return prev.includes(id)
+                    ? prev.filter(x => x !== id)
+                    : [...prev, id];
+            }
+
+            // SINGLE selection (row click)
+            if (prev.length === 1 && prev[0] === id) {
+                return []; // deselect
+            }
+
+            return [id];
+        });
+
+        if (mode !== "range") {
             setLastSelectedId(id);
-            return;
-        }
-
-        if (isMeta) {
-            setSelected((prev) =>
-                prev.includes(id)
-                    ? prev.filter((x) => x !== id)
-                    : [...prev, id]
-            );
-            setLastSelectedId(id);
-            return;
-        }
-
-        if (isShift && lastSelectedId !== null) {
-            const ids = journals.map((j) => j.id);
-            const start = ids.indexOf(lastSelectedId);
-            const end = ids.indexOf(id);
-
-            if (start === -1 || end === -1) return;
-
-            const range = ids.slice(
-                Math.min(start, end),
-                Math.max(start, end) + 1
-            );
-
-            setSelected((prev) =>
-                Array.from(new Set([...prev, ...range]))
-            );
         }
     }
 
@@ -109,7 +114,7 @@ export default function BrowseJournals() {
     const allSelected =
         journals.length > 0 && selected.length === journals.length;
 
-    /* ---------- Import / Export ---------- */
+    /* Import / Export */
     async function handleImport(file) {
         setImporting(true);
         setImportProgress("Uploading…");
@@ -144,8 +149,9 @@ export default function BrowseJournals() {
         setTimeout(() => setToast(null), 2200);
     }
 
-    /* ---------- Bulk Delete ---------- */
+    /* Bulk Delete */
     async function bulkDelete() {
+        setImporting(true);
         try {
             for (const id of selected) {
                 await JournalsAPI.remove(id);
@@ -164,12 +170,13 @@ export default function BrowseJournals() {
                 message: "Failed to delete journals",
             });
         } finally {
+            setImporting(false);
             setConfirmOpen(false);
             setTimeout(() => setToast(null), 2500);
         }
     }
 
-    /* ---------- UI States ---------- */
+    /* UI States */
     if (loading) {
         return <Loader label="Loading journals…" />;
     }
@@ -185,7 +192,7 @@ export default function BrowseJournals() {
         );
     }
 
-    /* ---------- Render ---------- */
+    /* Render */
     return (
         <>
             <div className="space-y-6">
@@ -257,14 +264,18 @@ export default function BrowseJournals() {
                 )}
 
                 {/* Select All */}
-                <label className="flex items-center gap-2 text-sm text-[#6B7280]">
-                    <input
-                        type="checkbox"
-                        checked={allSelected}
-                        onChange={toggleSelectAll}
-                    />
-                    Select all
-                </label>
+                <div className="flex items-center justify-between">                    
+                    <label className="flex items-center gap-2 text-sm text-[#6B7280]">
+                        <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
+                        Select all on this page
+                    </label>
+
+                    {hasSelection && (
+                        <span className="text-sm text-gray-500">
+                            {selected.length} selected
+                        </span>
+                    )}
+                </div>
 
                 {/* List */}
                 <div className="space-y-2">
@@ -273,7 +284,7 @@ export default function BrowseJournals() {
                             key={j.id}
                             journal={j}
                             selected={selected.includes(j.id)}
-                            onSelect={(e) => handleSelect(j.id, e)}
+                            onSelect={handleSelect}
                             onOpen={() => navigate(`/journals/${j.id}`)}
                         />
                     ))}
