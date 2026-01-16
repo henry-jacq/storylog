@@ -32,7 +32,7 @@ def run_parser_test(path: str, limit: int = None):
             typer.echo(f"  Time       : {parsed.journal_time}")
             typer.echo(f"  Day        : {parsed.day}")
             typer.echo(f"  DayOfYear  : {parsed.day_of_year}")
-            typer.echo(f"  Items      : {parsed.content_md.count('- ')}")
+            typer.echo(f"  Items      : {parsed.content.count('- ')}")
 
         except Exception as e:
             typer.secho(f"✘ {md.name} → {e}", fg=typer.colors.RED)

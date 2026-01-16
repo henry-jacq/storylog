@@ -16,6 +16,6 @@ def journal_to_markdown(journal: Journal) -> str:
     header_2 = f"# Day of year: {journal.day_of_year:03d}"
 
     # Content
-    content = journal.content_md.strip()
+    content = journal.content.strip()
 
     return "\n".join([header_1,header_2,"",content,""])
