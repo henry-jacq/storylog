@@ -47,11 +47,7 @@ export default function EditJournal() {
 
         try {
             const payload = {
-                content: content
-                    .split("\n")
-                    .filter(Boolean)
-                    .map((l) => `- ${l}`)
-                    .join("\n"),
+                content: content.trim(),
             };
 
             await JournalsAPI.update(id, payload);

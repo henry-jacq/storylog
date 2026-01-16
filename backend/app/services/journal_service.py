@@ -4,7 +4,6 @@ from fastapi import HTTPException
 
 from app.models.journal import Journal
 from app.schemas.journal import JournalCreate, JournalUpdate
-from app.services.journal_parser import markdown_to_text
 
 
 def list_journals(
@@ -61,12 +60,18 @@ def create_journal(db: Session, data: JournalCreate):
     if exists:
         raise HTTPException(status_code=409, detail="Journal already exists")
 
+    content = "\n".join(
+        line.lstrip("- ").strip()
+        for line in data.content.splitlines()
+        if line.strip()
+    )
+
     journal = Journal(
         journal_date=data.journal_date,
         journal_time=data.journal_time,
         day=data.day,
         day_of_year=data.day_of_year,
-        content=data.content,
+        content=content,
     )
 
     db.add(journal)
