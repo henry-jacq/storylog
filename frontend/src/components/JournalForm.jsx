@@ -22,69 +22,88 @@ export default function JournalForm({ onSubmit, loading = false }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
             {/* Metadata */}
-            <div className="grid grid-cols-2 gap-4">
-                <Field
-                    label="Date"
-                    type="date"
-                    value={form.journal_date}
-                    onChange={(v) => update("journal_date", v)}
-                />
+            <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 space-y-4">
+                <h3 className="text-sm font-medium text-[#1F2933]">
+                    Entry details
+                </h3>
 
-                <Field
-                    label="Time"
-                    type="time"
-                    step="1"
-                    value={form.journal_time}
-                    onChange={(v) => update("journal_time", v)}
-                />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Field
+                        label="Date"
+                        type="date"
+                        value={form.journal_date}
+                        onChange={(v) => update("journal_date", v)}
+                    />
 
-                <Field
-                    label="Day"
-                    value={form.day}
-                    onChange={(v) => update("day", v)}
-                />
+                    <Field
+                        label="Time"
+                        type="time"
+                        step="1"
+                        value={form.journal_time}
+                        onChange={(v) => update("journal_time", v)}
+                    />
 
-                <Field
-                    label="Day of year"
-                    type="number"
-                    value={form.day_of_year}
-                    onChange={(v) => update("day_of_year", v)}
-                />
-            </div>
+                    <Field
+                        label="Day"
+                        value={form.day}
+                        onChange={(v) => update("day", v)}
+                    />
+
+                    <Field
+                        label="Day of year"
+                        type="number"
+                        value={form.day_of_year}
+                        onChange={(v) => update("day_of_year", v)}
+                    />
+                </div>
+            </section>
 
             {/* Content */}
-            <div>
-                <label className="block mb-2 text-sm text-[#6B7280]">
-                    Journal content
-                </label>
+            <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 space-y-3">
+                <div>
+                    <h3 className="text-sm font-medium text-[#1F2933]">
+                        Journal content
+                    </h3>
+                    <p className="mt-1 text-sm text-[#6B7280]">
+                        Write freely. One thought per line.
+                    </p>
+                </div>
 
                 <textarea
                     value={form.content}
                     onChange={(e) => update("content", e.target.value)}
-                    rows={10}
-                    placeholder="One thought per line. Keep it simple."
-                    className="w-full p-4 text-sm leading-relaxed border rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                    rows={12}
+                    placeholder="Today I felt…
+Something interesting happened…
+I learned that…"
+                    className="
+                        w-full rounded-lg border border-[#E5E7EB]
+                        bg-[#F8F9FA] p-4 text-[15px] leading-relaxed
+                        focus:outline-none focus:ring-2 focus:ring-[#3B82F6]
+                        resize-none transition
+                    "
                     required
                 />
 
-                <p className="mt-2 text-xs text-[#94A3B8]">
-                    Plain text only. Markdown will be generated automatically.
+                <p className="text-xs text-[#94A3B8]">
+                    Plain text only. Formatting is handled automatically.
                 </p>
-            </div>
+            </section>
 
             {/* Actions */}
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end">
                 <button
                     type="submit"
                     disabled={loading}
-                    className={`px-5 py-2 rounded-lg text-white transition
-            ${loading
-                            ? "bg-gray-300 cursor-not-allowed"
-                            : "bg-[#3B82F6] hover:bg-blue-600"
+                    className={`
+                        px-5 py-2 rounded-md text-sm transition
+                        ${loading
+                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                            : "bg-[#3B82F6] text-white hover:bg-blue-600 hover:cursor-pointer"
                         }
-          `}
+                    `}
                 >
                     {loading ? "Saving…" : "Save journal"}
                 </button>
@@ -93,18 +112,25 @@ export default function JournalForm({ onSubmit, loading = false }) {
     );
 }
 
-/* ---------- Small Field Component ---------- */
+/* Field */
 
 function Field({ label, type = "text", value, onChange, step }) {
     return (
-        <div>
-            <label className="block mb-1 text-sm text-[#6B7280]">{label}</label>
+        <div className="space-y-1">
+            <label className="text-sm text-[#6B7280]">
+                {label}
+            </label>
+
             <input
                 type={type}
                 step={step}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                className="
+                    w-full rounded-md border border-[#E5E7EB]
+                    bg-[#F8F9FA] px-3 py-2 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-[#3B82F6] transition
+                "
             />
         </div>
     );
