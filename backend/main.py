@@ -7,6 +7,7 @@ from app.api.journal_stats import router as stats_router
 from app.api.journal_insights import router as insights_router
 from app.core.database import Base, engine
 from app import models
+from app.core.config import settings
 
 from scripts.import_journals import run_import 
 from scripts.export_journals import run_export
@@ -14,13 +15,11 @@ from scripts.validate_md_files import run_validation
 from scripts.test_md_parser import run_parser_test
 
 # 1. FastAPI App Setup
-app = FastAPI(title="Storylog")
-
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+app = FastAPI(title=settings.PROJECT_NAME)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL],
+    allow_origins=[settings.FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,7 +42,7 @@ cli = typer.Typer()
 def serve():
     """Run the FastAPI server (Alternative to fastapi dev)"""
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
 @cli.command()
 def import_data(path: str, debug: bool = False):
