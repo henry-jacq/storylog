@@ -1,18 +1,48 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:15
+    container_name: storylog-db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: journal
       POSTGRES_USER: journal
       POSTGRES_PASSWORD: journal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   backend:
-    build: ./backend
+    container_name: storylog-backend
+    build:
+      context: ./backend
+    restart: unless-stopped
     depends_on:
       - db
+    environment:
+      DATABASE_URL: postgresql://journal:journal@db:5432/journal
+      FRONTEND_URL: http://localhost:5173
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend:/app
+    command: python main.py serve
+
+  frontend:
+    container_name: storylog-frontend
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE: http://localhost:8000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+
+volumes:
+  postgres_data:
