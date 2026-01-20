@@ -124,6 +124,12 @@ export default function Settings() {
                     >
                         Export all journals
                     </button>
+                    <button
+                        onClick={handleExportAll}
+                        className="rounded-md border border-[#E5E7EB] px-4 py-2 text-sm text-[#1F2933] hover:bg-gray-100 transition"
+                    >
+                        Export all journals
+                    </button>
                 </section>
 
                 {/* Appearance */}

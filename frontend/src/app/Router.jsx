@@ -7,10 +7,13 @@ import BrowseJournals from "../pages/BrowseJournals";
 import EditJournal from "../pages/EditJournal";
 import ViewJournal from "../pages/ViewJournal";
 import Settings from "../pages/Settings";
+import SetupWizard from "../pages/setup/SetupWizard";
 
 export default function Router() {
     return (
         <Routes>
+            <Route path="/setup" element={<SetupWizard />} />
+
             <Route element={<Layout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/journals/new" element={<CreateJournal />} />
