@@ -1,19 +1,16 @@
 from sqlalchemy.orm import Session
 from app.models.settings import Settings
 
-
-SETTINGS_ID = 1
-
-
 def get_settings(db: Session) -> Settings:
-    settings = db.get(Settings, SETTINGS_ID)
+    settings = db.query(Settings).filter(Settings.id == 1).first()
 
-    if not settings:
-        settings = Settings(id=SETTINGS_ID)
-        db.add(settings)
-        db.commit()
-        db.refresh(settings)
+    if settings:
+        return settings
 
+    settings = Settings(id=1)
+    db.add(settings)
+    db.commit()
+    db.refresh(settings)
     return settings
 
 
