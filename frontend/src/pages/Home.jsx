@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { JournalsAPI } from "../services/journals";
 import {
@@ -7,6 +7,7 @@ import {
     PencilSquareIcon,
     FireIcon,
     CalendarDaysIcon,
+    ShieldCheckIcon
 } from "@heroicons/react/24/outline";
 
 /* Base Stat Card (Factual) */
@@ -124,11 +125,19 @@ function InfoCard() {
 export default function Home() {
     const [stats, setStats] = useState(null);
     const [insights, setInsights] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         JournalsAPI.stats().then(setStats);
         JournalsAPI.insights().then(setInsights);
     }, []);
+
+    function lockNow() {
+        navigate("/", {
+            replace: true,
+            state: { lockNow: true },
+        });
+    }
 
     return (
         <section className="space-y-10">
@@ -143,12 +152,24 @@ export default function Home() {
                     </p>
                 </div>
 
-                <Link
-                    to="/settings"
-                    className="p-2 transition border border-gray-200 rounded-lg hover:bg-gray-50"
-                >
-                    <Cog6ToothIcon className="w-5 h-5 text-gray-600" />
-                </Link>
+                <div className="flex gap-4">
+                    {/* Manual App Lock */}
+                    <button
+                        onClick={lockNow}
+                        title="Lock app"
+                        className="p-2 transition border border-gray-200 rounded-lg hover:bg-gray-50 hover:cursor-pointer"
+                    >
+                        <ShieldCheckIcon className="w-5 h-5 text-gray-600" />
+                    </button>
+
+                    {/* Settings */}
+                    <Link
+                        to="/settings"
+                        className="p-2 transition border border-gray-200 rounded-lg hover:bg-gray-50"
+                    >
+                        <Cog6ToothIcon className="w-5 h-5 text-gray-600" />
+                    </Link>
+                </div>
             </div>
 
             {/* Actions */}

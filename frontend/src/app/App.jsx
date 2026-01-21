@@ -1,4 +1,4 @@
-import { BrowserRouter, useNavigate } from "react-router-dom";
+import { BrowserRouter, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Router from "./Router";
 import { SettingsAPI } from "../services/settings";
@@ -6,10 +6,22 @@ import AppLock from "../pages/AppLock";
 
 function AppGuard() {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [checked, setChecked] = useState(false);
     const [locked, setLocked] = useState(false);
 
+    // Manual app-lock trigger
+    useEffect(() => {
+        if (location.state?.lockNow) {
+            setLocked(true);
+
+            // clear navigation state to avoid re-lock loops
+            navigate(location.pathname, { replace: true });
+        }
+    }, [location, navigate]);
+
+    // Initial settings check (EXISTING)
     useEffect(() => {
         let alive = true;
 
