@@ -8,42 +8,41 @@ function AppGuard() {
     const navigate = useNavigate();
 
     const [checked, setChecked] = useState(false);
-    const [settings, setSettings] = useState(null);
-    const [unlocked, setUnlocked] = useState(false);
+    const [locked, setLocked] = useState(false);
 
     useEffect(() => {
-        SettingsAPI.get().then(data => {
-            setSettings(data);
+        let alive = true;
 
-            // Setup not completed → force wizard
-            if (!data.is_initialized) {
-                navigate("/setup", { replace: true });
-                return;
+        (async () => {
+            try {
+                const data = await SettingsAPI.getPublic();
+                if (!alive) return;
+
+                if (!data.is_initialized) {
+                    setChecked(true);
+                    navigate("/setup", { replace: true });
+                    return;
+                }
+
+                setLocked(data.app_lock_enabled);
+                setChecked(true);
+            } catch (e) {
+                console.error("Settings load failed", e);
+                setChecked(true);
             }
+        })();
 
-            // No app lock → auto unlock
-            if (!data.app_lock_secret) {
-                setUnlocked(true);
-            }
+        return () => {
+            alive = false;
+        };
+    }, [navigate]);
 
-            setChecked(true);
-        });
-    }, []);
-
-    // Still loading settings
     if (!checked) return null;
 
-    // App lock enabled but not unlocked yet
-    if (settings?.app_lock_secret && !unlocked) {
-        return (
-            <AppLock
-                secret={settings.app_lock_secret}
-                onUnlock={() => setUnlocked(true)}
-            />
-        );
+    if (locked) {
+        return <AppLock onUnlock={() => setLocked(false)} />;
     }
 
-    // App unlocked -> normal routing
     return <Router />;
 }
 

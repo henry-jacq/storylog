@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import SetupProgress from './../../../components/SetupProgress';
 
 export default function ProfileStep({ data, onNext, step, total }) {
+    const [name, setName] = useState(data.name || "");
+    const [email, setEmail] = useState(data.email || "");
+    
     return (
         <>
             <SetupProgress step={step} total={total} />
@@ -9,28 +13,21 @@ export default function ProfileStep({ data, onNext, step, total }) {
 
             <input
                 placeholder="Name (optional)"
-                defaultValue={data.name}
+                onChange={e => setName(e.target.value)}
                 className="w-full px-3 py-2 border rounded-md"
             />
 
             <input
                 placeholder="Email (optional)"
-                defaultValue={data.email}
+                onChange={e => setEmail(e.target.value)}
                 className="w-full px-3 py-2 border rounded-md"
             />
 
             <button
-                onClick={() => onNext()}
+                onClick={() => onNext({name, email})}
                 className="w-full py-2 text-white bg-blue-500 rounded-md"
             >
                 Continue
-            </button>
-
-            <button
-                onClick={() => onNext()}
-                className="w-full text-sm text-gray-500"
-            >
-                Skip
             </button>
         </>
     );

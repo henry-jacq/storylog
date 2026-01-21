@@ -32,12 +32,11 @@ export default function SetupWizard() {
     }
 
     async function finish() {
-        await SettingsAPI.update({
+        await SettingsAPI.finishSetup({
             name: state.name || null,
             email: state.email || null,
-            app_lock_secret: state.appLockEnabled ? state.appLockSecret : null,
-            journal_secret: state.journalSecret || null,
-            is_initialized: true,
+            app_lock_password: state.appLockEnabled ? state.appLockSecret : null,
+            journal_password: state.journalSecret || null,
         });
 
         navigate("/", { replace: true });

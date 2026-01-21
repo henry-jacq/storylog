@@ -1,35 +1,43 @@
+import { useEffect, useState } from "react";
 import Toast from "../components/Toast";
-import { useState, useEffect } from "react";
 import { SettingsAPI } from "../services/settings";
 
 export default function Settings() {
-    const [appLock, setAppLock] = useState("");
-    const [journalSecret, setJournalSecret] = useState("");
-    const [encryptionEnabled, setEncryptionEnabled] = useState(false);
-    const [density, setDensity] = useState("comfortable");
+    // profile (public)
+    const [profile, setProfile] = useState(null);
 
+    // write-only inputs
+    const [newAppLock, setNewAppLock] = useState("");
+    const [newJournalSecret, setNewJournalSecret] = useState("");
+
+    // ui-only
+    const [density, setDensity] = useState("comfortable");
     const [toast, setToast] = useState(null);
 
     useEffect(() => {
-        SettingsAPI.get().then(data => {
-            setAppLock(data.app_lock_secret || "");
-            setJournalSecret(data.journal_secret || "");
-        });
+        SettingsAPI.getPublic().then(setProfile);
     }, []);
-
 
     function notify(message, type = "success") {
         setToast({ type, message });
         setTimeout(() => setToast(null), 2200);
     }
 
-    function handleSave() {
-        SettingsAPI.update({
-            app_lock_secret: appLock || null,
-            journal_secret: journalSecret || null,
+    async function handleSaveSecurity() {
+        if (!newAppLock && !newJournalSecret) {
+            notify("Nothing to update", "info");
+            return;
+        }
+
+        await SettingsAPI.finishSetup({
+            app_lock_password: newAppLock || null,
+            journal_password: newJournalSecret || null,
         });
 
-        notify("Settings saved");
+        setNewAppLock("");
+        setNewJournalSecret("");
+
+        notify("Security settings updated");
     }
 
     function handleExportAll() {
@@ -49,6 +57,23 @@ export default function Settings() {
                     </p>
                 </div>
 
+                {/* Profile (READ ONLY) */}
+                <section className="space-y-2 rounded-xl border border-[#E5E7EB] bg-white p-6">
+                    <h2 className="text-sm font-medium text-[#1F2933]">
+                        Profile
+                    </h2>
+
+                    <p className="text-sm text-[#6B7280]">
+                        {profile?.profile?.name || "Anonymous"}
+                    </p>
+
+                    {profile?.profile?.email && (
+                        <p className="text-sm text-[#6B7280]">
+                            {profile.profile.email}
+                        </p>
+                    )}
+                </section>
+
                 {/* App Lock */}
                 <section className="space-y-4 rounded-xl border border-[#E5E7EB] bg-white p-6">
                     <div>
@@ -56,22 +81,24 @@ export default function Settings() {
                             App Lock
                         </h2>
                         <p className="mt-1 text-sm text-[#6B7280]">
-                            Set a password to lock the app on launch.
+                            {profile?.app_lock_enabled
+                                ? "App lock is enabled"
+                                : "No app lock set"}
                         </p>
                     </div>
 
                     <input
                         type="password"
-                        value={appLock}
-                        onChange={(e) => setAppLock(e.target.value)}
-                        placeholder="Not set"
-                        className="w-full rounded-md border border-[#E5E7EB] bg-[#F8F9FA] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
+                        value={newAppLock}
+                        onChange={(e) => setNewAppLock(e.target.value)}
+                        placeholder="Set new app lock password"
+                        className="w-full rounded-md border border-[#E5E7EB] bg-[#F8F9FA] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] transition"
                     />
 
                     <div className="flex justify-end">
                         <button
-                            onClick={handleSave}
-                            className="rounded-md bg-[#3B82F6] px-4 py-2 text-sm text-white hover:bg-blue-600 transition"
+                            onClick={handleSaveSecurity}
+                            className="rounded-md bg-[#3B82F6] px-4 py-2 text-sm text-white hover:bg-blue-600 transition hover:cursor-pointer"
                         >
                             Save
                         </button>
@@ -85,45 +112,25 @@ export default function Settings() {
                             Journal Encryption
                         </h2>
                         <p className="mt-1 text-sm text-[#6B7280]">
-                            Prepare your journals for future encryption.
+                            Optional future encryption key.
                         </p>
                     </div>
 
                     <input
                         type="password"
-                        value={journalSecret}
-                        onChange={(e) => setJournalSecret(e.target.value)}
-                        placeholder="Encryption secret (optional)"
-                        className="w-full rounded-md border border-[#E5E7EB] bg-[#F8F9FA] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
+                        value={newJournalSecret}
+                        onChange={(e) => setNewJournalSecret(e.target.value)}
+                        placeholder="Set journal encryption password"
+                        className="w-full rounded-md border border-[#E5E7EB] bg-[#F8F9FA] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] transition"
                     />
-
-                    <label className="flex items-center gap-3 text-sm text-[#6B7280]">
-                        <input
-                            type="checkbox"
-                            checked={encryptionEnabled}
-                            disabled
-                        />
-                        Enable encryption (coming soon)
-                    </label>
                 </section>
 
                 {/* Export */}
                 <section className="space-y-4 rounded-xl border border-[#E5E7EB] bg-white p-6">
-                    <div>
-                        <h2 className="text-sm font-medium text-[#1F2933]">
-                            Data Export
-                        </h2>
-                        <p className="mt-1 text-sm text-[#6B7280]">
-                            Download all journals as Markdown.
-                        </p>
-                    </div>
+                    <h2 className="text-sm font-medium text-[#1F2933]">
+                        Data Export
+                    </h2>
 
-                    <button
-                        onClick={handleExportAll}
-                        className="rounded-md border border-[#E5E7EB] px-4 py-2 text-sm text-[#1F2933] hover:bg-gray-100 transition"
-                    >
-                        Export all journals
-                    </button>
                     <button
                         onClick={handleExportAll}
                         className="rounded-md border border-[#E5E7EB] px-4 py-2 text-sm text-[#1F2933] hover:bg-gray-100 transition"
@@ -134,47 +141,32 @@ export default function Settings() {
 
                 {/* Appearance */}
                 <section className="space-y-4 rounded-xl border border-[#E5E7EB] bg-white p-6">
-                    <div>
-                        <h2 className="text-sm font-medium text-[#1F2933]">
-                            Appearance
-                        </h2>
-                        <p className="mt-1 text-sm text-[#6B7280]">
-                            Reading and writing comfort.
-                        </p>
-                    </div>
+                    <h2 className="text-sm font-medium text-[#1F2933]">
+                        Appearance
+                    </h2>
 
                     <div className="space-y-2 text-sm">
                         <label className="flex items-center gap-3">
                             <input
                                 type="radio"
-                                name="density"
-                                value="comfortable"
                                 checked={density === "comfortable"}
                                 onChange={() => setDensity("comfortable")}
                             />
                             Comfortable (default)
                         </label>
 
-                        <label className="flex items-center gap-3">
-                            <input
-                                type="radio"
-                                name="density"
-                                value="compact"
-                                onChange={() => setDensity("compact")}
-                                disabled
-                            />
+                        <label className="flex items-center gap-3 text-gray-400">
+                            <input type="radio" disabled />
                             Compact (coming soon)
                         </label>
                     </div>
                 </section>
 
-                {/* Future */}
                 <div className="rounded-xl border border-dashed border-[#E5E7EB] p-6 text-sm text-[#6B7280]">
                     More settings will appear here over time.
                 </div>
             </div>
 
-            {/* Toast (fixed overlay – no layout shift) */}
             {toast && <Toast {...toast} />}
         </>
     );
