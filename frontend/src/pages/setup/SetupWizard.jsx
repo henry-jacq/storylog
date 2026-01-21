@@ -46,14 +46,24 @@ export default function SetupWizard() {
 
     return (
         <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center px-4">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white border rounded-xl">
-                <Step
-                    data={state}
-                    onNext={next}
-                    onFinish={finish}
-                    step={step + 1}
-                    total={steps.length}
-                />
+            <div className="w-full max-w-md space-y-6">
+                {/* Main Card Container */}
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-8 space-y-6">
+                    <Step
+                        data={state}
+                        onNext={next}
+                        onFinish={finish}
+                        step={step + 1}
+                        total={steps.length}
+                    />
+                </div>
+                
+                {/* Footer */}
+                <div className="text-center">
+                    <p className="text-xs text-[#6B7280]">
+                        Your journals stay private and local
+                    </p>
+                </div>
             </div>
         </div>
     );
