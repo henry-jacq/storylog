@@ -75,9 +75,9 @@ export default function JournalForm({ onSubmit, loading = false }) {
                     value={form.content}
                     onChange={(e) => update("content", e.target.value)}
                     rows={12}
-                    placeholder="Today I felt…
-Something interesting happened…
-I learned that…"
+                    placeholder="Today I felt...
+Something interesting happened...
+I learned that..."
                     className="
                         w-full rounded-lg border border-[#E5E7EB]
                         bg-[#F8F9FA] p-4 text-[15px] leading-relaxed
@@ -94,9 +94,7 @@ I learned that…"
 
             {/* Actions */}
             <div className="flex justify-end">
-                <button
-                    type="submit"
-                    disabled={loading}
+                <button type="submit" disabled={loading}
                     className={`
                         px-5 py-2 rounded-md text-sm transition
                         ${loading
@@ -121,17 +119,8 @@ function Field({ label, type = "text", value, onChange, step }) {
                 {label}
             </label>
 
-            <input
-                type={type}
-                step={step}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                className="
-                    w-full rounded-md border border-[#E5E7EB]
-                    bg-[#F8F9FA] px-3 py-2 text-sm
-                    focus:outline-none focus:ring-2 focus:ring-[#3B82F6] transition
-                "
-            />
+            <input type={type} step={step} value={value} onChange={(e) => onChange(e.target.value)}
+                className="w-full rounded-md border border-[#E5E7EB] bg-[#F8F9FA] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] transition" />
         </div>
     );
 }
