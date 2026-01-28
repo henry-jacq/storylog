@@ -1,27 +1,14 @@
 from pathlib import Path
-from sqlalchemy.orm import Session
 from typing import Dict, List
+from sqlalchemy.orm import Session
 
-from app.services.crypto_service import CryptoService
 from app.models.journal import Journal
 from app.services.journal_parser import run_parser
+from app.services.crypto_service import CryptoService
 
 
-def bulk_import_markdown(
-    db: Session,
-    docs_dir: Path,
-    crypto: CryptoService
+def bulk_import_markdown(db: Session, docs_dir: Path, crypto: CryptoService
 ) -> Dict[str, List[str]]:
-    """
-    Imports all valid markdown journals from a folder.
-
-    Returns a report:
-    {
-        imported: [...],
-        skipped: [...],
-        failed: [...]
-    }
-    """
 
     report = {
         "imported": [],
@@ -66,3 +53,22 @@ def bulk_import_markdown(
             report["failed"].append(f"{md_file.name} → {e}")
 
     return report
+
+
+def journal_to_markdown(journal: Journal) -> str:
+
+    # Header line 1
+    date_str = journal.journal_date.isoformat()
+    day_str = journal.day
+    time_str = journal.journal_time.strftime("%I:%M:%S %p")
+
+    header_1 = f"# {date_str} · {day_str} · {time_str}"
+
+    # Header line 2
+    header_2 = f"# Day of year: {journal.day_of_year:03d}"
+
+    # Content
+    content = journal.content.strip()
+
+    return "\n".join([header_1,header_2,"",content,""])
+

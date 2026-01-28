@@ -23,7 +23,7 @@ from .journal_service import (
     update_journal,
     delete_journal,
 )
-from .import_journal import bulk_import_markdown
+from .journal_transfer import bulk_import_markdown
 from .journal_crypto import JournalCrypto  # Keep for backward compatibility
 
 __all__ = [

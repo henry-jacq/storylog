@@ -2,7 +2,7 @@ import typer
 import getpass
 from pathlib import Path
 from app.core.database import SessionLocal
-from app.services.import_journal import bulk_import_markdown
+from app.services.journal_transfer import bulk_import_markdown
 from app.services.crypto_service import CryptoService
 
 

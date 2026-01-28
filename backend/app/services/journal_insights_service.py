@@ -1,6 +1,4 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import extract, func
-
 from app.models.journal import Journal
 from app.services.crypto_service import CryptoService
 

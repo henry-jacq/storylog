@@ -3,7 +3,7 @@ import getpass
 from pathlib import Path
 from app.core.database import SessionLocal
 from app.models.journal import Journal
-from app.services.export_journal import journal_to_markdown
+from app.services.journal_transfer import journal_to_markdown
 from app.services.crypto_service import CryptoService
 from time import sleep
 
