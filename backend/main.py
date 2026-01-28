@@ -14,6 +14,7 @@ from scripts.import_journals import run_import
 from scripts.export_journals import run_export
 from scripts.validate_md_files import run_validation
 from scripts.test_md_parser import run_parser_test
+from scripts.change_password import change_password as change_password_script
 
 # 1. FastAPI App Setup
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -71,6 +72,10 @@ def test_parser(path: str, limit: int = typer.Option(None, help="Number of files
     typer.echo(f"[!] Testing the parser for given path: {path}")
     run_parser_test(path, limit=limit)
     typer.echo(f"[✔] Finished parser test against markdown files!")
+
+@cli.command()
+def change_password():
+    change_password_script()
     
 # 3. Logic to switch between FastAPI and CLI
 if __name__ == "__main__":

@@ -29,8 +29,8 @@ class ReencryptionResult:
     @property
     def message(self) -> str:
         if self.error:
-            return f"Re-encryption failed: {self.error}"
-        return f"Successfully re-encrypted {self.reencrypted_count}/{self.total_count} journals"
+            return f"[!] Re-encryption failed: {self.error}"
+        return f"[!] Successfully re-encrypted {self.reencrypted_count}/{self.total_count} journals"
 
 
 def reencrypt_journals_on_password_change(
@@ -133,7 +133,7 @@ def _reencrypt_journal_contents(
 ) -> ReencryptionResult:
     """Re-encrypt all journal contents."""
     journals = db.query(Journal).all()
-    print(f"Re-encrypting {len(journals)} journals...")
+    print(f"[!] Re-encrypting {len(journals)} journals...")
     
     reencrypted_count = 0
     
@@ -142,7 +142,7 @@ def _reencrypt_journal_contents(
             reencrypted_count += 1
         
         # Update progress
-        print(f"Progress: {reencrypted_count}/{len(journals)} journals re-encrypted", end="\r")
+        print(f"[!] Progress: {reencrypted_count}/{len(journals)} journals re-encrypted", end="\r")
     
     # Clear progress line
     print()
