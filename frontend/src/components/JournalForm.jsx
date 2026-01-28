@@ -57,8 +57,7 @@ export default function JournalForm({ onSubmit, loading = false }) {
                         Entry details
                     </h3>
 
-                    {/* Derived info */}
-                    <div className="text-xs text-[#6B7280] sm:text-sm">
+                    <div className="text-sm text-[#1F2933] sm:text-sm">
                         {form.day} · Day {form.day_of_year} of the year
                     </div>
                 </div>
@@ -84,7 +83,7 @@ export default function JournalForm({ onSubmit, loading = false }) {
 
             {/* Content */}
             <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 space-y-3">
-                <div>
+                <div className="mb-6">
                     <h3 className="text-sm font-medium text-[#1F2933]">
                         Journal content
                     </h3>
@@ -105,31 +104,23 @@ I learned that…`}
                         bg-[#F8F9FA] p-4 text-[15px] leading-relaxed
                         focus:outline-none focus:ring-2 focus:ring-[#3B82F6]
                         resize-none transition
-                    "
-                    required
+                    " required
                 />
 
                 <p className="text-xs text-[#94A3B8]">
-                    Plain text only. Formatting is handled automatically.
+                    Plain text only allowed. Draft is handled automatically.
                 </p>
-            </section>
 
-            {/* Actions */}
-            <div className="flex justify-end">
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className={`
-                        px-5 py-2 rounded-md text-sm transition
-                        ${loading
-                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                            : "bg-[#3B82F6] text-white hover:bg-blue-600 hover:cursor-pointer"
-                        }
-                    `}
-                >
-                    {loading ? "Saving…" : "Save journal"}
-                </button>
-            </div>
+                <div className="flex justify-end gap-2 mt-4">
+                    <button type="button" disabled title="Drafts will be available soon" className="px-4 py-2 rounded-md text-xs border border-[#E5E7EB] text-[#9CA3AF] bg-white cursor-not-allowed">
+                        Save as Draft
+                    </button>
+
+                    <button type="submit" disabled={loading} className={`px-4 py-2 rounded-md text-xs transition ${loading ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-[#3B82F6] text-white hover:bg-blue-600 hover:cursor-pointer"}`}>
+                        {loading ? "Saving…" : "Save journal"}
+                    </button>
+                </div>
+            </section>
         </form>
     );
 }

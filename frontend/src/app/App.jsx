@@ -2,6 +2,7 @@ import { BrowserRouter, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
 import Router from "./Router";
 import { SettingsAPI } from "../services/settings";
+import { clearSessionToken } from "../services/api";
 import AppLock from "../pages/AppLock";
 
 // Constants for app lock timeout
@@ -61,6 +62,8 @@ function AppGuard() {
     const clearSessionUnlocked = useCallback(() => {
         try {
             sessionStorage.removeItem(SESSION_KEY);
+            // Also clear the session token when app locks
+            clearSessionToken();
         } catch {
             // Ignore errors
         }

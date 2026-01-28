@@ -32,14 +32,11 @@ export const JournalsAPI = {
         const form = new FormData();
         form.append("file", file);
 
-        const res = await fetch(`${API_BASE}/journals/import`, {
+        // Use the enhanced request function to include auth headers
+        return request("/journals/import", {
             method: "POST",
-            body: form,
+            body: form
         });
-
-        const json = await res.json();
-        if (!json.status) throw new Error(json.detail);
-        return json.data;
     },
 
     stats: () => request("/journals/stats"),

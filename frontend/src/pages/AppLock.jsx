@@ -1,27 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SettingsAPI } from "../services/settings";
 import { LockClosedIcon } from "@heroicons/react/24/solid";
+import { setSessionToken } from "../services/api";
 
 export default function AppLock({ onUnlock }) {
-    const [value, setValue] = useState("");
-    const [error, setError] = useState(false);
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [checkingAuth, setCheckingAuth] = useState(true);
+    const [encryptionEnabled, setEncryptionEnabled] = useState(false);
+
+    // Check if encryption is enabled
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            try {
+                const publicSettings = await SettingsAPI.getPublic();
+                setEncryptionEnabled(publicSettings.journal_encryption_enabled);
+            } catch (e) {
+                console.error("Failed to check auth status:", e);
+                setEncryptionEnabled(false);
+            } finally {
+                setCheckingAuth(false);
+            }
+        };
+
+        checkAuthStatus();
+    }, []);
 
     async function submit() {
-        if (!value || loading) return;
+        if (!password || loading) return;
 
         setLoading(true);
-        setError(false);
+        setError("");
 
         try {
-            await SettingsAPI.unlock(value);
+            const response = await SettingsAPI.unlock(password);
+            
+            // Store session token if provided
+            if (response && response.session_id) {
+                setSessionToken(response.session_id);
+            }
+            
             await onUnlock();
-        } catch {
-            setError(true);
-            setValue("");
+        } catch (err) {
+            setError(err.message || "Authentication failed");
+            // Clear password on error
+            setPassword("");
         } finally {
             setLoading(false);
         }
+    }
+
+    if (checkingAuth) {
+        return (
+            <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center px-4">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#3B82F6] mx-auto"></div>
+                    <p className="mt-4 text-sm text-[#6B7280]">Checking authentication requirements...</p>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -58,9 +96,9 @@ export default function AppLock({ onUnlock }) {
                             </label>
                             <input
                                 type="password"
-                                placeholder="Enter your app lock password"
-                                value={value}
-                                onChange={e => setValue(e.target.value)}
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
                                 onKeyDown={e => e.key === "Enter" && submit()}
                                 autoFocus
                                 disabled={loading}
@@ -70,7 +108,7 @@ export default function AppLock({ onUnlock }) {
                             {/* Error Message */}
                             {error && (
                                 <p className="text-xs text-red-500">
-                                    Incorrect password. Please try again.
+                                    {error}
                                 </p>
                             )}
                         </div>
@@ -80,16 +118,21 @@ export default function AppLock({ onUnlock }) {
                     <div className="pt-2">
                         <button
                             onClick={submit}
-                            disabled={loading}
+                            disabled={loading || !password}
                             className="w-full py-3 text-sm font-medium text-white bg-[#3B82F6] rounded-md hover:bg-blue-600 transition hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {loading ? "Checking…" : "Unlock"}
+                            {loading ? "Unlocking..." : "Unlock"}
                         </button>
+                        {encryptionEnabled && (
+                            <span className="text-xs block mt-2 text-green-600">
+                                Journal Encryption is Enabled - Your Journals are Secure
+                            </span>
+                        )}
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="text-center">
+                <div className="text-center space-y-2">
                     <p className="text-xs text-[#6B7280]">
                         Your journals stay private and secure
                     </p>

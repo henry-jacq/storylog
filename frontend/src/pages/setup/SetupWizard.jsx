@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SettingsAPI } from "../../services/settings";
+import { setSessionToken } from "../../services/api";
 
 import WelcomeStep from "./steps/WelcomeStep";
 import ProfileStep from "./steps/ProfileStep";
@@ -23,7 +24,6 @@ export default function SetupWizard() {
         email: "",
         appLockEnabled: false,
         appLockSecret: "",
-        journalSecret: "",
     });
 
     function next(data = {}) {
@@ -32,12 +32,16 @@ export default function SetupWizard() {
     }
 
     async function finish() {
-        await SettingsAPI.finishSetup({
+        const response = await SettingsAPI.finishSetup({
             name: state.name || null,
             email: state.email || null,
             app_lock_password: state.appLockEnabled ? state.appLockSecret : null,
-            journal_password: state.journalSecret || null,
         });
+
+        // Store session token if provided
+        if (response && response.session_id) {
+            setSessionToken(response.session_id);
+        }
 
         navigate("/", { replace: true });
     }
@@ -61,7 +65,7 @@ export default function SetupWizard() {
                 {/* Footer */}
                 <div className="text-center">
                     <p className="text-xs text-[#6B7280]">
-                        Your journals stay private and local
+                        Your journals stay private, local, and encrypted
                     </p>
                 </div>
             </div>
