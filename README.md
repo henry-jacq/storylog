@@ -6,6 +6,11 @@ It treats journaling not just as writing, but as **personal data that grows with
 
 ---
 
+> BREAKING: Journal encryption is now mandatory and automatically derived
+> - Users can no longer disable encryption or set separate journal passwords
+> - Frontend should remove encryption settings from UI
+> - All existing journals will be re-encrypted on first password change
+
 ## ✨ What Storylog Is About
 
 * A calm space to write daily journals

@@ -1,10 +1,20 @@
+# FastAPI and Standard Library
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from typing import Union
 
-from app.core.deps import get_db
+# Core Dependencies
+from app.core.deps import get_db, require_crypto_service
+
+# Models
 from app.models.journal import Journal
+
+# Services
 from app.services.journal_parser import run_parser
 from app.services import journal_service
+from app.services.crypto_service import CryptoService
+
+# Schemas
 from app.schemas.journal import (
     JournalCreate,
     JournalUpdate,
@@ -19,10 +29,11 @@ router = APIRouter(prefix="/journals", tags=["Journals"])
 @router.get("", response_model=APIResponse[PaginatedResponse[JournalResponse]],)
 def list_journals(
     db: Session = Depends(get_db),
+    crypto: CryptoService = Depends(require_crypto_service),
     page: int = Query(1, ge=1),
     limit: int = Query(30, ge=1, le=100),
-    year: int | None = Query(None),
-    q: str | None = Query(None),
+    year: Union[int, None] = Query(None),
+    q: Union[str, None] = Query(None),
 ):
     data = journal_service.list_journals(
         db,
@@ -30,6 +41,7 @@ def list_journals(
         limit=limit,
         year=year,
         q=q,
+        crypto=crypto
     )
 
     return {
@@ -39,8 +51,12 @@ def list_journals(
 
 
 @router.get("/{journal_id}", response_model=APIResponse[JournalResponse])
-def get_journal(journal_id: int, db: Session = Depends(get_db)):
-    journal = journal_service.get_journal(db, journal_id)
+def get_journal(
+    journal_id: int, 
+    db: Session = Depends(get_db),
+    crypto: CryptoService = Depends(require_crypto_service)
+):
+    journal = journal_service.get_journal(db, journal_id, crypto)
     return {
         "status": True,
         "data": journal,
@@ -51,8 +67,9 @@ def get_journal(journal_id: int, db: Session = Depends(get_db)):
 def create_journal(
     data: JournalCreate,
     db: Session = Depends(get_db),
+    crypto: CryptoService = Depends(require_crypto_service)
 ):
-    journal = journal_service.create_journal(db, data)
+    journal = journal_service.create_journal(db, data, crypto)
     return {
         "status": True,
         "data": journal,
@@ -64,8 +81,9 @@ def update_journal(
     journal_id: int,
     data: JournalUpdate,
     db: Session = Depends(get_db),
+    crypto: CryptoService = Depends(require_crypto_service)
 ):
-    journal = journal_service.update_journal(db, journal_id, data)
+    journal = journal_service.update_journal(db, journal_id, data, crypto)
     return {
         "status": True,
         "data": journal,
@@ -76,8 +94,9 @@ def update_journal(
 def delete_journal(
     journal_id: int,
     db: Session = Depends(get_db),
+    crypto: CryptoService = Depends(require_crypto_service)
 ):
-    journal_service.delete_journal(db, journal_id)
+    journal_service.delete_journal(db, journal_id, crypto)
     return {
         "status": True,
         "data": {"message": "Journal deleted"},
@@ -88,6 +107,7 @@ def delete_journal(
 async def import_journal_md(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
+    crypto: CryptoService = Depends(require_crypto_service)
 ):
     if not file.filename.endswith(".md"):
         raise HTTPException(status_code=400, detail="Only .md files allowed")
@@ -116,8 +136,7 @@ async def import_journal_md(
         journal_time=parsed.journal_time,
         day=parsed.day,
         day_of_year=parsed.day_of_year,
-        content_md=parsed.content_md,
-        content_html=parsed.content_html,
+        content=crypto.encrypt(parsed.content),
     )
 
     db.add(journal)

@@ -2,6 +2,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 from typing import Dict, List
 
+from app.services.crypto_service import CryptoService
 from app.models.journal import Journal
 from app.services.journal_parser import run_parser
 
@@ -9,6 +10,7 @@ from app.services.journal_parser import run_parser
 def bulk_import_markdown(
     db: Session,
     docs_dir: Path,
+    crypto: CryptoService
 ) -> Dict[str, List[str]]:
     """
     Imports all valid markdown journals from a folder.
@@ -26,7 +28,7 @@ def bulk_import_markdown(
         "skipped": [],
         "failed": [],
     }
-
+    
     md_files = sorted(docs_dir.glob("*.md"))
 
     for md_file in md_files:
@@ -51,7 +53,7 @@ def bulk_import_markdown(
                 journal_time=parsed.journal_time,
                 day=parsed.day,
                 day_of_year=parsed.day_of_year,
-                content=parsed.content,
+                content=crypto.encrypt(parsed.content),
             )
 
             db.add(journal)
