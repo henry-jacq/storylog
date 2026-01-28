@@ -1,22 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
 from app.core.deps import get_db, get_current_session_id
 from app.services.auth_service import password_manager
 from app.services.crypto_service import CryptoService
 from app.schemas.common import APIResponse
+from app.schemas.auth import UnlockRequest, UnlockResponse
+
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
-
-
-class UnlockRequest(BaseModel):
-    journal_password: str
-
-
-class UnlockResponse(BaseModel):
-    success: bool
-    session_id: str
-    message: str
 
 
 @router.post("/unlock", response_model=APIResponse[UnlockResponse])

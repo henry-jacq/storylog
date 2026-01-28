@@ -1,11 +1,17 @@
+# FastAPI and Standard Library
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+# Core Dependencies
 from app.core.deps import get_db, get_crypto_service
+
+# Services
 from app.services.crypto_service import CryptoService
-from app.schemas.common import APIResponse
-from app.schemas.journal_stats import JournalStatsResponse
 from app.services.journal_stats_service import get_journal_stats
+
+# Schemas
+from app.schemas.common import APIResponse
+from app.schemas.journal_response import JournalStatsResponse
 
 router = APIRouter(prefix="/journals/stats", tags=["Journal Stats"])
 

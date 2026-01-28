@@ -18,8 +18,8 @@ from app.services.crypto_service import CryptoService
 from app.schemas.journal import (
     JournalCreate,
     JournalUpdate,
-    JournalResponse,
 )
+from app.schemas.journal_response import JournalResponse
 from app.schemas.common import APIResponse
 from app.schemas.pagination import PaginatedResponse
 

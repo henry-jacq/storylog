@@ -1,9 +1,11 @@
+# Standard Library
 import re
 import markdown
 from bs4 import BeautifulSoup
 from datetime import date, time
 
-from app.schemas.journal_parsed import JournalParsed
+# Schemas
+from app.schemas.journal import JournalParsed
 
 
 HEADER_LINE_1 = re.compile(

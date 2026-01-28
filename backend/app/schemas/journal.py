@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from datetime import date, time
 from typing import Optional
 
@@ -22,8 +22,16 @@ class JournalUpdate(BaseModel):
     content: Optional[str] = None
 
 
-class JournalResponse(JournalBase):
-    id: int
+class JournalParsed(BaseModel):
+    journal_date: date
+    journal_time: time
+    day: str = Field(min_length=3)
+    day_of_year: int = Field(ge=1, le=366)
+    content: str
 
-    class Config:
-        from_attributes = True
+    @field_validator("content")
+    @classmethod
+    def content_must_not_be_empty(cls, v: str):
+        if not v.strip():
+            raise ValueError("Journal content cannot be empty")
+        return v
