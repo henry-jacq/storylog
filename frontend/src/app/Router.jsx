@@ -7,6 +7,7 @@ import BrowseJournals from "../pages/BrowseJournals";
 import EditJournal from "../pages/EditJournal";
 import ViewJournal from "../pages/ViewJournal";
 import Settings from "../pages/Settings";
+import Quotes from "../pages/Quotes";
 import SetupWizard from "../pages/setup/SetupWizard";
 
 export default function Router() {
@@ -20,6 +21,7 @@ export default function Router() {
                 <Route path="/journals" element={<BrowseJournals />} />
                 <Route path="/journals/:id" element={<ViewJournal />} />
                 <Route path="/journals/:id/edit" element={<EditJournal />} />
+                <Route path="/quotes" element={<Quotes />} />
                 <Route path="/settings" element={<Settings />} />
             </Route>
         </Routes>

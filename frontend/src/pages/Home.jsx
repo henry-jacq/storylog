@@ -7,7 +7,8 @@ import {
     PencilSquareIcon,
     FireIcon,
     CalendarDaysIcon,
-    ShieldCheckIcon
+    ShieldCheckIcon,
+    ChatBubbleLeftRightIcon
 } from "@heroicons/react/24/outline";
 
 /* Base Stat Card (Factual) */
@@ -101,6 +102,15 @@ function InfoCard() {
 
             <div className="mt-6 space-y-4">
                 <p className="text-sm text-gray-500">
+                    Below are default prompts for users to ask
+                </p>
+                <p className="text-sm text-gray-500">
+                    Also Provide some system prompts on settings page regarding this
+                </p>
+                <p className="text-sm text-gray-500">
+                    System prompt be like: Remind me if i choose the different path like you said something like this happened then you shouldn't do this something like that.
+                </p>
+                <p className="text-sm text-gray-500">
                     • Emotional trends across selected periods
                 </p>
                 <p className="text-sm text-gray-500">
@@ -186,6 +196,13 @@ export default function Home() {
                     className="px-6 py-3 font-medium transition border border-gray-200 rounded-lg hover:bg-gray-50"
                 >
                     Browse Journals
+                </Link>
+
+                <Link
+                    to="/quotes"
+                    className="px-6 py-3 font-medium transition border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                    Quotes
                 </Link>
             </div>
 
