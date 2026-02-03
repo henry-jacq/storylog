@@ -79,11 +79,15 @@ class APIError extends Error {
 
 class ErrorHandler {
     static handleResponse(response, json) {
-        if (!json.status) {
-            const message = json.detail || json.message || "API Error";
-            throw new APIError(message, response.status, json);
+        // Check if response is successful (2xx status codes)
+        if (response.ok) {
+            // Return the response data directly for successful requests
+            return json;
         }
-        return json;
+        
+        // Handle error responses
+        const message = json.detail || json.message || `API Error (${response.status})`;
+        throw new APIError(message, response.status, json);
     }
 
     static handleNetworkError(error) {
