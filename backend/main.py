@@ -6,6 +6,7 @@ from app.api.settings import router as settings_router
 from app.api.journal_stats import router as stats_router
 from app.api.journal_insights import router as insights_router
 from app.api.auth import router as auth_router
+from app.api.quotes import router as quotes_router
 from app.core.database import Base, engine
 from app import models
 from app.core.config import settings
@@ -33,6 +34,7 @@ app.include_router(insights_router)
 app.include_router(auth_router)
 app.include_router(journal_router)
 app.include_router(settings_router)
+app.include_router(quotes_router)
 
 @app.get("/health")
 def health():

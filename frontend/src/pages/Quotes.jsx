@@ -1,333 +1,322 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { QuotesAPI } from "../services/quotes";
+import AddQuoteModal from "../components/AddQuoteModal";
+import ConfirmDialog from "../components/ConfirmDialog";
+import Loader from "../components/Loader";
+import EmptyState from "../components/EmptyState";
+import Toast from "../components/Toast";
 import {
     ChatBubbleLeftRightIcon,
     HeartIcon,
     BookmarkIcon,
-    ShareIcon,
+    TrashIcon,
     MagnifyingGlassIcon,
-    FunnelIcon,
     PlusIcon
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon, BookmarkIcon as BookmarkSolidIcon } from "@heroicons/react/24/solid";
 
-const dummyQuotes = [
-    {
-        id: 1,
-        text: "The only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle.",
-        author: "Steve Jobs",
-        source: "Stanford Commencement Address, 2005",
-        category: "Motivation",
-        tags: ["work", "passion", "success"],
-        isLiked: false,
-        isSaved: true,
-        dateAdded: "2024-01-15"
-    },
-    {
-        id: 2,
-        text: "In the end, we only regret the chances we didn't take, the words we didn't say, and the dreams we didn't pursue.",
-        author: "Lewis Carroll",
-        source: "Alice's Adventures in Wonderland",
-        category: "Life Lessons",
-        tags: ["regret", "opportunity", "courage"],
-        isLiked: true,
-        isSaved: false,
-        dateAdded: "2024-01-20"
-    },
-    {
-        id: 3,
-        text: "The future belongs to those who believe in the beauty of their dreams.",
-        author: "Eleanor Roosevelt",
-        source: "Public Speech, 1945",
-        category: "Inspiration",
-        tags: ["dreams", "future", "belief"],
-        isLiked: false,
-        isSaved: false,
-        dateAdded: "2024-02-01"
-    },
-    {
-        id: 4,
-        text: "It is during our darkest moments that we must focus to see the light.",
-        author: "Aristotle",
-        source: "Nicomachean Ethics",
-        category: "Philosophy",
-        tags: ["hope", "adversity", "strength"],
-        isLiked: true,
-        isSaved: true,
-        dateAdded: "2024-02-10"
-    },
-    {
-        id: 5,
-        text: "The only impossible journey is the one you never begin.",
-        author: "Tony Robbins",
-        source: "Unleash the Power Within",
-        category: "Self-Help",
-        tags: ["action", "journey", "beginning"],
-        isLiked: false,
-        isSaved: false,
-        dateAdded: "2024-02-15"
-    },
-    {
-        id: 6,
-        text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-        author: "Winston Churchill",
-        source: "Speech to the House of Commons, 1942",
-        category: "Leadership",
-        tags: ["success", "failure", "courage"],
-        isLiked: true,
-        isSaved: false,
-        dateAdded: "2024-02-20"
-    }
-];
-
-const categories = ["All", "Motivation", "Life Lessons", "Inspiration", "Philosophy", "Self-Help", "Leadership"];
-
 export default function Quotes() {
-    const [quotes, setQuotes] = useState(dummyQuotes);
+    const [quotes, setQuotes] = useState([]);
+    const [stats, setStats] = useState({ total_quotes: 0, liked_quotes: 0, saved_quotes: 0 });
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("All");
     const [showAddModal, setShowAddModal] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [quoteToDelete, setQuoteToDelete] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState(null);
 
-    const filteredQuotes = quotes.filter(quote => {
-        const matchesSearch = quote.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                             quote.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                             quote.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-        const matchesCategory = selectedCategory === "All" || quote.category === selectedCategory;
-        return matchesSearch && matchesCategory;
-    });
+    // Load initial data
+    useEffect(() => {
+        loadQuotes();
+        loadStats();
+    }, []);
 
-    const toggleLike = (id) => {
-        setQuotes(quotes.map(quote => 
-            quote.id === id ? { ...quote, isLiked: !quote.isLiked } : quote
-        ));
+    // Reload quotes when filters change
+    useEffect(() => {
+        loadQuotes();
+    }, [searchTerm]);
+
+    const loadQuotes = async () => {
+        try {
+            setLoading(true);
+            const params = {};
+            if (searchTerm) params.search = searchTerm;
+
+            const data = await QuotesAPI.getQuotes(params);
+            setQuotes(data || []);
+        } catch (err) {
+            console.error("Failed to load quotes:", err);
+            setToast({
+                type: "error",
+                message: "Failed to load quotes. Please try again."
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const toggleSave = (id) => {
-        setQuotes(quotes.map(quote => 
-            quote.id === id ? { ...quote, isSaved: !quote.isSaved } : quote
-        ));
+    const loadStats = async () => {
+        try {
+            const data = await QuotesAPI.getStats();
+            setStats(data || { total_quotes: 0, liked_quotes: 0, saved_quotes: 0 });
+        } catch (err) {
+            console.error("Failed to load stats:", err);
+        }
     };
+
+    const toggleLike = async (id) => {
+        try {
+            const updatedQuote = await QuotesAPI.toggleLikeQuote(id);
+            setQuotes(quotes.map(quote =>
+                quote.id === id ? updatedQuote : quote
+            ));
+            loadStats();
+        } catch (err) {
+            console.error("Failed to toggle like:", err);
+            setToast({
+                type: "error",
+                message: "Failed to update like status"
+            });
+        }
+    };
+
+    const toggleSave = async (id) => {
+        try {
+            const updatedQuote = await QuotesAPI.toggleSaveQuote(id);
+            setQuotes(quotes.map(quote =>
+                quote.id === id ? updatedQuote : quote
+            ));
+            loadStats();
+        } catch (err) {
+            console.error("Failed to toggle save:", err);
+            setToast({
+                type: "error",
+                message: "Failed to update save status"
+            });
+        }
+    };
+
+    const handleAddQuote = async (formData) => {
+        try {
+            const newQuote = await QuotesAPI.createQuote({
+                text: formData.text,
+                tags: formData.tags ? formData.tags.split(",").map(tag => tag.trim()).filter(tag => tag) : [],
+                is_liked: false,
+                is_saved: false
+            });
+
+            setQuotes([newQuote, ...quotes]);
+            loadStats();
+            setShowAddModal(false);
+            setToast({
+                type: "success",
+                message: "Quote added successfully"
+            });
+        } catch (err) {
+            console.error("Failed to add quote:", err);
+            setToast({
+                type: "error",
+                message: "Failed to add quote. Please try again."
+            });
+        }
+    };
+
+    const handleDeleteClick = (quote) => {
+        setQuoteToDelete(quote);
+        setConfirmOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!quoteToDelete) return;
+        try {
+            await QuotesAPI.deleteQuote(quoteToDelete.id);
+            setQuotes(quotes.filter(q => q.id !== quoteToDelete.id));
+            loadStats();
+            setConfirmOpen(false);
+            setQuoteToDelete(null);
+            setToast({
+                type: "success",
+                message: "Quote deleted successfully"
+            });
+        } catch (err) {
+            console.error("Failed to delete quote:", err);
+            setToast({
+                type: "error",
+                message: "Failed to delete quote. Please try again."
+            });
+        }
+    };
+
+    // Loading state
+    if (loading && quotes.length === 0) {
+        return <Loader label="Loading quotes…" />;
+    }
+
+    // Empty state
+    if (!loading && quotes.length === 0 && !searchTerm) {
+        return (
+            <>
+                <EmptyState
+                    title="No quotes yet"
+                    description="Add inspiring quotes to motivate and guide your journaling journey."
+                    actionLabel="Add Quote"
+                    onAction={() => setShowAddModal(true)}
+                />
+                <AddQuoteModal
+                    open={showAddModal}
+                    onClose={() => setShowAddModal(false)}
+                    onSubmit={handleAddQuote}
+                />
+                {toast && <Toast type={toast.type} message={toast.message} />}
+            </>
+        );
+    }
 
     return (
-        <section className="space-y-8">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-semibold text-gray-900">
+        <>
+            <div className="space-y-6">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold text-[#1F2933]">
                         Quotes Collection
-                    </h1>
-                    <p className="mt-2 text-gray-500">
-                        Inspiring quotes to motivate and guide your journaling journey.
-                    </p>
+                    </h2>
+                    <button
+                        onClick={() => setShowAddModal(true)}
+                        className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-md bg-[#3B82F6] text-white hover:bg-blue-600 hover:cursor-pointer transition"
+                    >
+                        <PlusIcon className="w-4 h-4" />
+                        Add Quote
+                    </button>
                 </div>
-                <button
-                    onClick={() => setShowAddModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 font-medium text-white transition bg-blue-500 rounded-lg hover:bg-blue-600"
-                >
-                    <PlusIcon className="w-4 h-4" />
-                    Add Quote
-                </button>
-            </div>
 
-            {/* Search and Filters */}
-            <div className="flex flex-col gap-4 sm:flex-row">
-                <div className="relative flex-1">
-                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 w-5 h-5 text-gray-400 -translate-y-1/2" />
+                {/* Search */}
+                <div className="relative">
+                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 w-5 h-5 text-[#6B7280] -translate-y-1/2" />
                     <input
                         type="text"
-                        placeholder="Search quotes, authors, or tags..."
+                        placeholder="Search quotes or tags..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full pl-10 pr-4 py-2 text-sm border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
-                <div className="flex gap-2">
-                    <select
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        {categories.map(category => (
-                            <option key={category} value={category}>{category}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Total Quotes</span>
-                        <ChatBubbleLeftRightIcon className="w-5 h-5 text-gray-400" />
+                {/* Stats */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="p-4 bg-white border border-[#E5E7EB] rounded-lg">
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm text-[#6B7280]">Total Quotes</span>
+                            <ChatBubbleLeftRightIcon className="w-5 h-5 text-[#6B7280]" />
+                        </div>
+                        <div className="mt-2 text-2xl font-semibold text-[#1F2933]">
+                            {stats.total_quotes}
+                        </div>
                     </div>
-                    <div className="mt-2 text-2xl font-semibold text-gray-900">
-                        {quotes.length}
+                    <div className="p-4 bg-white border border-[#E5E7EB] rounded-lg">
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm text-[#6B7280]">Liked</span>
+                            <HeartIcon className="w-5 h-5 text-[#6B7280]" />
+                        </div>
+                        <div className="mt-2 text-2xl font-semibold text-[#1F2933]">
+                            {stats.liked_quotes}
+                        </div>
+                    </div>
+                    <div className="p-4 bg-white border border-[#E5E7EB] rounded-lg">
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm text-[#6B7280]">Saved</span>
+                            <BookmarkIcon className="w-5 h-5 text-[#6B7280]" />
+                        </div>
+                        <div className="mt-2 text-2xl font-semibold text-[#1F2933]">
+                            {stats.saved_quotes}
+                        </div>
                     </div>
                 </div>
-                <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Liked</span>
-                        <HeartIcon className="w-5 h-5 text-gray-400" />
-                    </div>
-                    <div className="mt-2 text-2xl font-semibold text-gray-900">
-                        {quotes.filter(q => q.isLiked).length}
-                    </div>
-                </div>
-                <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Saved</span>
-                        <BookmarkIcon className="w-5 h-5 text-gray-400" />
-                    </div>
-                    <div className="mt-2 text-2xl font-semibold text-gray-900">
-                        {quotes.filter(q => q.isSaved).length}
-                    </div>
-                </div>
-            </div>
 
-            {/* Quotes Grid */}
-            <div className="space-y-6">
-                {filteredQuotes.length === 0 ? (
-                    <div className="text-center py-12">
-                        <ChatBubbleLeftRightIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500">No quotes found matching your criteria.</p>
-                    </div>
-                ) : (
-                    filteredQuotes.map(quote => (
-                        <div key={quote.id} className="p-6 bg-white border border-gray-200 rounded-xl">
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <blockquote className="text-lg text-gray-900 leading-relaxed">
-                                        "{quote.text}"
-                                    </blockquote>
-                                    <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
-                                        <span className="font-medium">— {quote.author}</span>
-                                        {quote.source && (
-                                            <span className="text-gray-400">• {quote.source}</span>
+                {/* Quotes List */}
+                <div className="space-y-3">
+                    {quotes.length === 0 ? (
+                        <div className="text-center py-12">
+                            <ChatBubbleLeftRightIcon className="w-12 h-12 text-[#E5E7EB] mx-auto mb-4" />
+                            <p className="text-sm text-[#6B7280]">No quotes found matching your criteria.</p>
+                        </div>
+                    ) : (
+                        quotes.map(quote => (
+                            <div key={quote.id} className="p-4 bg-white border border-[#E5E7EB] rounded-lg">
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="flex-1 min-w-0">
+                                        <blockquote className="text-[15px] text-[#1F2933] leading-relaxed">
+                                            "{quote.text}"
+                                        </blockquote>
+                                        {quote.tags && quote.tags.length > 0 && (
+                                            <div className="mt-2 flex flex-wrap gap-2">
+                                                {quote.tags.map(tag => (
+                                                    <span key={tag} className="text-xs text-[#6B7280]">
+                                                        #{tag}
+                                                    </span>
+                                                ))}
+                                            </div>
                                         )}
                                     </div>
-                                    <div className="mt-3 flex items-center gap-4">
-                                        <span className="px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-full">
-                                            {quote.category}
-                                        </span>
-                                        <div className="flex gap-2">
-                                            {quote.tags.map(tag => (
-                                                <span key={tag} className="text-xs text-gray-500">
-                                                    #{tag}
-                                                </span>
-                                            ))}
-                                        </div>
+                                    <div className="flex gap-1 shrink-0">
+                                        <button
+                                            onClick={() => toggleLike(quote.id)}
+                                            className="p-2 transition rounded-md hover:bg-gray-50 hover:cursor-pointer"
+                                            title={quote.is_liked ? "Unlike" : "Like"}
+                                        >
+                                            {quote.is_liked ? (
+                                                <HeartSolidIcon className="w-5 h-5 text-red-500" />
+                                            ) : (
+                                                <HeartIcon className="w-5 h-5 text-[#6B7280]" />
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => toggleSave(quote.id)}
+                                            className="p-2 transition rounded-md hover:bg-gray-50 hover:cursor-pointer"
+                                            title={quote.is_saved ? "Unsave" : "Save"}
+                                        >
+                                            {quote.is_saved ? (
+                                                <BookmarkSolidIcon className="w-5 h-5 text-[#3B82F6]" />
+                                            ) : (
+                                                <BookmarkIcon className="w-5 h-5 text-[#6B7280]" />
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteClick(quote)}
+                                            className="p-2 transition rounded-md hover:bg-gray-50 hover:cursor-pointer"
+                                            title="Delete quote"
+                                        >
+                                            <TrashIcon className="w-5 h-5 text-[#6B7280]" />
+                                        </button>
                                     </div>
                                 </div>
-                                <div className="flex gap-2 ml-4">
-                                    <button
-                                        onClick={() => toggleLike(quote.id)}
-                                        className="p-2 transition rounded-lg hover:bg-gray-50"
-                                        title={quote.isLiked ? "Unlike" : "Like"}
-                                    >
-                                        {quote.isLiked ? (
-                                            <HeartSolidIcon className="w-5 h-5 text-red-500" />
-                                        ) : (
-                                            <HeartIcon className="w-5 h-5 text-gray-400" />
-                                        )}
-                                    </button>
-                                    <button
-                                        onClick={() => toggleSave(quote.id)}
-                                        className="p-2 transition rounded-lg hover:bg-gray-50"
-                                        title={quote.isSaved ? "Unsave" : "Save"}
-                                    >
-                                        {quote.isSaved ? (
-                                            <BookmarkSolidIcon className="w-5 h-5 text-blue-500" />
-                                        ) : (
-                                            <BookmarkIcon className="w-5 h-5 text-gray-400" />
-                                        )}
-                                    </button>
-                                    <button
-                                        className="p-2 transition rounded-lg hover:bg-gray-50"
-                                        title="Share quote"
-                                    >
-                                        <ShareIcon className="w-5 h-5 text-gray-400" />
-                                    </button>
-                                </div>
                             </div>
-                        </div>
-                    ))
-                )}
+                        ))
+                    )}
+                </div>
             </div>
 
-            {/* Add Quote Modal (Placeholder) */}
-            {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Add New Quote</h2>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Quote Text
-                                </label>
-                                <textarea
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    rows={3}
-                                    placeholder="Enter the quote..."
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Author
-                                </label>
-                                <input
-                                    type="text"
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Author name..."
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Source (Optional)
-                                </label>
-                                <input
-                                    type="text"
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Book, speech, etc..."
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Category
-                                </label>
-                                <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {categories.filter(cat => cat !== "All").map(category => (
-                                        <option key={category} value={category}>{category}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Tags (comma separated)
-                                </label>
-                                <input
-                                    type="text"
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="motivation, success, life..."
-                                />
-                            </div>
-                        </div>
-                        <div className="flex gap-3 mt-6">
-                            <button
-                                onClick={() => setShowAddModal(false)}
-                                className="flex-1 px-4 py-2 font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={() => setShowAddModal(false)}
-                                className="flex-1 px-4 py-2 font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-                            >
-                                Add Quote
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </section>
+            {/* Add Quote Modal */}
+            <AddQuoteModal
+                open={showAddModal}
+                onClose={() => setShowAddModal(false)}
+                onSubmit={handleAddQuote}
+            />
+
+            {/* Confirm Delete */}
+            <ConfirmDialog
+                open={confirmOpen}
+                title="Delete quote?"
+                message={quoteToDelete ? `This will permanently delete the quote.\n\n"${quoteToDelete.text.substring(0, 80)}${quoteToDelete.text.length > 80 ? '...' : ''}"` : "This quote will be permanently deleted."}
+                confirmText="Delete"
+                onCancel={() => {
+                    setConfirmOpen(false);
+                    setQuoteToDelete(null);
+                }}
+                onConfirm={handleConfirmDelete}
+            />
+
+            {/* Toast */}
+            {toast && <Toast type={toast.type} message={toast.message} />}
+        </>
     );
 }
